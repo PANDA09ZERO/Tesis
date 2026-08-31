@@ -1,4 +1,10 @@
 <?php
+/** @var mixed $isEdit */
+/** @var mixed $pageTitle */
+/** @var mixed $profesor */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? ($profesor ? 'Editar Profesor' : 'Registrar Profesor');
 $isEdit = !empty($profesor);
 ?>

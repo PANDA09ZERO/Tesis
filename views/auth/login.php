@@ -1,3 +1,7 @@
+<?php
+/** @var mixed $error */
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

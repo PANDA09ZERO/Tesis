@@ -1,3 +1,11 @@
+<?php
+/** @var mixed $pageTitle */
+/** @var mixed $pctAsistencia */
+/** @var mixed $r */
+/** @var mixed $registros */
+/** @var mixed $resumen */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mi Asistencia'; ?>
 
 <div class="mb-4">

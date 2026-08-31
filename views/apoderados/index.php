@@ -1,3 +1,10 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $apoderados */
+/** @var mixed $busqueda */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Apoderados'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

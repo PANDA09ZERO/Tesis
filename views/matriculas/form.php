@@ -1,3 +1,16 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $alumnos */
+/** @var mixed $g */
+/** @var mixed $grados */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoActual */
+/** @var mixed $periodos */
+/** @var mixed $s */
+/** @var mixed $secciones */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Nueva Matrícula'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

@@ -1,3 +1,13 @@
+<?php
+/** @var mixed $c */
+/** @var mixed $calificaciones */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+/** @var mixed $promedio */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mis Calificaciones'; ?>
 
 <div class="mb-4">

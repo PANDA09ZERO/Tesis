@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $c */
+/** @var mixed $cursos */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Cursos'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

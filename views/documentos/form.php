@@ -1,3 +1,14 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $alumnos */
+/** @var mixed $cat */
+/** @var mixed $categorias */
+/** @var mixed $documento */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $profesores */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Subir Documento'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

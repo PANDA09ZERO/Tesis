@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $alumno */
+/** @var mixed $pageTitle */
+/** @var mixed $resumen */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Resumen de Asistencia'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

@@ -1,3 +1,18 @@
+<?php
+/** @var mixed $alumno */
+/** @var mixed $c */
+/** @var mixed $cid */
+/** @var mixed $circ */
+/** @var mixed $cursos */
+/** @var mixed $offset */
+/** @var mixed $pageTitle */
+/** @var mixed $pct */
+/** @var mixed $prom */
+/** @var mixed $promedios */
+/** @var mixed $ultima */
+/** @var mixed $ultimasCal */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mis Cursos'; ?>
 <style>
     .course-card {

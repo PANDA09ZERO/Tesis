@@ -1,3 +1,18 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $alertas */
+/** @var mixed $badgeEstado */
+/** @var mixed $badgeRiesgo */
+/** @var mixed $c */
+/** @var mixed $colores */
+/** @var mixed $contMap */
+/** @var mixed $contadores */
+/** @var mixed $estado */
+/** @var mixed $iconos */
+/** @var mixed $pageTitle */
+/** @var mixed $riesgo */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Alertas Académicas IA'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

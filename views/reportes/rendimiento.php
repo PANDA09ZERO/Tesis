@@ -1,3 +1,19 @@
+<?php
+/** @var mixed $aprobados */
+/** @var mixed $g */
+/** @var mixed $gradoId */
+/** @var mixed $grados */
+/** @var mixed $i */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+/** @var mixed $promedioGeneral */
+/** @var mixed $r */
+/** @var mixed $rendimiento */
+/** @var mixed $totalAlumnos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Rendimiento Académico'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

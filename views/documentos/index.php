@@ -1,3 +1,16 @@
+<?php
+/** @var mixed $badge */
+/** @var mixed $busqueda */
+/** @var mixed $cat */
+/** @var mixed $categoria */
+/** @var mixed $categorias */
+/** @var mixed $d */
+/** @var mixed $documentos */
+/** @var mixed $pageTitle */
+/** @var mixed $proximos */
+/** @var mixed $vencidos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Gestión Documental'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

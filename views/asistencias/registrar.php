@@ -1,3 +1,17 @@
+<?php
+/** @var mixed $actual */
+/** @var mixed $al */
+/** @var mixed $alumnos */
+/** @var mixed $asistenciasMap */
+/** @var mixed $e */
+/** @var mixed $estados */
+/** @var mixed $fecha */
+/** @var mixed $horario */
+/** @var mixed $horarioId */
+/** @var mixed $i */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Registrar Asistencia'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

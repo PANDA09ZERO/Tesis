@@ -1,3 +1,19 @@
+<?php
+/** @var mixed $aprobados */
+/** @var mixed $c */
+/** @var mixed $cal */
+/** @var mixed $calificaciones */
+/** @var mixed $cursoId */
+/** @var mixed $cursoSeleccionado */
+/** @var mixed $cursos */
+/** @var mixed $desaprobados */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodoSeleccionado */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Calificaciones'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

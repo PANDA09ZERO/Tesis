@@ -1,3 +1,12 @@
+<?php
+/** @var mixed $ca */
+/** @var mixed $cursosAsignados */
+/** @var mixed $h */
+/** @var mixed $horarios */
+/** @var mixed $pageTitle */
+/** @var mixed $profesor */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Perfil del Profesor'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

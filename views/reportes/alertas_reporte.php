@@ -1,3 +1,11 @@
+<?php
+/** @var mixed $e */
+/** @var mixed $estadisticas */
+/** @var mixed $pageTitle */
+/** @var mixed $t */
+/** @var mixed $topRiesgo */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Reporte de Alertas IA'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

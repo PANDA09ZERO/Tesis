@@ -1,3 +1,19 @@
+<?php
+/** @var mixed $d */
+/** @var mixed $dia */
+/** @var mixed $encontrado */
+/** @var mixed $grilla */
+/** @var mixed $h */
+/** @var mixed $hora */
+/** @var mixed $horas */
+/** @var mixed $item */
+/** @var mixed $items */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Grilla de Horarios'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

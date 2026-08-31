@@ -1,3 +1,10 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $alertas */
+/** @var mixed $alumno */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Alertas del Alumno'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

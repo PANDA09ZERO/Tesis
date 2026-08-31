@@ -1,3 +1,12 @@
+<?php
+/** @var mixed $e */
+/** @var mixed $estadisticas */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Rendimiento por Curso'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

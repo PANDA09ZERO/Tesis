@@ -1,3 +1,16 @@
+<?php
+/** @var mixed $a */
+/** @var mixed $alertas */
+/** @var mixed $alumno */
+/** @var mixed $asistencia */
+/** @var mixed $c */
+/** @var mixed $calRecientes */
+/** @var mixed $docsPendientes */
+/** @var mixed $mensajesNoLeidos */
+/** @var mixed $pageTitle */
+/** @var mixed $promedio */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mi Panel'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

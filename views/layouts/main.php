@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $content */
+/** @var mixed $flashMsg */
+/** @var mixed $pageTitle */
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

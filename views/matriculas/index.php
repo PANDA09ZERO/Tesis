@@ -1,3 +1,19 @@
+<?php
+/** @var mixed $g */
+/** @var mixed $gradoId */
+/** @var mixed $grados */
+/** @var mixed $key */
+/** @var mixed $m */
+/** @var mixed $matriculas */
+/** @var mixed $mujeres */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+/** @var mixed $porSeccion */
+/** @var mixed $varones */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Matrículas'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

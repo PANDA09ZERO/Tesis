@@ -1,3 +1,18 @@
+<?php
+/** @var mixed $al */
+/** @var mixed $alumnos */
+/** @var mixed $c */
+/** @var mixed $cursoId */
+/** @var mixed $cursoSeleccionado */
+/** @var mixed $cursos */
+/** @var mixed $i */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodoSeleccionado */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Registrar Calificaciones'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

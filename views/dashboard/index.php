@@ -1,4 +1,18 @@
 <?php
+/** @var mixed $act */
+/** @var mixed $alerta */
+/** @var mixed $alertasActivas */
+/** @var mixed $alertasRecientes */
+/** @var mixed $alumno */
+/** @var mixed $alumnosRecientes */
+/** @var mixed $pageTitle */
+/** @var mixed $totalAlumnos */
+/** @var mixed $totalCursos */
+/** @var mixed $totalProfesores */
+/** @var mixed $ultimasActividades */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? 'Dashboard';
 ?>
 

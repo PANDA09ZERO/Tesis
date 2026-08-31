@@ -1,4 +1,15 @@
 <?php
+/** @var mixed $aa */
+/** @var mixed $al */
+/** @var mixed $alumnos */
+/** @var mixed $apoderado */
+/** @var mixed $apoderadoAlumnos */
+/** @var mixed $isEdit */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? ($apoderado ? 'Editar Apoderado' : 'Registrar Apoderado');
 $isEdit = !empty($apoderado);
 ?>

@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $e */
+/** @var mixed $eventos */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Calendario'; ?>
 
 <div class="mb-4">

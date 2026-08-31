@@ -1,3 +1,12 @@
+<?php
+/** @var mixed $h */
+/** @var mixed $horarios */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Horarios'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

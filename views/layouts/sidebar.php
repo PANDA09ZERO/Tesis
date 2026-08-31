@@ -1,4 +1,14 @@
 <?php
+/** @var mixed $currentMenu */
+/** @var mixed $isAdmin */
+/** @var mixed $isAlumno */
+/** @var mixed $isProfesor */
+/** @var mixed $parts */
+/** @var mixed $route */
+/** @var mixed $user */
+?>
+
+<?php
 $user = currentUser();
 $route = $_GET['route'] ?? 'dashboard';
 $parts = explode('/', $route);

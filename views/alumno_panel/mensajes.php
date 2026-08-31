@@ -1,3 +1,13 @@
+<?php
+/** @var mixed $d */
+/** @var mixed $docentes */
+/** @var mixed $enviados */
+/** @var mixed $m */
+/** @var mixed $noLeidos */
+/** @var mixed $pageTitle */
+/** @var mixed $recibidos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mis Mensajes'; ?>
 
 <div class="mb-4">

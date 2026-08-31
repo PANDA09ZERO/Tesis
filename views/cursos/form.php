@@ -1,4 +1,16 @@
 <?php
+/** @var mixed $a */
+/** @var mixed $cg */
+/** @var mixed $curso */
+/** @var mixed $cursoGradoIds */
+/** @var mixed $cursoGrados */
+/** @var mixed $g */
+/** @var mixed $grados */
+/** @var mixed $isEdit */
+/** @var mixed $pageTitle */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? ($curso ? 'Editar Curso' : 'Registrar Curso');
 $isEdit = !empty($curso);
 ?>

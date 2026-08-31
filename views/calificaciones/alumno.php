@@ -1,3 +1,14 @@
+<?php
+/** @var mixed $alumno */
+/** @var mixed $cal */
+/** @var mixed $calificaciones */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+/** @var mixed $promedio */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Calificaciones del Alumno'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

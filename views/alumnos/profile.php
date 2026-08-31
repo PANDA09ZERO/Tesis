@@ -1,3 +1,17 @@
+<?php
+/** @var mixed $alumno */
+/** @var mixed $ap */
+/** @var mixed $apoderados */
+/** @var mixed $asi */
+/** @var mixed $asistencias */
+/** @var mixed $badgeClass */
+/** @var mixed $cal */
+/** @var mixed $calificaciones */
+/** @var mixed $doc */
+/** @var mixed $documentos */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Expediente del Alumno'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

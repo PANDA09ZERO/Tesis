@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $h */
+/** @var mixed $horarios */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Asistencias'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

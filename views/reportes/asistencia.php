@@ -1,3 +1,16 @@
+<?php
+/** @var mixed $alerta */
+/** @var mixed $i */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodoId */
+/** @var mixed $periodos */
+/** @var mixed $promAsistencia */
+/** @var mixed $r */
+/** @var mixed $resumenAsistencia */
+/** @var mixed $totalAlumnos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Reporte de Asistencia'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

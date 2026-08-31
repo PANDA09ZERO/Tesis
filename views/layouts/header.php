@@ -1,3 +1,7 @@
+<?php
+/** @var mixed $user */
+?>
+
 <?php $user = currentUser(); ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
     <div class="container-fluid">

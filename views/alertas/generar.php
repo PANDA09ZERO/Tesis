@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodos */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Generar Alertas IA'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

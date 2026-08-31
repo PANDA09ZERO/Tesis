@@ -1,4 +1,12 @@
 <?php
+/** @var mixed $isEdit */
+/** @var mixed $pageTitle */
+/** @var mixed $r */
+/** @var mixed $roles */
+/** @var mixed $usuario */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? ($usuario ? 'Editar Usuario' : 'Crear Usuario');
 $isEdit = !empty($usuario);
 ?>

@@ -1,3 +1,9 @@
+<?php
+/** @var mixed $d */
+/** @var mixed $documentos */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mis Documentos'; ?>
 
 <div class="mb-4">

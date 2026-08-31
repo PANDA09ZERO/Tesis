@@ -1,4 +1,20 @@
 <?php
+/** @var mixed $c */
+/** @var mixed $cursos */
+/** @var mixed $d */
+/** @var mixed $g */
+/** @var mixed $grados */
+/** @var mixed $horario */
+/** @var mixed $isEdit */
+/** @var mixed $p */
+/** @var mixed $pageTitle */
+/** @var mixed $periodos */
+/** @var mixed $profesores */
+/** @var mixed $s */
+/** @var mixed $secciones */
+?>
+
+<?php
 $pageTitle = $pageTitle ?? ($horario ? 'Editar Horario' : 'Nuevo Horario');
 $isEdit = !empty($horario);
 ?>

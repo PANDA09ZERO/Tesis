@@ -1,3 +1,10 @@
+<?php
+/** @var mixed $alumno */
+/** @var mixed $c */
+/** @var mixed $companeros */
+/** @var mixed $pageTitle */
+?>
+
 <?php $pageTitle = $pageTitle ?? 'Mis Compañeros'; ?>
 
 <div class="mb-4">
