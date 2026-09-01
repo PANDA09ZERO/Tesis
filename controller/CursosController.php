@@ -14,9 +14,15 @@ class CursosController extends Controller {
         requireRole([ROLE_ADMIN, ROLE_PROFESOR]);
         $cursos = $this->cursoModel->findAll();
 
+        $profesoresPorCurso = [];
+        foreach ($this->cursoModel->contarProfesoresPorCurso() as $row) {
+            $profesoresPorCurso[$row['curso_id']] = $row['total'];
+        }
+
         $this->view('cursos/index', [
             'pageTitle' => 'Gestión de Cursos',
             'cursos' => $cursos,
+            'profesoresPorCurso' => $profesoresPorCurso,
         ]);
     }
 

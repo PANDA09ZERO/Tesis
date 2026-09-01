@@ -3,6 +3,8 @@ ob_start();
 session_start();
 require_once __DIR__ . '/config/helpers.php';
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/ErrorHandler.php';
+ErrorHandler::registrar();
 
 $route = $_GET['route'] ?? 'dashboard';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -20,16 +22,20 @@ $controllerFile = __DIR__ . '/controller/' . $controllerName . '.php';
 
 if (file_exists($controllerFile)) {
     require_once $controllerFile;
-    $controller = new $controllerName();
-    if (method_exists($controller, $action)) {
-        if ($id !== null) {
-            $controller->$action($id);
+    try {
+        $controller = new $controllerName();
+        if (method_exists($controller, $action)) {
+            if ($id !== null) {
+                $controller->$action($id);
+            } else {
+                $controller->$action();
+            }
         } else {
-            $controller->$action();
+            http_response_code(404);
+            echo "Acción no encontrada: {$action}";
         }
-    } else {
-        http_response_code(404);
-        echo "Acción no encontrada: {$action}";
+    } catch (Throwable $e) {
+        ErrorHandler::manejarExcepcion($e);
     }
 } else {
     http_response_code(404);

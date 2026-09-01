@@ -17,10 +17,14 @@ class ProfesoresController extends Controller {
             ? $this->profesorModel->buscar($busqueda)
             : $this->profesorModel->findAllWithDetails();
 
+        $conteo = $this->db->select("SELECT profesor_id, COUNT(*) as total_cursos FROM profesor_curso GROUP BY profesor_id");
+        $cursosPorProfesor = array_column($conteo, 'total_cursos', 'profesor_id');
+
         $this->view('profesores/index', [
             'pageTitle' => 'Gestión de Profesores',
             'profesores' => $profesores,
             'busqueda' => $busqueda,
+            'cursosPorProfesor' => $cursosPorProfesor,
         ]);
     }
 
@@ -29,6 +33,8 @@ class ProfesoresController extends Controller {
         $this->view('profesores/form', [
             'pageTitle' => 'Registrar Profesor',
             'profesor' => null,
+            'cursos' => $this->db->select("SELECT * FROM cursos WHERE estado = 1 ORDER BY nombre"),
+            'profesorCursoIds' => [],
         ]);
     }
 
@@ -38,20 +44,28 @@ class ProfesoresController extends Controller {
             $this->validateCSRF();
             $codigo = trim($this->getPost('codigo'));
             if ($codigo === '') { $codigo = $this->db->generarCodigo('profesores', 'P', 4); }
+            $nombre = trim($this->getPost('nombre'));
+            $apellido_paterno = trim($this->getPost('apellido_paterno'));
+            $apellido_materno = trim($this->getPost('apellido_materno'));
+            $email = trim($this->getPost('email'));
             $id = $this->profesorModel->create([
                 'codigo' => $codigo,
                 'dni' => trim($this->getPost('dni')),
-                'nombre' => trim($this->getPost('nombre')),
-                'apellido_paterno' => trim($this->getPost('apellido_paterno')),
-                'apellido_materno' => trim($this->getPost('apellido_materno')),
+                'nombre' => $nombre,
+                'apellido_paterno' => $apellido_paterno,
+                'apellido_materno' => $apellido_materno,
                 'fecha_nacimiento' => $this->getPost('fecha_nacimiento'),
                 'sexo' => $this->getPost('sexo'),
                 'telefono' => trim($this->getPost('telefono')),
-                'email' => trim($this->getPost('email')),
+                'email' => $email,
                 'direccion' => trim($this->getPost('direccion')),
                 'especialidad' => trim($this->getPost('especialidad')),
                 'fecha_contratacion' => $this->getPost('fecha_contratacion'),
             ]);
+
+            $this->profesorModel->guardarCursos($id, $this->getPost('cursos') ?: []);
+
+            $this->gestionarCredencialAcceso('profesores', $id, ROLE_PROFESOR, $nombre, $apellido_paterno, $apellido_materno);
 
             logActividad('Profesor registrado', 'profesores', $id);
             $this->setFlash('success', 'Profesor registrado correctamente');
@@ -68,6 +82,8 @@ class ProfesoresController extends Controller {
         $this->view('profesores/form', [
             'pageTitle' => 'Editar Profesor',
             'profesor' => $profesor,
+            'cursos' => $this->db->select("SELECT * FROM cursos WHERE estado = 1 ORDER BY nombre"),
+            'profesorCursoIds' => $this->profesorModel->getCursoIds($id),
         ]);
     }
 
@@ -90,6 +106,13 @@ class ProfesoresController extends Controller {
             ]);
 
             logActividad('Profesor actualizado', 'profesores', $id);
+
+            $this->profesorModel->guardarCursos($id, $this->getPost('cursos') ?: []);
+
+            $this->gestionarCredencialAcceso('profesores', $id, ROLE_PROFESOR,
+                trim($this->getPost('nombre')), trim($this->getPost('apellido_paterno')),
+                trim($this->getPost('apellido_materno')));
+
             $this->setFlash('success', 'Profesor actualizado correctamente');
             redirect('index.php?route=profesores');
         }

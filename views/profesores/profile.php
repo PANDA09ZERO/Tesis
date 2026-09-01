@@ -36,16 +36,15 @@
             <div class="card-header fw-semibold"><i class="bi bi-book me-2"></i>Cursos Asignados</div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
-                    <thead><tr><th>Curso</th><th>Grado</th><th>Sección</th></tr></thead>
+                    <thead><tr><th>Curso</th><th>Código</th></tr></thead>
                     <tbody>
                         <?php if (empty($cursosAsignados)): ?>
-                            <tr><td colspan="3" class="text-center text-muted py-3">Sin cursos asignados</td></tr>
+                            <tr><td colspan="2" class="text-center text-muted py-3">Sin cursos asignados</td></tr>
                         <?php else: ?>
                             <?php foreach ($cursosAsignados as $ca): ?>
                                 <tr>
                                     <td><strong><?= sanitize($ca['curso_nombre']) ?></strong></td>
-                                    <td><?= sanitize($ca['grado']) ?></td>
-                                    <td><?= sanitize($ca['seccion']) ?></td>
+                                    <td><code><?= sanitize($ca['curso_codigo']) ?></code></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

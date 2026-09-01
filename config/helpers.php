@@ -89,3 +89,39 @@ function logActividad($accion, $tabla = null, $registro_id = null, $detalles = n
         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
     ]);
 }
+
+function normalizarTexto($texto) {
+    $texto = mb_strtolower(trim((string)$texto), 'UTF-8');
+    $reemplazos = [
+        'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u',
+        'ñ' => 'n', 'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+    ];
+    return strtr($texto, $reemplazos);
+}
+
+function generarCorreoUsuario($username) {
+    $username = preg_replace('/[^a-z0-9_.]/', '', mb_strtolower(trim((string)$username)));
+    if ($username === '') $username = 'usuario';
+    return $username . '@cienciaseingenieria.com';
+}
+
+function usernameCorporativoExiste($username) {
+    $db = Database::getInstance();
+    return $db->count('usuarios', 'username = ?', [$username]) > 0;
+}
+
+function generarUsernamePersona($nombre, $apellidoPaterno, $apellidoMaterno = '') {
+    $base = preg_replace('/[^a-z0-9]/', '',
+        normalizarTexto($nombre)
+        . normalizarTexto($apellidoPaterno)
+        . normalizarTexto($apellidoMaterno)
+    );
+    if ($base === '') $base = 'usuario';
+    $username = $base;
+    $i = 2;
+    while (usernameCorporativoExiste($username)) {
+        $username = $base . $i;
+        $i++;
+    }
+    return $username;
+}

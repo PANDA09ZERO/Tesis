@@ -23,19 +23,33 @@ class Profesor extends Model {
         );
     }
 
+    public function getCursoIds($profesorId) {
+        $rows = $this->db->select(
+            "SELECT curso_id FROM profesor_curso WHERE profesor_id = ?",
+            [$profesorId]
+        );
+        return array_column($rows, 'curso_id');
+    }
+
+    public function guardarCursos($profesorId, $cursoIds = []) {
+        $this->db->delete('profesor_curso', 'profesor_id = ?', [$profesorId]);
+        foreach ($cursoIds as $cursoId) {
+            if (!is_numeric($cursoId)) continue;
+            $this->db->insert('profesor_curso', [
+                'profesor_id' => $profesorId,
+                'curso_id' => (int) $cursoId,
+            ]);
+        }
+    }
+
     public function getCursosAsignados($profesorId, $periodoId = null) {
-        $where = $periodoId ? "AND h.periodo_id = ?" : "";
-        $params = $periodoId ? [$profesorId, $periodoId] : [$profesorId];
         return $this->db->select(
-            "SELECT DISTINCT c.nombre as curso_nombre, c.codigo as curso_codigo,
-                    g.nombre as grado, s.nombre as seccion
-             FROM horarios h
-             JOIN cursos c ON h.curso_id = c.id
-             JOIN grados g ON h.grado_id = g.id
-             JOIN secciones s ON h.seccion_id = s.id
-             WHERE h.profesor_id = ? {$where}
-             ORDER BY g.nombre, s.nombre, c.nombre",
-            $params
+            "SELECT DISTINCT c.id as curso_id, c.codigo as curso_codigo, c.nombre as curso_nombre
+             FROM profesor_curso pc
+             JOIN cursos c ON pc.curso_id = c.id
+             WHERE pc.profesor_id = ?
+             ORDER BY c.nombre",
+            [$profesorId]
         );
     }
 

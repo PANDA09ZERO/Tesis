@@ -203,6 +203,19 @@ CREATE TABLE curso_grado (
 ) ENGINE=InnoDB;
 
 -- =====================================================
+-- TABLA: profesor_curso (cursos asignados a un profesor)
+-- =====================================================
+CREATE TABLE profesor_curso (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    profesor_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_profesor_curso (profesor_id, curso_id)
+) ENGINE=InnoDB;
+
+-- =====================================================
 -- TABLA: matriculas
 -- =====================================================
 CREATE TABLE matriculas (

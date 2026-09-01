@@ -89,6 +89,8 @@ class AlumnosController extends Controller {
                 }
             }
 
+            $this->gestionarCredencialAcceso('alumnos', $alumnoId, ROLE_ALUMNO, $nombre, $apellido_paterno, $apellido_materno);
+
             logActividad('Alumno registrado', 'alumnos', $alumnoId, $nombre . ' ' . $apellido_paterno);
             $this->setFlash('success', 'Alumno registrado correctamente');
             redirect('index.php?route=alumnos');
@@ -128,6 +130,10 @@ class AlumnosController extends Controller {
                 'email' => trim($this->getPost('email')),
                 'direccion' => trim($this->getPost('direccion')),
             ]);
+
+            $this->gestionarCredencialAcceso('alumnos', $id, ROLE_ALUMNO,
+                trim($this->getPost('nombre')), trim($this->getPost('apellido_paterno')),
+                trim($this->getPost('apellido_materno')));
 
             logActividad('Alumno actualizado', 'alumnos', $id);
             $this->setFlash('success', 'Alumno actualizado correctamente');

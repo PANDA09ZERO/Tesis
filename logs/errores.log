@@ -1,0 +1,1 @@
+2026-09-01 20:18:50 | SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '74404681' for key 'dni' | C:\xampp\htdocs\tesis\config\database.php:35

@@ -36,17 +36,23 @@ class ApoderadosController extends Controller {
         requireRole([ROLE_ADMIN]);
         if ($this->isPost()) {
             $this->validateCSRF();
+            $nombre = trim($this->getPost('nombre'));
+            $apellido_paterno = trim($this->getPost('apellido_paterno'));
+            $apellido_materno = trim($this->getPost('apellido_materno'));
+            $email = trim($this->getPost('email'));
             $id = $this->apoderadoModel->create([
                 'dni' => trim($this->getPost('dni')),
-                'nombre' => trim($this->getPost('nombre')),
-                'apellido_paterno' => trim($this->getPost('apellido_paterno')),
-                'apellido_materno' => trim($this->getPost('apellido_materno')),
+                'nombre' => $nombre,
+                'apellido_paterno' => $apellido_paterno,
+                'apellido_materno' => $apellido_materno,
                 'telefono' => trim($this->getPost('telefono')),
-                'email' => trim($this->getPost('email')),
+                'email' => $email,
                 'direccion' => trim($this->getPost('direccion')),
                 'ocupacion' => trim($this->getPost('ocupacion')),
                 'parentesco' => $this->getPost('parentesco'),
             ]);
+
+            $this->gestionarCredencialAcceso('apoderados', $id, ROLE_APODERADO, $nombre, $apellido_paterno, $apellido_materno);
 
             logActividad('Apoderado registrado', 'apoderados', $id);
             $this->setFlash('success', 'Apoderado registrado correctamente');
@@ -85,6 +91,10 @@ class ApoderadosController extends Controller {
                 'ocupacion' => trim($this->getPost('ocupacion')),
                 'parentesco' => $this->getPost('parentesco'),
             ]);
+
+            $this->gestionarCredencialAcceso('apoderados', $id, ROLE_APODERADO,
+                trim($this->getPost('nombre')), trim($this->getPost('apellido_paterno')),
+                trim($this->getPost('apellido_materno')));
 
             $this->db->delete('alumno_apoderado', 'apoderado_id = ?', [$id]);
             $alumnos = $this->getPost('alumnos');

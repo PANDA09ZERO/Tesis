@@ -47,7 +47,17 @@ class HorariosController extends Controller {
             'grados' => $this->db->select("SELECT * FROM grados ORDER BY nivel, nombre"),
             'secciones' => $this->db->select("SELECT * FROM secciones ORDER BY nombre"),
             'periodos' => $this->periodoModel->getAll(),
+            'cursosDeProfesor' => $this->cursosDeProfesor(),
         ]);
+    }
+
+    private function cursosDeProfesor() {
+        $map = [];
+        $rows = $this->db->select("SELECT profesor_id, curso_id FROM profesor_curso");
+        foreach ($rows as $r) {
+            $map[$r['profesor_id']][] = (int) $r['curso_id'];
+        }
+        return $map;
     }
 
     public function store() {
@@ -111,6 +121,7 @@ class HorariosController extends Controller {
             'grados' => $this->db->select("SELECT * FROM grados ORDER BY nivel, nombre"),
             'secciones' => $this->db->select("SELECT * FROM secciones ORDER BY nombre"),
             'periodos' => $this->periodoModel->getAll(),
+            'cursosDeProfesor' => $this->cursosDeProfesor(),
         ]);
     }
 

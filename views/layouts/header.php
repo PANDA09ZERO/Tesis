@@ -32,6 +32,11 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
+                        <a class="dropdown-item" href="<?= BASE_URL ?>index.php?route=perfil">
+                            <i class="bi bi-person-circle me-2"></i>Mi Perfil
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="<?= BASE_URL ?>index.php?route=auth/logout">
                             <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
                         </a>

@@ -1,6 +1,7 @@
 <?php
 /** @var mixed $c */
 /** @var mixed $cursos */
+/** @var mixed $cursosDeProfesor */
 /** @var mixed $d */
 /** @var mixed $g */
 /** @var mixed $grados */
@@ -41,10 +42,11 @@ $isEdit = !empty($horario);
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Profesor *</label>
-                    <select class="form-select" name="profesor_id" required>
+                    <select class="form-select" name="profesor_id" id="profesorSelect" required>
                         <option value="">Seleccionar...</option>
                         <?php foreach ($profesores as $p): ?>
-                            <option value="<?= $p['id'] ?>" <?= ($horario['profesor_id'] ?? '') == $p['id'] ? 'selected' : '' ?>><?= sanitize($p['nombre_completo']) ?></option>
+                            <?php $pCursos = implode(',', $cursosDeProfesor[$p['id']] ?? []); ?>
+                            <option value="<?= $p['id'] ?>" data-cursos="<?= $pCursos ?>" <?= ($horario['profesor_id'] ?? '') == $p['id'] ? 'selected' : '' ?>><?= sanitize($p['nombre_completo']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -105,3 +107,28 @@ $isEdit = !empty($horario);
         <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i><?= $isEdit ? 'Actualizar' : 'Registrar' ?></button>
     </div>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var curso = document.querySelector('select[name="curso_id"]');
+    var prof = document.getElementById('profesorSelect');
+    if (!curso || !prof) return;
+
+    function filtrarProfesores() {
+        var cid = curso.value;
+        [...prof.options].forEach(function (opt) {
+            if (!opt.value) return;
+            var cursos = (opt.getAttribute('data-cursos') || '').split(',').filter(Boolean);
+            var visible = cid === '' || cursos.indexOf(cid) !== -1;
+            opt.style.display = visible ? '' : 'none';
+        });
+        var sel = prof.options[prof.selectedIndex];
+        if (sel && sel.value && sel.style.display === 'none') {
+            prof.value = '';
+        }
+    }
+
+    curso.addEventListener('change', filtrarProfesores);
+    filtrarProfesores();
+});
+</script>

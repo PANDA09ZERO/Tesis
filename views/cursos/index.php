@@ -2,6 +2,7 @@
 /** @var mixed $c */
 /** @var mixed $cursos */
 /** @var mixed $pageTitle */
+/** @var mixed $profesoresPorCurso */
 ?>
 
 <?php $pageTitle = $pageTitle ?? 'Cursos'; ?>
@@ -15,16 +16,17 @@
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <thead><tr><th>Código</th><th>Nombre</th><th>Área</th><th>Horas/Sem</th><th>Estado</th><th width="120">Acciones</th></tr></thead>
+                <thead><tr><th>Código</th><th>Nombre</th><th>Área</th><th>Profesores</th><th>Horas/Sem</th><th>Estado</th><th width="120">Acciones</th></tr></thead>
                 <tbody>
                     <?php if (empty($cursos)): ?>
-                        <tr><td colspan="6" class="text-center text-muted py-4"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No hay cursos</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No hay cursos</td></tr>
                     <?php else: ?>
                         <?php foreach ($cursos as $c): ?>
                             <tr>
                                 <td><code><?= sanitize($c['codigo']) ?></code></td>
                                 <td><strong><?= sanitize($c['nombre']) ?></strong></td>
                                 <td><span class="badge bg-secondary"><?= sanitize($c['area'] ?? '-') ?></span></td>
+                                <td><span class="badge bg-info text-dark"><?= (int) ($profesoresPorCurso[$c['id']] ?? 0) ?></span></td>
                                 <td><?= $c['horas_semanales'] ?></td>
                                 <td><span class="badge <?= $c['estado'] ? 'bg-success' : 'bg-danger' ?>"><?= $c['estado'] ? 'Activo' : 'Inactivo' ?></span></td>
                                 <td>

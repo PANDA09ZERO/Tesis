@@ -19,15 +19,21 @@ class Curso extends Model {
     }
 
     public function getProfesoresAsignados($cursoId, $periodoId = null) {
-        $where = $periodoId ? "AND h.periodo_id = ?" : "";
-        $params = $periodoId ? [$cursoId, $periodoId] : [$cursoId];
         return $this->db->select(
             "SELECT DISTINCT p.*, CONCAT(p.apellido_paterno, ' ', p.apellido_materno, ', ', p.nombre) as nombre_completo
-             FROM horarios h
-             JOIN profesores p ON h.profesor_id = p.id
-             WHERE h.curso_id = ? {$where}
+             FROM profesor_curso pc
+             JOIN profesores p ON pc.profesor_id = p.id
+             WHERE pc.curso_id = ?
              ORDER BY p.apellido_paterno",
-            $params
+            [$cursoId]
+        );
+    }
+
+    public function contarProfesoresPorCurso() {
+        return $this->db->select(
+            "SELECT pc.curso_id, COUNT(DISTINCT pc.profesor_id) as total
+             FROM profesor_curso pc
+             GROUP BY pc.curso_id"
         );
     }
 }

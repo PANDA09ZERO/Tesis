@@ -3,7 +3,7 @@ require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../model/Usuario.php';
 
 class UsuariosController extends Controller {
-    private $usuarioModel;
+    protected $usuarioModel;
 
     public function __construct() {
         parent::__construct();
@@ -40,6 +40,7 @@ class UsuariosController extends Controller {
             $username = trim($this->getPost('username'));
             $password = $this->getPost('password');
             $email = trim($this->getPost('email'));
+            if ($email === '') { $email = generarCorreoUsuario($username); }
             $rolId = $this->getPost('rol_id');
 
             $existing = $this->usuarioModel->findByUsername($username);

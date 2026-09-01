@@ -1,9 +1,13 @@
 <?php
+require_once __DIR__ . '/../model/Usuario.php';
+
 class Controller {
     protected $db;
+    protected $usuarioModel;
 
     public function __construct() {
         $this->db = Database::getInstance();
+        $this->usuarioModel = new Usuario();
     }
 
     protected function view($viewPath, $data = []) {
@@ -76,5 +80,24 @@ class Controller {
 
     protected function setFlash($type, $message) {
         $_SESSION['flash'][$type] = $message;
+    }
+
+    protected function gestionarCredencialAcceso($tabla, $id, $rolId, $nombre, $apellidoPaterno, $apellidoMaterno = '') {
+        $password = $this->getPost('password');
+        if (!$this->isPost() || $password === '' || $password === null) {
+            return;
+        }
+        $persona = $this->db->selectOne("SELECT usuario_id FROM {$tabla} WHERE id = ?", [$id]);
+        if (!$persona) return;
+
+        if (!empty($persona['usuario_id'])) {
+            $this->usuarioModel->actualizarPassword($persona['usuario_id'], $password);
+            return;
+        }
+
+        $username = generarUsernamePersona($nombre, $apellidoPaterno, $apellidoMaterno);
+        $email = $username . '@cienciaseingenieria.com';
+        $usuarioId = $this->usuarioModel->crear($username, $password, $email, $rolId);
+        $this->db->update($tabla, ['usuario_id' => $usuarioId], 'id = ?', [$id]);
     }
 }

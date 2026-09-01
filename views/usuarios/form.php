@@ -39,7 +39,7 @@ $isEdit = !empty($usuario);
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Email *</label>
-                    <input type="email" class="form-control" name="email" required value="<?= sanitize($usuario['email'] ?? '') ?>">
+                    <input type="email" class="form-control" name="email" placeholder="auto: username@cienciaseingenieria.com" value="<?= sanitize($usuario['email'] ?? '') ?>">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Rol *</label>

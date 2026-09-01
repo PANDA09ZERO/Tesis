@@ -1,5 +1,6 @@
 <?php
 /** @var mixed $busqueda */
+/** @var mixed $cursosPorProfesor */
 /** @var mixed $p */
 /** @var mixed $pageTitle */
 /** @var mixed $profesores */
@@ -38,6 +39,7 @@
                         <th>Nombre Completo</th>
                         <th>DNI</th>
                         <th>Especialidad</th>
+                        <th>Cursos</th>
                         <th>Teléfono</th>
                         <th>Estado</th>
                         <th width="150">Acciones</th>
@@ -45,7 +47,7 @@
                 </thead>
                 <tbody>
                     <?php if (empty($profesores)): ?>
-                        <tr><td colspan="7" class="text-center text-muted py-4"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No se encontraron profesores</td></tr>
+                        <tr><td colspan="8" class="text-center text-muted py-4"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No se encontraron profesores</td></tr>
                     <?php else: ?>
                         <?php foreach ($profesores as $p): ?>
                             <tr>
@@ -57,6 +59,7 @@
                                 </td>
                                 <td><?= sanitize($p['dni']) ?></td>
                                 <td><?= sanitize($p['especialidad'] ?? '-') ?></td>
+                                <td><span class="badge bg-info text-dark"><?= (int) ($cursosPorProfesor[$p['id']] ?? 0) ?></span></td>
                                 <td><?= sanitize($p['telefono'] ?? '-') ?></td>
                                 <td><span class="badge <?= $p['estado'] ? 'bg-success' : 'bg-danger' ?>"><?= $p['estado'] ? 'Activo' : 'Inactivo' ?></span></td>
                                 <td>

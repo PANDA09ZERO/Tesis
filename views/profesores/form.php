@@ -1,7 +1,10 @@
 <?php
+/** @var mixed $cursos */
+/** @var mixed $cur */
 /** @var mixed $isEdit */
 /** @var mixed $pageTitle */
 /** @var mixed $profesor */
+/** @var mixed $profesorCursoIds */
 ?>
 
 <?php
@@ -53,11 +56,11 @@ $isEdit = !empty($profesor);
                     <label class="form-label">Teléfono</label>
                     <input type="text" class="form-control" name="telefono" value="<?= sanitize($profesor['telefono'] ?? '') ?>">
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" value="<?= sanitize($profesor['email'] ?? '') ?>">
+                <div class="col-md-3">
+                    <label class="form-label">Contraseña de Acceso <?= $isEdit ? '' : '*' ?></label>
+                    <input type="password" class="form-control" name="password" <?= $isEdit ? 'placeholder="Dejar vacío para mantener"' : 'required' ?>>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <label class="form-label">Dirección</label>
                     <input type="text" class="form-control" name="direccion" value="<?= sanitize($profesor['direccion'] ?? '') ?>">
                 </div>
@@ -69,14 +72,37 @@ $isEdit = !empty($profesor);
         <div class="card-header fw-semibold"><i class="bi bi-briefcase me-2"></i>Datos Laborales</div>
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Especialidad</label>
-                    <input type="text" class="form-control" name="especialidad" value="<?= sanitize($profesor['especialidad'] ?? '') ?>">
+                    <select class="form-select" name="especialidad">
+                        <option value="">Seleccionar curso...</option>
+                        <?php foreach ($cursos as $cur): ?>
+                            <option value="<?= sanitize($cur['nombre']) ?>" <?= ($profesor['especialidad'] ?? '') === $cur['nombre'] ? 'selected' : '' ?>>
+                                <?= sanitize($cur['nombre']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Fecha de Contratación</label>
                     <input type="date" class="form-control" name="fecha_contratacion" value="<?= $profesor['fecha_contratacion'] ?? '' ?>">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold"><i class="bi bi-collection me-2"></i>Cursos Asignados</div>
+        <div class="card-body">
+            <div class="row">
+                <?php foreach ($cursos as $cur): ?>
+                    <div class="col-md-3 col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="cursos[]" value="<?= $cur['id'] ?>" id="curso<?= $cur['id'] ?>" <?= in_array($cur['id'], $profesorCursoIds) ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="curso<?= $cur['id'] ?>"><?= sanitize($cur['nombre']) ?></label>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

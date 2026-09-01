@@ -63,11 +63,12 @@ $isEdit = !empty($alumno);
                     <label class="form-label">Teléfono</label>
                     <input type="text" class="form-control" name="telefono" value="<?= sanitize($alumno['telefono'] ?? '') ?>">
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" value="<?= sanitize($alumno['email'] ?? '') ?>">
+                <div class="col-md-3">
+                    <label class="form-label"><i class="bi bi-shield-lock me-1"></i>Contraseña de Acceso <?= $isEdit ? '' : '*' ?></label>
+                    <input type="password" class="form-control" name="password" <?= $isEdit ? 'placeholder="Dejar vacío para mantener"' : 'required' ?>>
+                    <small class="text-muted">El usuario es su nombre y apellidos.</small>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <label class="form-label">Dirección</label>
                     <input type="text" class="form-control" name="direccion" value="<?= sanitize($alumno['direccion'] ?? '') ?>">
                 </div>
