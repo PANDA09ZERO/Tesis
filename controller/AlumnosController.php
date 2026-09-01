@@ -40,6 +40,7 @@ class AlumnosController extends Controller {
         if ($this->isPost()) {
             $this->validateCSRF();
             $codigo = trim($this->getPost('codigo'));
+            if ($codigo === '') { $codigo = $this->db->generarCodigo('alumnos', 'A', 6); }
             $dni = trim($this->getPost('dni'));
             $nombre = trim($this->getPost('nombre'));
             $apellido_paterno = trim($this->getPost('apellido_paterno'));
@@ -118,7 +119,6 @@ class AlumnosController extends Controller {
             $this->validateCSRF();
             $this->alumnoModel->update($id, [
                 'dni' => trim($this->getPost('dni')),
-                'codigo' => trim($this->getPost('codigo')),
                 'nombre' => trim($this->getPost('nombre')),
                 'apellido_paterno' => trim($this->getPost('apellido_paterno')),
                 'apellido_materno' => trim($this->getPost('apellido_materno')),

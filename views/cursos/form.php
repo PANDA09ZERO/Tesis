@@ -26,7 +26,6 @@ $isEdit = !empty($curso);
     <div class="card mb-4">
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-3"><label class="form-label">Código *</label><input type="text" class="form-control" name="codigo" required value="<?= sanitize($curso['codigo'] ?? '') ?>"></div>
                 <div class="col-md-4"><label class="form-label">Nombre *</label><input type="text" class="form-control" name="nombre" required value="<?= sanitize($curso['nombre'] ?? '') ?>"></div>
                 <div class="col-md-3"><label class="form-label">Área</label><select class="form-select" name="area"><option value="">Seleccionar...</option><?php foreach (['Básico','Alternativo','Especializado'] as $a): ?><option value="<?= $a ?>" <?= ($curso['area'] ?? '') === $a ? 'selected' : '' ?>><?= $a ?></option><?php endforeach; ?></select></div>
                 <div class="col-md-2"><label class="form-label">Horas/Sem</label><input type="number" class="form-control" name="horas_semanales" min="1" value="<?= $curso['horas_semanales'] ?? 1 ?>"></div>

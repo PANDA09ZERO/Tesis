@@ -36,8 +36,10 @@ class ProfesoresController extends Controller {
         requireRole([ROLE_ADMIN]);
         if ($this->isPost()) {
             $this->validateCSRF();
+            $codigo = trim($this->getPost('codigo'));
+            if ($codigo === '') { $codigo = $this->db->generarCodigo('profesores', 'P', 4); }
             $id = $this->profesorModel->create([
-                'codigo' => trim($this->getPost('codigo')),
+                'codigo' => $codigo,
                 'dni' => trim($this->getPost('dni')),
                 'nombre' => trim($this->getPost('nombre')),
                 'apellido_paterno' => trim($this->getPost('apellido_paterno')),
@@ -74,7 +76,6 @@ class ProfesoresController extends Controller {
         if ($this->isPost()) {
             $this->validateCSRF();
             $this->profesorModel->update($id, [
-                'codigo' => trim($this->getPost('codigo')),
                 'dni' => trim($this->getPost('dni')),
                 'nombre' => trim($this->getPost('nombre')),
                 'apellido_paterno' => trim($this->getPost('apellido_paterno')),

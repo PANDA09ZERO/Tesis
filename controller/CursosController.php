@@ -33,8 +33,10 @@ class CursosController extends Controller {
         requireRole([ROLE_ADMIN]);
         if ($this->isPost()) {
             $this->validateCSRF();
+            $codigo = trim($this->getPost('codigo'));
+            if ($codigo === '') { $codigo = $this->db->generarCodigo('cursos', 'C', 4); }
             $cursoId = $this->cursoModel->create([
-                'codigo' => trim($this->getPost('codigo')),
+                'codigo' => $codigo,
                 'nombre' => trim($this->getPost('nombre')),
                 'descripcion' => trim($this->getPost('descripcion')),
                 'area' => $this->getPost('area'),
@@ -76,7 +78,6 @@ class CursosController extends Controller {
         if ($this->isPost()) {
             $this->validateCSRF();
             $this->cursoModel->update($id, [
-                'codigo' => trim($this->getPost('codigo')),
                 'nombre' => trim($this->getPost('nombre')),
                 'descripcion' => trim($this->getPost('descripcion')),
                 'area' => $this->getPost('area'),

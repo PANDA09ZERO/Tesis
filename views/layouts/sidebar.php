@@ -152,7 +152,7 @@ $isAdmin = $user['rol_id'] === ROLE_ADMIN;
             <li class="nav-item">
                 <a class="nav-link <?= $currentMenu === 'alertas' ? 'active' : '' ?>" 
                    href="<?= BASE_URL ?>index.php?route=alertas">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Alertas IA
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Alertas
                 </a>
             </li>
             <li class="nav-item">

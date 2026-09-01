@@ -32,10 +32,6 @@ $isEdit = !empty($alumno);
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Código *</label>
-                    <input type="text" class="form-control" name="codigo" required value="<?= sanitize($alumno['codigo'] ?? '') ?>">
-                </div>
-                <div class="col-md-3">
                     <label class="form-label">DNI *</label>
                     <input type="text" class="form-control" name="dni" required maxlength="8" value="<?= sanitize($alumno['dni'] ?? '') ?>">
                 </div>

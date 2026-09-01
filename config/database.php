@@ -68,4 +68,22 @@ class Database {
         $sql = "SELECT COUNT(*) as total FROM {$table} WHERE {$where}";
         return $this->selectOne($sql, $params)['total'];
     }
+
+    public function generarCodigo($tabla, $prefijo, $longitud = 6) {
+        try {
+            $row = $this->selectOne(
+                "SELECT {$tabla}.id, codigo FROM {$tabla} ORDER BY id DESC LIMIT 1"
+            );
+        } catch (Exception $e) {
+            $row = false;
+        }
+        $base = 1000;
+        if ($row && !empty($row['codigo'])) {
+            $num = (int) ltrim(substr($row['codigo'], strlen($prefijo)), '0');
+            $base = max($num + 1, 1000);
+        } elseif ($row) {
+            $base = (int) $row['id'] + 1;
+        }
+        return $prefijo . str_pad((string) $base, $longitud, '0', STR_PAD_LEFT);
+    }
 }
