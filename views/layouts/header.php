@@ -3,25 +3,25 @@
 ?>
 
 <?php $user = currentUser(); ?>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
-    <div class="container-fluid">
-        <button class="btn btn-link text-white text-decoration-none fw-bold d-flex align-items-center" 
-                onclick="toggleSidebar()">
-            <i class="bi bi-mortarboard-fill fs-4 me-2"></i>
-            <span class="d-none d-md-inline"><?= APP_NAME ?></span>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" style="background: linear-gradient(135deg, #6b3d3d 0%, #4a2424 100%); padding: 0.5rem 0;">
+    <div class="container-fluid" style="padding: 0 1rem;">
+        <button class="btn btn-link text-white text-decoration-none fw-bold d-flex flex-column align-items-center p-0" 
+                onclick="toggleSidebar()" style="gap: 3px;">
+            <img src="<?= BASE_URL ?>views/img/logo-colegio.jpeg" alt="Logo" style="max-height: 32px; width: auto;">
+            <span class="d-none d-md-inline" style="font-size: 0.75rem; letter-spacing: 0.3px; line-height: 1.2;"><?= APP_NAME ?></span>
         </button>
 
         <div class="ms-auto d-flex align-items-center">
             <div class="dropdown">
-                <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center" 
-                        data-bs-toggle="dropdown">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center me-2" 
-                         style="width: 36px; height: 36px;">
+                <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center p-0" 
+                        data-bs-toggle="dropdown" style="gap: 0.5rem;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 32px; height: 32px; font-size: 0.9rem;">
                         <i class="bi bi-person-fill"></i>
                     </div>
-                    <span class="d-none d-md-inline">
+                    <span class="d-none d-md-inline" style="font-size: 0.85rem;">
                         <?= sanitize($user['username']) ?>
-                        <small class="badge bg-light text-primary ms-1"><?= sanitize($user['rol_nombre']) ?></small>
+                        <small class="badge bg-light text-primary ms-1" style="font-size: 0.7rem;"><?= sanitize($user['rol_nombre']) ?></small>
                     </span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">

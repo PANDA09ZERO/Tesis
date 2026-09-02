@@ -9,93 +9,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - <?= APP_NAME ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #01579b 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .login-header {
-            background: linear-gradient(135deg, #1a237e, #0d47a1);
-            color: white;
-            padding: 2rem;
-            border-radius: 16px 16px 0 0;
-            text-align: center;
-        }
-        .login-header i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .form-control:focus {
-            border-color: #0d47a1;
-            box-shadow: 0 0 0 0.2rem rgba(13, 71, 161, 0.25);
-        }
-        .btn-login {
-            background: linear-gradient(135deg, #1a237e, #0d47a1);
-            border: none;
-            padding: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .btn-login:hover {
-            background: linear-gradient(135deg, #0d47a1, #01579b);
-        }
-    </style>
+    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet">
 </head>
 <body>
-    <div class="card login-card">
-        <div class="login-header">
-            <i class="bi bi-mortarboard-fill"></i>
-            <h4 class="mb-0"><?= APP_NAME ?></h4>
-            <small class="opacity-75">Inicie sesión para continuar</small>
+    <div class="login-container">
+        <!-- Lado Izquierdo - Información -->
+        <div class="login-sidebar">
+            <div class="logo-section">
+                <img src="<?= BASE_URL ?>views/img/logo-colegio.jpeg" alt="Logo del Colegio" class="logo-img">
+                <h3><?= APP_NAME ?></h3>
+                <div class="tagline">Disciplina y Exigencia Académica</div>
+                <div class="divider"></div>
+                <p class="description">
+                    Accede al portal para gestionar calificaciones, asistencia y comunicados de la institución.
+                </p>
+            </div>
         </div>
-        <div class="card-body p-4">
+
+        <!-- Lado Derecho - Formulario -->
+        <div class="login-body">
+            <div class="login-header">
+                <span class="portal-label">Portal Académico</span>
+                <h1>Bienvenido de nuevo</h1>
+                <p>Ingresa tus credenciales para acceder a la plataforma de la institución.</p>
+            </div>
+
             <?php if ($error): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?= sanitize($error) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="alert alert-danger">
+                    <span>⚠️</span>
+                    <span><?= sanitize($error) ?></span>
+                    <button type="button" class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             <?php endif; ?>
 
             <form method="POST" action="<?= BASE_URL ?>index.php?route=auth/login">
-                <div class="mb-3">
-                    <label for="username" class="form-label fw-semibold">
-                        <i class="bi bi-person-fill me-1"></i>Usuario
-                    </label>
-                    <input type="text" class="form-control form-control-lg" id="username" name="username" 
-                           placeholder="Ingrese su usuario" required autofocus
+                <div class="form-group">
+                    <label for="username">Usuario o correo</label>
+                    <input type="text" id="username" name="username" 
+                           placeholder="tu.usuario@colegio.edu" required autofocus
                            value="<?= sanitize($_POST['username'] ?? '') ?>">
                 </div>
-                <div class="mb-4">
-                    <label for="password" class="form-label fw-semibold">
-                        <i class="bi bi-lock-fill me-1"></i>Contraseña
-                    </label>
-                    <div class="input-group">
-                        <input type="password" class="form-control form-control-lg" id="password" name="password" 
-                               placeholder="Ingrese su contraseña" required>
-                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                            <i class="bi bi-eye-fill" id="toggleIcon"></i>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="password-group">
+                        <input type="password" id="password" name="password" 
+                               placeholder="••••••••" required>
+                        <button type="button" onclick="togglePassword()" title="Mostrar/Ocultar contraseña">
+                            👁️
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-login btn-lg w-100 text-white">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+
+                <div class="form-check">
+                    <input type="checkbox" id="remember" name="remember" value="1">
+                    <label for="remember">Mantener sesión iniciada</label>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    ➜ Iniciar Sesión
                 </button>
             </form>
-        </div>
-        <div class="card-footer text-center text-muted py-3" style="border-radius: 0 0 16px 16px;">
-            <small>&copy; <?= date('Y') ?> - Sistema de Gestión Educativa</small>
         </div>
     </div>
 
@@ -103,15 +77,10 @@
     <script>
         function togglePassword() {
             const input = document.getElementById('password');
-            const icon = document.getElementById('toggleIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('bi-eye-fill', 'bi-eye-slash-fill');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('bi-eye-slash-fill', 'bi-eye-fill');
-            }
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
     </script>
 </body>
 </html>
+
+

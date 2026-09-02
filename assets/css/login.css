@@ -1,0 +1,379 @@
+/* Login Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    padding: 1rem;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 1200px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    min-height: 600px;
+}
+
+/* Lado Izquierdo - Información */
+.login-sidebar {
+    background: linear-gradient(135deg, #6b3d3d 0%, #4a2424 100%);
+    color: white;
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 50%;
+}
+
+.login-sidebar .logo-section {
+    text-align: center;
+    width: 100%;
+}
+
+.login-sidebar .logo-img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    margin: 0 auto 2rem;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.login-sidebar h3 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.login-sidebar .tagline {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+}
+
+.login-sidebar .divider {
+    width: 60px;
+    height: 3px;
+    background: #8b5a5a;
+    margin: 0 auto 2rem;
+    border-radius: 2px;
+}
+
+.login-sidebar .description {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    text-align: center;
+}
+
+/* Lado Derecho - Formulario */
+.login-body {
+    flex: 0 0 50%;
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.login-header {
+    margin-bottom: 2.5rem;
+}
+
+.login-header .portal-label {
+    color: #0d47a1;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.login-header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+}
+
+.login-header p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.alert-danger {
+    background-color: #fdeaea;
+    border: 1px solid #f5c6c6;
+    color: #c33;
+}
+
+.alert-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    padding: 0;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0d47a1;
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+}
+
+.password-group {
+    display: flex;
+    gap: 0;
+}
+
+.password-group input {
+    flex: 1;
+    border-radius: 6px 0 0 6px;
+}
+
+.password-group button {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-radius: 0 6px 6px 0;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #666;
+    font-size: 1rem;
+}
+
+.password-group button:hover {
+    background-color: #f5f5f5;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #0d47a1;
+}
+
+.form-check label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-weight: 400;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.btn-login {
+    padding: 13px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: #0d47a1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.btn-login:hover {
+    background: #0a3580;
+}
+
+.btn-login:active {
+    transform: scale(0.98);
+}
+
+
+/* Responsive Tablet */
+@media (max-width: 992px) {
+    .login-sidebar {
+        padding: 3rem 2rem;
+    }
+
+    .login-body {
+        padding: 3rem 2rem;
+    }
+
+    .login-sidebar h3 {
+        font-size: 1.7rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Responsive Móvil */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        min-height: auto;
+        border-radius: 8px;
+    }
+
+    .login-sidebar {
+        flex: 0 0 auto;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .login-body {
+        flex: 0 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .login-sidebar h3 {
+        font-size: 1.5rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-header p {
+        font-size: 0.9rem;
+    }
+
+    .login-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .login-links a {
+        display: block;
+        text-align: center;
+    }
+}
+
+/* Responsive Móvil pequeño */
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    .login-container {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    .login-sidebar {
+        padding: 2rem 1rem;
+    }
+
+    .login-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .login-sidebar .logo-img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .login-sidebar h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-header {
+        margin-bottom: 1.5rem;
+    }
+
+    form {
+        gap: 1rem;
+    }
+
+    .login-links {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+}

@@ -29,7 +29,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 <!-- Estadísticas -->
 <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card" style="background: linear-gradient(135deg, #1a237e, #3949ab);">
+        <div class="stat-card stat-card-primary">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Total Alumnos</div>
@@ -40,7 +40,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card" style="background: linear-gradient(135deg, #00695c, #26a69a);">
+        <div class="stat-card stat-card-secondary">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Total Profesores</div>
@@ -51,7 +51,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card" style="background: linear-gradient(135deg, #e65100, #fb8c00);">
+        <div class="stat-card stat-card-success">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Total Cursos</div>
@@ -62,7 +62,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card" style="background: linear-gradient(135deg, #b71c1c, #ef5350);">
+        <div class="stat-card stat-card-danger">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Alertas Activas</div>

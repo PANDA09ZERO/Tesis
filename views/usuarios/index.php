@@ -8,6 +8,7 @@
 <?php $pageTitle = $pageTitle ?? 'Usuarios'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
+    <img src="<?= BASE_URL ?>views/img/logo-colegio.jpeg" alt="Logo del Colegio" class="img-fluid" style="max-height: 50px;">
     <h4 class="fw-bold mb-0"><i class="bi bi-shield-lock-fill me-2"></i>Gestión de Usuarios</h4>
     <a href="<?= BASE_URL ?>index.php?route=usuarios/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo Usuario</a>
 </div>
