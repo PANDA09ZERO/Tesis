@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+model.joblib
+scaler.joblib
+.venv/
+venv/
