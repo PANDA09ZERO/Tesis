@@ -1,89 +1,95 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2 } from 'lucide-react';
-import DataTable from '../../components/ui/DataTable';
-import Modal from '../../components/ui/Modal';
-import SearchInput from '../../components/ui/SearchInput';
-import ConfirmDialog from '../../components/ui/ConfirmDialog';
+import { Star, BookOpen, MapPin } from 'lucide-react';
 import { cursosApi } from '../../api/endpoints';
-import { usePagination } from '../../hooks/usePagination';
-import { useDebounce } from '../../hooks/useDebounce';
 import type { Curso } from '../../types';
 import toast from 'react-hot-toast';
 
 export default function CursosPage() {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search);
-  const { page, totalPages, total, updateFromResponse, setPage } = usePagination();
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState<Curso | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({ nombre: '', codigo: '', descripcion: '' });
 
-  useEffect(() => { loadData(); }, [page, debouncedSearch]);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await cursosApi.getAll({ page: 1, limit: 20 });
+        setCursos(res.data.data || []);
+      } catch (error) {
+        toast.error('Error al cargar cursos');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const res = await cursosApi.getAll({ page, limit: 20, search: debouncedSearch });
-      setCursos(res.data.data || []);
-      updateFromResponse(res.data.total || 0, res.data.totalPages || 1);
-    } catch (error) { console.error(error); }
-    finally { setLoading(false); }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (editing) { await cursosApi.update(editing.id, formData); toast.success('Curso actualizado'); }
-      else { await cursosApi.create(formData); toast.success('Curso creado'); }
-      setShowModal(false); setEditing(null); setFormData({ nombre: '', codigo: '', descripcion: '' }); loadData();
-    } catch (error: any) { toast.error(error.response?.data?.message || 'Error'); }
-  };
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    try { await cursosApi.delete(deleteId); toast.success('Curso eliminado'); setDeleteId(null); loadData(); }
-    catch (error: any) { toast.error(error.response?.data?.message || 'Error'); }
-  };
-
-  const columns = [
-    { key: 'codigo', label: 'Código', render: (c: Curso) => <span className="font-mono text-xs">{c.codigo || '-'}</span> },
-    { key: 'nombre', label: 'Nombre' },
-    { key: 'grado_nombre', label: 'Grado', render: (c: Curso) => c.grado_nombre || '-' },
-    { key: 'acciones', label: '', render: (c: Curso) => (
-      <div className="flex gap-1">
-        <button onClick={(e) => { e.stopPropagation(); setEditing(c); setFormData({ nombre: c.nombre, codigo: c.codigo || '', descripcion: c.descripcion || '' }); setShowModal(true); }}
-          className="p-1 text-gray-600 hover:bg-gray-100 rounded"><Edit className="w-4 h-4" /></button>
-        <button onClick={(e) => { e.stopPropagation(); setDeleteId(c.id); }}
-          className="p-1 text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
-      </div>
-    )}
+  const dummyCursos = [
+    { id: 1, nombre: 'MATEMÁTICAS IV', codigo: 'MAT-4', estado: 'Abierto', instructor: 'Ing. María García', image: 'https://picsum.photos/seed/curso1/400/200', grado: '4to Grado' },
+    { id: 2, nombre: 'COMUNICACIÓN IV', codigo: 'COM-4', estado: 'Abierto', instructor: 'Lic. Carlos Pérez', image: 'https://picsum.photos/seed/curso2/400/200', grado: '4to Grado' },
+    { id: 3, nombre: 'CIENCIA Y TECNOLOGÍA', codigo: 'CYT-4', estado: 'Abierto', instructor: 'Dr. Luis Romero', image: 'https://picsum.photos/seed/curso3/400/200', grado: '4to Grado' },
+    { id: 4, nombre: 'HISTORIA IV', codigo: 'HIS-4', estado: 'Abierto', instructor: 'Lic. Ana López', image: 'https://picsum.photos/seed/curso4/400/200', grado: '4to Grado' },
+    { id: 5, nombre: 'INGLÉS IV', codigo: 'ING-4', estado: 'Abierto', instructor: 'Sra. Patricia Díaz', image: 'https://picsum.photos/seed/curso5/400/200', grado: '4to Grado' },
+    { id: 6, nombre: 'ARTE IV', codigo: 'ART-4', estado: 'Abierto', instructor: 'Prof. Juan Torres', image: 'https://picsum.photos/seed/curso6/400/200', grado: '4to Grado' },
+    { id: 7, nombre: 'EDUCACIÓN FÍSICA IV', codigo: 'EF-4', estado: 'Abierto', instructor: 'Prof. Miguel Soto', image: 'https://picsum.photos/seed/curso7/400/200', grado: '4to Grado' },
+    { id: 8, nombre: 'FILOSOFÍA IV', codigo: 'FIL-4', estado: 'Cerrado', instructor: 'Lic. Rosa Velez', image: 'https://picsum.photos/seed/curso8/400/200', grado: '4to Grado' },
   ];
+
+  const cursosToShow = cursos.length > 0 ? cursos : dummyCursos;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <SearchInput value={search} onChange={setSearch} placeholder="Buscar curso..." className="w-full sm:w-80" />
-        <button onClick={() => { setFormData({ nombre: '', codigo: '', descripcion: '' }); setEditing(null); setShowModal(true); }} className="btn-primary flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Nuevo Curso
-        </button>
+      {/* Cohort Header */}
+      <div className="bg-white rounded-xl border border-gray-200 px-6 py-4">
+        <h2 className="text-lg font-bold text-gray-900">2026-II — Formación Profesional</h2>
+        <p className="text-sm text-gray-500 mt-1">Cursos del período académico vigente</p>
       </div>
-      <DataTable columns={columns} data={cursos} page={page} totalPages={totalPages} total={total} onPageChange={setPage} isLoading={loading} emptyMessage="No hay cursos" />
-      <Modal isOpen={showModal} onClose={() => { setShowModal(false); setEditing(null); }} title={editing ? 'Editar Curso' : 'Nuevo Curso'}>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label><input type="text" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="input-field" required /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">Código</label><input type="text" value={formData.codigo} onChange={e => setFormData({...formData, codigo: e.target.value})} className="input-field" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label><textarea value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} className="input-field" rows={3} /></div>
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
-            <button type="submit" className="btn-primary">{editing ? 'Actualizar' : 'Crear'}</button>
+
+      {/* Course Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {cursosToShow.map((curso) => (
+          <div key={curso.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
+            {/* Image */}
+            <div className="h-36 overflow-hidden relative">
+              <img
+                src={(curso as any).image || `https://picsum.photos/seed/${curso.codigo}/400/200`}
+                alt={curso.nombre}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <span className={`absolute top-2 right-2 text-xs font-medium px-2 py-1 rounded-full ${
+                (curso as any).estado === 'Abierto' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'
+              }`}>
+                {(curso as any).estado || 'Abierto'}
+              </span>
+            </div>
+
+            {/* Content */}
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-mono text-gray-400">{(curso as any).codigo || curso.nombre?.split(' ').pop()}</span>
+              </div>
+              <h3 className="font-bold text-sm text-gray-900 uppercase mb-2 line-clamp-2">{curso.nombre}</h3>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{(curso as any).grado_nombre || (curso as any).grado || '4to Grado'}</span>
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <Star className="w-3.5 h-3.5 fill-current" />
+                  <span className="text-xs text-gray-500">Favorito</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                <BookOpen className="w-3 h-3" />
+                {(curso as any).instructor || 'Profesor'}
+              </p>
+            </div>
           </div>
-        </form>
-      </Modal>
-      <ConfirmDialog isOpen={deleteId !== null} onClose={() => setDeleteId(null)} onConfirm={handleDelete}
-        title="Eliminar Curso" message="¿Está seguro de eliminar este curso? Esta acción no se puede deshacer." />
+        ))}
+      </div>
     </div>
   );
 }

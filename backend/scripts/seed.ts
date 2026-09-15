@@ -1,8 +1,8 @@
 import mysql from 'mysql2/promise';
-import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { encryptPassword } from '../src/utils/encrypt';
 
 dotenv.config();
 
@@ -19,22 +19,13 @@ async function main() {
 
   const connection = await mysql.createConnection(dbConfig);
 
-  // 1. Crear base de datos y schema
-  console.log('1. Creando base de datos y tablas...');
-  const schemaPath = path.join(__dirname, '..', '..', 'database', 'schema.sql');
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  await connection.query(schemaSql);
-  console.log('   - Schema aplicado correctamente');
-
+  // 1. Crear base de datos y schema (omitido: tablas ya existen)
+  console.log('1. Tablas ya existentes, omitiendo schema...');
   const database = process.env.DB_NAME || 'gestion_educativa';
   await connection.query(`USE ${database}`);
 
-  // 2. Datos de catálogo
-  console.log('2. Insertando datos de catálogo...');
-  const seedPath = path.join(__dirname, '..', '..', 'database', 'seed.sql');
-  const seedSql = fs.readFileSync(seedPath, 'utf8');
-  await connection.query(seedSql);
-  console.log('   - Grados, secciones, periodos y cursos creados');
+  // 2. Datos de catálogo (omitido: ya existentes)
+  console.log('2. Datos de catálogo ya existentes, omitiendo...');
 
   // 3. Crear usuarios con hashes bcrypt válidos
   console.log('3. Creando usuarios de prueba...');
@@ -49,14 +40,16 @@ async function main() {
   for (const u of users) {
     const [existing]: any = await connection.query('SELECT id FROM usuarios WHERE email = ?', [u.email]);
     if (existing.length > 0) {
+      const passwordEncrypted = encryptPassword(u.password);
+      await connection.query('UPDATE usuarios SET password_hash = ? WHERE id = ?', [passwordEncrypted, existing[0].id]);
       userIds[u.email] = existing[0].id;
-      console.log(`   - ${u.email} ya existe (id=${existing[0].id})`);
+      console.log(`   - ${u.email} actualizado con contraseña encriptada`);
       continue;
     }
-    const passwordHash = await bcrypt.hash(u.password, 12);
+    const passwordEncrypted = encryptPassword(u.password);
     const [result]: any = await connection.query(
       'INSERT INTO usuarios (email, password_hash, nombre, apellido, dni, rol_id) VALUES (?, ?, ?, ?, ?, ?)',
-      [u.email, passwordHash, u.nombre, u.apellido, u.dni, u.rol_id]
+      [u.email, passwordEncrypted, u.nombre, u.apellido, u.dni, u.rol_id]
     );
     userIds[u.email] = result.insertId;
     console.log(`   - ${u.email} creado (id=${result.insertId})`);

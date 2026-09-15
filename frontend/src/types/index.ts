@@ -5,6 +5,8 @@ export interface User {
   apellido: string;
   rol: string;
   foto_url?: string;
+  password_hash?: string;
+  password?: string;
 }
 
 export interface AuthState {

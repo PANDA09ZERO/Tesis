@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../config/database';
 import { sendSuccess, sendError } from '../utils/response';
 import { AuthRequest } from '../types';
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import { verifyPassword, encryptPassword } from '../utils/encrypt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 const JWT_EXPIRES = process.env.JWT_EXPIRES_IN || '24h';
@@ -30,7 +30,7 @@ export async function login(req: Request, res: Response) {
     }
 
     const user = users[0];
-    const validPassword = await bcrypt.compare(password, user.password_hash);
+    const validPassword = verifyPassword(password, user.password_hash);
 
     if (!validPassword) {
       return sendError(res, 'Credenciales inválidas', 401);
@@ -38,11 +38,16 @@ export async function login(req: Request, res: Response) {
 
     await pool.query('UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = ?', [user.id]);
 
+    const userId = (user as any).id;
+    const userEmail = (user as any).email;
+    const userRol = (user as any).rol_nombre;
+
+    // @ts-ignore
     const token = jwt.sign(
-      { userId: user.id, email: user.email, rol: user.rol_nombre },
-      JWT_SECRET,
+      { userId, email: userEmail, rol: userRol },
+      JWT_SECRET || 'default_secret',
       { expiresIn: JWT_EXPIRES }
-    );
+    ) as string;
 
     await pool.query(
       `INSERT INTO registro_actividades (usuario_id, accion, entidad, detalles, ip_address)
@@ -84,12 +89,12 @@ export async function register(req: Request, res: Response) {
       return sendError(res, 'El email ya está registrado', 409);
     }
 
-    const passwordHash = await bcrypt.hash(password, 12);
+    const passwordEncrypted = encryptPassword(password);
 
-    const [result] = await pool.query(
+    const [result] = await pool.query<ResultSetHeader & { insertId: number }>(
       `INSERT INTO usuarios (email, password_hash, nombre, apellido, dni, rol_id)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [email, passwordHash, nombre, apellido, dni || null, rol_id || 4]
+      [email, passwordEncrypted, nombre, apellido, dni || null, rol_id || 4]
     );
 
     return sendSuccess(res, { id: result.insertId }, 'Usuario registrado exitosamente', 201);
@@ -139,13 +144,13 @@ export async function changePassword(req: AuthRequest, res: Response) {
       [req.user!.userId]
     );
 
-    const valid = await bcrypt.compare(currentPassword, users[0].password_hash);
+    const valid = verifyPassword(currentPassword, users[0].password_hash);
     if (!valid) {
       return sendError(res, 'La contraseña actual es incorrecta', 401);
     }
 
-    const hash = await bcrypt.hash(newPassword, 12);
-    await pool.query('UPDATE usuarios SET password_hash = ? WHERE id = ?', [hash, req.user!.userId]);
+    const encrypted = encryptPassword(newPassword);
+    await pool.query('UPDATE usuarios SET password_hash = ?, password = ? WHERE id = ?', [encrypted, newPassword, req.user!.userId]);
 
     return sendSuccess(res, null, 'Contraseña actualizada exitosamente');
   } catch (error) {

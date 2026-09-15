@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, Shield } from 'lucide-react';
+import { Plus, Edit, Trash2, Shield, Key } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import SearchInput from '../../components/ui/SearchInput';
@@ -12,6 +13,7 @@ import type { User } from '../../types';
 import toast from 'react-hot-toast';
 
 export default function UsuariosPage() {
+  const { user } = useAuth();
   const [usuarios, setUsuarios] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -62,7 +64,7 @@ export default function UsuariosPage() {
     setFormData({
       email: u.email, password: '', nombre: u.nombre, apellido: u.apellido,
       dni: (u as any).dni || '', telefono: (u as any).telefono || '',
-      fecha_nacimiento: (u as any).fecha_nacimiento || '', genero: (u as any).genero || 'M', rol_id: '4'
+      fecha_nacimiento: (u as any).fecha_nacimiento || '', genero: (u as any).genero || 'M', rol_id: String((u as any).rol_id || '4')
     });
     setShowModal(true);
   };
@@ -79,6 +81,14 @@ export default function UsuariosPage() {
   const columns = [
     { key: 'nombre', label: 'Nombre', render: (u: User) => `${u.nombre} ${u.apellido}` },
     { key: 'email', label: 'Email' },
+    ...(user?.rol === 'administrador' ? [{
+      key: 'password', label: 'Contraseña', render: (u: User) => (
+        <div className="flex items-center gap-1">
+          <Key className="w-3 h-3 text-gray-400" />
+          <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">{(u as any).password || '---'}</code>
+        </div>
+      )
+    }] : []),
     { key: 'rol', label: 'Rol', render: (u: User) => <Badge variant={getRolBadge(u.rol) as any}>{u.rol}</Badge> },
     { key: 'activo', label: 'Estado', render: (u: User) => <Badge variant={(u as any).activo ? 'success' : 'danger'}>{(u as any).activo ? 'Activo' : 'Inactivo'}</Badge> },
     { key: 'acciones', label: '', render: (u: User) => (
@@ -116,7 +126,7 @@ export default function UsuariosPage() {
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label><input type="text" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="input-field" required /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Apellido *</label><input type="text" value={formData.apellido} onChange={e => setFormData({...formData, apellido: e.target.value})} className="input-field" required /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Email *</label><input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="input-field" required /></div>
-            {!editing && <div><label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label><input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="input-field" placeholder="123456" /></div>}
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label><input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="input-field" placeholder={editing ? 'Dejar vacío para mantener actual' : '123456'} /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input type="text" value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label><input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Fecha Nacimiento</label><input type="date" value={formData.fecha_nacimiento} onChange={e => setFormData({...formData, fecha_nacimiento: e.target.value})} className="input-field" /></div>

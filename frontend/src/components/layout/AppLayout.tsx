@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Sidebar from './Sidebar';
-import Header from './Header';
+import TaskPanel from './TaskPanel';
+import ContentHeader from './ContentHeader';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -8,19 +9,17 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children, title }: AppLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="lg:ml-64">
-        <Header
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          title={title}
-        />
-        <main className="p-4 lg:p-6">
-          {children}
-        </main>
+    <div className="h-screen flex overflow-hidden bg-gray-50">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <ContentHeader title={title} />
+        <div className="flex flex-1 overflow-hidden">
+          <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+            {children}
+          </main>
+          <TaskPanel />
+        </div>
       </div>
     </div>
   );

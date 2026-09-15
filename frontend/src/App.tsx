@@ -45,7 +45,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
 
-      <Route path="/" element={<ProtectedRoute><AppLayout><DashboardPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/" element={<ProtectedRoute><AppLayout><CursosPage /></AppLayout></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><AppLayout><DashboardPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/alumnos" element={<ProtectedRoute><AppLayout title="Gestión de Alumnos"><AlumnosPage /></AppLayout></ProtectedRoute>} />
@@ -53,7 +53,7 @@ export default function App() {
 
       <Route path="/profesores" element={<ProtectedRoute><AppLayout title="Gestión de Profesores"><ProfesoresPage /></AppLayout></ProtectedRoute>} />
 
-      <Route path="/cursos" element={<ProtectedRoute><AppLayout title="Gestión de Cursos"><CursosPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/cursos" element={<ProtectedRoute><AppLayout><CursosPage /></AppLayout></ProtectedRoute>} />
       <Route path="/horarios" element={<ProtectedRoute><AppLayout title="Gestión de Horarios"><HorariosPage /></AppLayout></ProtectedRoute>} />
       <Route path="/periodos" element={<ProtectedRoute><AppLayout title="Periodos Académicos"><PeriodosPage /></AppLayout></ProtectedRoute>} />
 
