@@ -22,9 +22,11 @@ const adminMenu = [
       { to: '/cursos', icon: BookOpen, label: 'Cursos' },
       { to: '/horarios', icon: Calendar, label: 'Horarios' },
       { to: '/periodos', icon: Calendar, label: 'Periodos' },
+      { to: '/calendario', icon: Calendar, label: 'Calendario' },
     ]
   },
   { to: '/calificaciones', icon: ClipboardCheck, label: 'Calificaciones' },
+  { to: '/calendario', icon: Calendar, label: 'Calendario' },
   { to: '/asistencias', icon: ClipboardCheck, label: 'Asistencia' },
   { to: '/documentos', icon: FileText, label: 'Documentos' },
   { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
@@ -38,6 +40,7 @@ const profesorMenu = [
   { to: '/alumnos', icon: Users, label: 'Mis Alumnos' },
   { to: '/cursos', icon: BookOpen, label: 'Mis Cursos' },
   { to: '/calificaciones', icon: ClipboardCheck, label: 'Calificaciones' },
+  { to: '/calendario', icon: Calendar, label: 'Calendario' },
   { to: '/asistencias', icon: ClipboardCheck, label: 'Asistencia' },
   { to: '/documentos', icon: FileText, label: 'Documentos' },
   { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
@@ -46,10 +49,12 @@ const profesorMenu = [
 
 const alumnoMenu = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Mi Panel' },
-  { to: '/mis-calificaciones', icon: ClipboardCheck, label: 'Mis Calificaciones' },
-  { to: '/mi-horario', icon: Calendar, label: 'Mi Horario' },
-  { to: '/mis-documentos', icon: FileText, label: 'Mis Documentos' },
-  { to: '/mis-alertas', icon: AlertTriangle, label: 'Mis Alertas' },
+  { to: '/cursos', icon: BookOpen, label: 'Mis Cursos' },
+  { to: '/calificaciones', icon: ClipboardCheck, label: 'Calificaciones' },
+  { to: '/calendario', icon: Calendar, label: 'Calendario' },
+  { to: '/documentos', icon: FileText, label: 'Documentos' },
+  { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
+  { to: '/reportes', icon: BarChart3, label: 'Reportes' },
 ];
 
 export default function Sidebar() {

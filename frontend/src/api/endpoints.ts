@@ -41,6 +41,7 @@ export const profesoresApi = {
 // Cursos
 export const cursosApi = {
   getAll: (params?: any) => client.get<PaginatedResponse<Curso>>('/cursos', { params }),
+  getById: (id: number) => client.get<ApiResponse<Curso>>(`/cursos/${id}`),
   create: (data: any) => client.post<ApiResponse>('/cursos', data),
   update: (id: number, data: any) => client.put<ApiResponse>(`/cursos/${id}`, data),
   delete: (id: number) => client.delete<ApiResponse>(`/cursos/${id}`)

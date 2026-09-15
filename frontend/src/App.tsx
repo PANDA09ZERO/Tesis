@@ -8,7 +8,9 @@ import AlumnosPage from './pages/students/AlumnosPage';
 import AlumnoDetailPage from './pages/students/AlumnoDetailPage';
 import ProfesoresPage from './pages/teachers/ProfesoresPage';
 import CursosPage from './pages/academics/CursosPage';
+import CursoDetailPage from './pages/academics/CursoDetailPage';
 import CalificacionesPage from './pages/academics/CalificacionesPage';
+import CalendarPage from './pages/CalendarPage';
 import AsistenciasPage from './pages/academics/AsistenciasPage';
 import HorariosPage from './pages/academics/HorariosPage';
 import PeriodosPage from './pages/academics/PeriodosPage';
@@ -54,10 +56,12 @@ export default function App() {
       <Route path="/profesores" element={<ProtectedRoute><AppLayout title="Gestión de Profesores"><ProfesoresPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/cursos" element={<ProtectedRoute><AppLayout><CursosPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/cursos/:id" element={<ProtectedRoute><AppLayout><CursoDetailPage /></AppLayout></ProtectedRoute>} />
       <Route path="/horarios" element={<ProtectedRoute><AppLayout title="Gestión de Horarios"><HorariosPage /></AppLayout></ProtectedRoute>} />
       <Route path="/periodos" element={<ProtectedRoute><AppLayout title="Periodos Académicos"><PeriodosPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/calificaciones" element={<ProtectedRoute><AppLayout title="Calificaciones"><CalificacionesPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/calendario" element={<ProtectedRoute><AppLayout title="Calendario"><CalendarPage /></AppLayout></ProtectedRoute>} />
       <Route path="/asistencias" element={<ProtectedRoute><AppLayout title="Control de Asistencia"><AsistenciasPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/documentos" element={<ProtectedRoute><AppLayout title="Gestión Documental"><DocumentosPage /></AppLayout></ProtectedRoute>} />

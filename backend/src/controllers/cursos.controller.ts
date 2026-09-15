@@ -74,6 +74,24 @@ export async function updateCurso(req: Request, res: Response) {
   }
 }
 
+export async function getCursoById(req: Request, res: Response) {
+  try {
+    const [cursos] = await pool.query<RowDataPacket[]>(
+      `SELECT cu.*, g.nombre as grado_nombre
+       FROM cursos cu
+       LEFT JOIN grados g ON cu.grado_id = g.id
+       WHERE cu.id = ?`,
+      [req.params.id]
+    );
+    if (cursos.length === 0) {
+      return sendError(res, 'Curso no encontrado', 404);
+    }
+return sendSuccess(res, cursos[0], 'Curso encontrado');
+  } catch (error) {
+    return sendError(res, 'Error al obtener curso');
+  }
+}
+
 export async function deleteCurso(req: Request, res: Response) {
   try {
     await pool.query('DELETE FROM cursos WHERE id = ?', [req.params.id]);
@@ -81,4 +99,5 @@ export async function deleteCurso(req: Request, res: Response) {
   } catch (error) {
     return sendError(res, 'Error al eliminar curso');
   }
+}
 }

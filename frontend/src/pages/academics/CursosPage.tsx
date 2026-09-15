@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Star, BookOpen, MapPin } from 'lucide-react';
 import { cursosApi } from '../../api/endpoints';
 import type { Curso } from '../../types';
 import toast from 'react-hot-toast';
 
 export default function CursosPage() {
+  const navigate = useNavigate();
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +56,7 @@ export default function CursosPage() {
       {/* Course Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {cursosToShow.map((curso) => (
-          <div key={curso.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
+          <div key={curso.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group" onClick={() => navigate(`/cursos/${curso.id}`)}>
             {/* Image */}
             <div className="h-36 overflow-hidden relative">
               <img
