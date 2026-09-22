@@ -153,10 +153,14 @@ export async function createAlumno(req: Request, res: Response) {
 }
 
 export async function updateAlumno(req: Request, res: Response) {
+  const connection = await pool.getConnection();
   try {
-    const { grado_id, seccion_id, periodo_academico_id, estado } = req.body;
+    await connection.beginTransaction();
 
-    await pool.query(
+    const { grado_id, seccion_id, periodo_academico_id, estado, telefono, fecha_nacimiento, genero } = req.body;
+
+    // Actualizar datos del alumno
+    await connection.query(
       `UPDATE alumnos SET grado_id = COALESCE(?, grado_id),
        seccion_id = COALESCE(?, seccion_id),
        periodo_academico_id = COALESCE(?, periodo_academico_id),
@@ -165,9 +169,26 @@ export async function updateAlumno(req: Request, res: Response) {
       [grado_id, seccion_id, periodo_academico_id, estado, req.params.id]
     );
 
+    // Actualizar datos del usuario (telefono, fecha_nacimiento, genero) si se proporcionan
+    if (telefono !== undefined || fecha_nacimiento !== undefined || genero !== undefined) {
+      await connection.query(
+        `UPDATE usuarios SET
+         telefono = COALESCE(NULLIF(?, ''), telefono),
+         fecha_nacimiento = COALESCE(NULLIF(?, ''), fecha_nacimiento),
+         genero = COALESCE(NULLIF(?, ''), genero)
+         WHERE id = (SELECT usuario_id FROM alumnos WHERE id = ?)`,
+        [telefono, fecha_nacimiento, genero, req.params.id]
+      );
+    }
+
+    await connection.commit();
+
     return sendSuccess(res, null, 'Alumno actualizado exitosamente');
   } catch (error) {
+    await connection.rollback();
     return sendError(res, 'Error al actualizar alumno');
+  } finally {
+    connection.release();
   }
 }
 

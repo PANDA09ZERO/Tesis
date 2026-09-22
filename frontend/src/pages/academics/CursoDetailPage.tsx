@@ -50,12 +50,21 @@ export default function CursoDetailPage() {
     }
   ]);
 
+  const [profesores, setProfesores] = useState<Profesor[]>([]);
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const res = await cursosApi.getById(parseInt(id || '1'));
-        setCurso(res.data.data!);
+        console.log('Respuesta completa:', res);
+        console.log('Respuesta data:', res.data);
+        console.log('Curso data:', res.data.data);
+        const cursoData = res.data.data || res.data;
+        console.log('Profesores:', (cursoData as any)?.profesores);
+        setCurso(cursoData);
+        setProfesores((cursoData as any)?.profesores || []);
       } catch (error) {
+        console.error('Error al cargar curso:', error);
         toast.error('Error al cargar curso');
       } finally {
         setLoading(false);
@@ -63,10 +72,6 @@ export default function CursoDetailPage() {
     };
     loadData();
   }, [id]);
-  const [profesores] = useState<Profesor[]>([
-    { nombre: 'Carlos', apellido: 'Mendoza', email: 'admin@escuela.edu', especialidad: 'Matemáticas y Ciencias' },
-    { nombre: 'Maria', apellido: 'Garcia', email: 'profesor@escuela.edu', especialidad: 'Comunicación' }
-  ]);
   const [activeTab, setActiveTab] = useState<'contenido' | 'calendario' | 'calificaciones'>('contenido');
   const [notificacion, setNotificacion] = useState(1);
 

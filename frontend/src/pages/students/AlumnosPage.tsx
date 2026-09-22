@@ -73,7 +73,7 @@ export default function AlumnosPage() {
     setFormData({
       nombre: alumno.nombre, apellido: alumno.apellido, email: alumno.email,
       dni: alumno.dni || '', telefono: alumno.telefono || '',
-      fecha_nacimiento: alumno.fecha_nacimiento || '', genero: alumno.genero || 'M',
+      fecha_nacimiento: alumno.fecha_nacimiento ? alumno.fecha_nacimiento.split('T')[0] : '', genero: alumno.genero || 'M',
       grado_id: '', seccion_id: ''
     });
     setShowModal(true);

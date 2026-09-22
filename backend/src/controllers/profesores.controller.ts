@@ -69,7 +69,29 @@ export async function getProfesorById(req: Request, res: Response) {
       [req.params.id]
     );
 
-    return sendSuccess(res, { ...profesores[0], cursos_asignados: cursos });
+    // Obtener cursos asignados directamente
+    const [cursosAsignados] = await pool.query<RowDataPacket[]>(
+      `SELECT cu.id, cu.nombre, cu.codigo
+       FROM profesor_curso pc
+       JOIN cursos cu ON pc.curso_id = cu.id
+       WHERE pc.profesor_id = ?`,
+      [req.params.id]
+    );
+
+    // Si no hay cursos asignados directamente, obtener cursos de horarios
+    let cursosIds = cursosAsignados.map(c => c.id);
+    if (cursosIds.length === 0) {
+      const [cursosHorarios] = await pool.query<RowDataPacket[]>(
+        `SELECT DISTINCT cu.id, cu.nombre, cu.codigo
+         FROM horarios h
+         JOIN cursos cu ON h.curso_id = cu.id
+         WHERE h.profesor_id = ?`,
+        [req.params.id]
+      );
+      cursosIds = cursosHorarios.map(c => c.id);
+    }
+
+    return sendSuccess(res, { ...profesores[0], cursos_asignados: cursos, cursos: cursosIds });
   } catch (error) {
     return sendError(res, 'Error al obtener profesor');
   }
@@ -81,7 +103,7 @@ export async function createProfesor(req: Request, res: Response) {
     await connection.beginTransaction();
 
     const { email, password, nombre, apellido, dni, telefono, direccion,
-            fecha_nacimiento, genero, especialidad, titulo_profesional, fecha_ingreso } = req.body;
+            fecha_nacimiento, genero, especialidad, titulo_profesional, fecha_ingreso, cursos } = req.body;
 
     const [existing] = await connection.query<RowDataPacket[]>(
       'SELECT id FROM usuarios WHERE email = ?', [email]
@@ -105,6 +127,16 @@ export async function createProfesor(req: Request, res: Response) {
       [userResult.insertId, especialidad || null, titulo_profesional || null, fecha_ingreso || null]
     );
 
+    // Asignar cursos si se proporcionan
+    if (cursos && Array.isArray(cursos) && cursos.length > 0) {
+      for (const cursoId of cursos) {
+        await connection.query(
+          'INSERT INTO profesor_curso (profesor_id, curso_id) VALUES (?, ?)',
+          [profResult.insertId, cursoId]
+        );
+      }
+    }
+
     await connection.commit();
 
     return sendSuccess(res, {
@@ -120,20 +152,47 @@ export async function createProfesor(req: Request, res: Response) {
 }
 
 export async function updateProfesor(req: Request, res: Response) {
+  const connection = await pool.getConnection();
   try {
-    const { especialidad, titulo_profesional, fecha_ingreso } = req.body;
+    await connection.beginTransaction();
+
+    const { especialidad, titulo_profesional, fecha_ingreso, cursos } = req.body;
 
     await pool.query(
       `UPDATE profesores SET especialidad = COALESCE(?, especialidad),
        titulo_profesional = COALESCE(?, titulo_profesional),
-       fecha_ingreso = COALESCE(?, fecha_ingreso)
+       fecha_ingreso = COALESCE(NULLIF(?, ''), fecha_ingreso)
        WHERE id = ?`,
       [especialidad, titulo_profesional, fecha_ingreso, req.params.id]
     );
 
+    // Actualizar cursos si se proporcionan
+    if (cursos !== undefined) {
+      // Eliminar asignaciones existentes
+      await connection.query(
+        'DELETE FROM profesor_curso WHERE profesor_id = ?',
+        [req.params.id]
+      );
+
+      // Agregar nuevas asignaciones
+      if (Array.isArray(cursos) && cursos.length > 0) {
+        for (const cursoId of cursos) {
+          await connection.query(
+            'INSERT INTO profesor_curso (profesor_id, curso_id) VALUES (?, ?)',
+            [req.params.id, cursoId]
+          );
+        }
+      }
+    }
+
+    await connection.commit();
+
     return sendSuccess(res, null, 'Profesor actualizado exitosamente');
   } catch (error) {
+    await connection.rollback();
     return sendError(res, 'Error al actualizar profesor');
+  } finally {
+    connection.release();
   }
 }
 
@@ -155,5 +214,22 @@ export async function getProfesorAlumnos(req: Request, res: Response) {
     return sendSuccess(res, alumnos);
   } catch (error) {
     return sendError(res, 'Error al obtener alumnos del profesor');
+  }
+}
+
+export async function getProfesorCursos(req: Request, res: Response) {
+  try {
+    const [cursos] = await pool.query<RowDataPacket[]>(
+      `SELECT DISTINCT cu.id, cu.nombre, cu.codigo
+       FROM cursos cu
+       JOIN horarios h ON h.curso_id = cu.id
+       WHERE h.profesor_id = ?
+       ORDER BY cu.nombre`,
+      [req.params.id]
+    );
+
+    return sendSuccess(res, cursos);
+  } catch (error) {
+    return sendError(res, 'Error al obtener cursos del profesor');
   }
 }

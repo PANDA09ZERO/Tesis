@@ -35,7 +35,8 @@ export const profesoresApi = {
   getById: (id: number) => client.get<ApiResponse<Profesor>>(`/profesores/${id}`),
   create: (data: any) => client.post<ApiResponse>('/profesores', data),
   update: (id: number, data: any) => client.put<ApiResponse>(`/profesores/${id}`, data),
-  getAlumnos: (id: number) => client.get<ApiResponse<Alumno[]>>(`/profesores/${id}/alumnos`)
+  getAlumnos: (id: number) => client.get<ApiResponse<Alumno[]>>(`/profesores/${id}/alumnos`),
+  getCursos: (id: number) => client.get<ApiResponse<any[]>>(`/profesores/${id}/cursos`)
 };
 
 // Cursos
@@ -45,6 +46,32 @@ export const cursosApi = {
   create: (data: any) => client.post<ApiResponse>('/cursos', data),
   update: (id: number, data: any) => client.put<ApiResponse>(`/cursos/${id}`, data),
   delete: (id: number) => client.delete<ApiResponse>(`/cursos/${id}`)
+};
+
+// Grados
+export const gradosApi = {
+  getAll: () => client.get<ApiResponse<any[]>>('/grados')
+};
+
+// Mensualidades
+export const mensualidadesApi = {
+  getAll: (params?: any) => client.get<PaginatedResponse<any>>('/mensualidades', { params }),
+  getResumen: (año?: string) => client.get<ApiResponse<any[]>>('/mensualidades/resumen', { params: { año } }),
+  getAlumnosConDeuda: (params?: any) => client.get<ApiResponse<any[]>>('/mensualidades/alumnos-con-deuda', { params }),
+  getById: (id: number) => client.get<ApiResponse>(`/mensualidades/${id}`),
+  create: (data: any) => client.post<ApiResponse>('/mensualidades', data),
+  update: (id: number, data: any) => client.put<ApiResponse>(`/mensualidades/${id}`, data),
+  delete: (id: number) => client.delete<ApiResponse>(`/mensualidades/${id}`)
+};
+
+// Sueldos
+export const sueldosApi = {
+  getAll: (params?: any) => client.get<PaginatedResponse<any>>('/sueldos', { params }),
+  getResumen: (año?: string) => client.get<ApiResponse<any[]>>('/sueldos/resumen', { params: { año } }),
+  getById: (id: number) => client.get<ApiResponse>(`/sueldos/${id}`),
+  create: (data: any) => client.post<ApiResponse>('/sueldos', data),
+  update: (id: number, data: any) => client.put<ApiResponse>(`/sueldos/${id}`, data),
+  delete: (id: number) => client.delete<ApiResponse>(`/sueldos/${id}`)
 };
 
 // Calificaciones

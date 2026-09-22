@@ -18,6 +18,7 @@ import DocumentosPage from './pages/documents/DocumentosPage';
 import AlertasPage from './pages/alerts/AlertasPage';
 import IAPrediccionPage from './pages/alerts/IAPrediccionPage';
 import ReportesPage from './pages/reports/ReportesPage';
+import PagosPage from './pages/admin/PagosPage';
 import UsuariosPage from './pages/admin/UsuariosPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -72,6 +73,7 @@ export default function App() {
       <Route path="/reportes" element={<ProtectedRoute><AppLayout title="Reportes y Estadísticas"><ReportesPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/admin/usuarios" element={<ProtectedRoute><AppLayout title="Administración de Usuarios"><UsuariosPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/admin/pagos" element={<ProtectedRoute><AppLayout title="Gestión de Pagos"><PagosPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

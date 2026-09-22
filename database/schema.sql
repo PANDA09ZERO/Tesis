@@ -109,6 +109,16 @@ CREATE TABLE profesores (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
+CREATE TABLE profesor_curso (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    profesor_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_profesor_curso (profesor_id, curso_id)
+);
+
 CREATE TABLE cursos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(200) NOT NULL,
@@ -253,3 +263,47 @@ CREATE INDEX idx_asistencias_alumno ON asistencias(alumno_id, fecha);
 CREATE INDEX idx_documentos_categoria ON documentos(categoria, subcategoria);
 CREATE INDEX idx_alertas_estado ON alertas_academicas(estado, tipo_riesgo);
 CREATE INDEX idx_registro_actividades_usuario ON registro_actividades(usuario_id, created_at);
+
+CREATE TABLE mensualidades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    alumno_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    periodo_academico_id INT NOT NULL,
+    monto DECIMAL(10,2) NOT NULL DEFAULT 0,
+    mes VARCHAR(20) NOT NULL,
+    año YEAR NOT NULL,
+    estado ENUM('pendiente', 'pagado', 'vencido', 'descuento') DEFAULT 'pendiente',
+    fecha_pago DATE,
+    metodo_pago VARCHAR(50),
+    observaciones TEXT,
+    registrado_por INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (alumno_id) REFERENCES alumnos(id) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    FOREIGN KEY (periodo_academico_id) REFERENCES periodos_academicos(id),
+    FOREIGN KEY (registrado_por) REFERENCES profesores(id)
+);
+
+CREATE TABLE sueldos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    profesor_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    periodo_academico_id INT NOT NULL,
+    salario_base DECIMAL(10,2) NOT NULL DEFAULT 0,
+    horas_clase DECIMAL(5,2) DEFAULT 0,
+    monto_extra DECIMAL(10,2) DEFAULT 0,
+    monto_total DECIMAL(10,2) NOT NULL DEFAULT 0,
+    mes VARCHAR(20) NOT NULL,
+    año YEAR NOT NULL,
+    estado ENUM('pendiente', 'pagado', 'rechazado') DEFAULT 'pendiente',
+    fecha_pago DATE,
+    observaciones TEXT,
+    registrado_por INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    FOREIGN KEY (periodo_academico_id) REFERENCES periodos_academicos(id),
+    FOREIGN KEY (registrado_por) REFERENCES usuarios(id)
+);

@@ -71,6 +71,10 @@ export interface Curso {
   descripcion?: string;
   grado_id?: number;
   grado_nombre?: string;
+  estado?: string;
+  instructor?: string;
+  image?: string;
+  grado?: string;
 }
 
 export interface Calificacion {

@@ -9,9 +9,12 @@ interface AppLayoutProps {
   title?: string;
 }
 
+const RUTAS_CON_HEADER = ['/cursos'];
+
 export default function AppLayout({ children, title }: AppLayoutProps) {
   const { pathname } = useLocation();
-  const showHeader = !pathname.startsWith('/cursos/');
+  const isCourseDetail = pathname.startsWith('/cursos/');
+  const showHeader = !isCourseDetail && RUTAS_CON_HEADER.some(r => pathname === r || pathname.startsWith(r + '/'));
   const showTasks = pathname === '/cursos';
 
   return (

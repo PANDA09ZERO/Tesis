@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, ClipboardCheck,
   FileText, AlertTriangle, BarChart3, Calendar, ChevronDown,
-  ChevronRight, LogOut, Brain, School
+  ChevronRight, LogOut, Brain, School, DollarSign
 } from 'lucide-react';
 
 const adminMenu = [
@@ -33,6 +33,7 @@ const adminMenu = [
   { to: '/ia-prediccion', icon: Brain, label: 'IA Predicción' },
   { to: '/reportes', icon: BarChart3, label: 'Reportes' },
   { to: '/admin/usuarios', icon: Users, label: 'Usuarios' },
+  { to: '/admin/pagos', icon: DollarSign, label: 'Pagos' },
 ];
 
 const profesorMenu = [
