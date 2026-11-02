@@ -19,19 +19,23 @@
  body:has(> .student-report-print), html:has(.student-report-print) { height:auto !important; min-height:0 !important; overflow:visible !important; background:#fff !important; color:#111 !important; color-scheme:light; }
  .student-report-print { page:student-report; display:block !important; background:#fff; color:#111; font-family:Arial,sans-serif; font-size:10pt; }
  .student-report-print *, .dark .student-report-print * { color:#111 !important; box-shadow:none !important; }
- .report-letterhead { display:flex; align-items:center; gap:14pt; border-bottom:2px solid #444; padding-bottom:12pt; }
- .report-letterhead img { width:48pt; height:48pt; object-fit:contain; }
- .report-letterhead h1 { font-size:17pt; font-weight:700; }
- .report-letterhead h2 { font-size:13pt; font-weight:700; margin:3pt 0; }
- .report-identity { padding:12pt 0; }
- .report-identity h2 { font-size:13pt; font-weight:700; }
- .report-note { margin-bottom:12pt; font-size:9pt; }
- .student-report-print .record-course, .dark .student-report-print .record-course { background:#fff; border:1px solid #bbb; border-radius:6pt; margin:0 0 10pt; padding:10pt; break-inside:auto; }
- .student-report-print .record-course header { break-after:avoid; }
- .student-report-print .record-evaluation, .dark .student-report-print .record-evaluation { border-color:#ddd; break-inside:avoid; }
- .student-report-print .record-score { font-size:12pt; }
+ .report-header { text-align:center; margin-bottom:12pt; }
+ .report-republic { font-size:10pt; font-weight:700; }
+ .report-minedu { font-size:12pt; font-weight:700; margin-bottom:6pt; }
+ .report-header h1 { font-size:15pt; font-weight:700; margin:6pt 0; }
+ .report-subtitle { font-size:9pt; margin-bottom:8pt; }
+ .report-info, .report-identity { margin-bottom:10pt; }
+ .report-info-table { width:100%; border-collapse:collapse; font-size:9pt; }
+ .report-info-table th, .report-info-table td { border:1px solid #999; padding:4pt 6pt; }
+ .report-info-table th { background:#f2f2f2; font-weight:700; width:24%; }
+ .report-progress-table { width:100%; border-collapse:collapse; font-size:9pt; margin-bottom:10pt; }
+ .report-progress-table th, .report-progress-table td { border:1px solid #999; padding:4pt 6pt; vertical-align:top; }
+ .report-progress-table th { background:#f2f2f2; font-weight:700; }
+ .report-area { font-weight:700; width:22%; }
+ .report-level { text-align:center; width:14%; font-weight:700; }
  .report-footer { margin-top:18pt; font-size:9pt; break-inside:avoid; }
- .report-footer p { margin-top:30pt; }
+ .report-footer p { margin-top:8pt; }
+ .report-footer span { display:block; }
 }
 .dark .student-records .btn-primary { background:var(--color-gray-700); color:var(--color-gray-100); }
 .dark .student-records .btn-primary:hover { background:var(--color-gray-600); }

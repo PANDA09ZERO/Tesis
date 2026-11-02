@@ -10,13 +10,74 @@ export function CourseResults({ course }: { course: ReportCourse }) {
   </section>;
 }
 export function PrintableReport({ record, group, courses, calculation, edition }: { record: StudentRecord; group: AcademicGroup; courses: ReportCourse[]; calculation?: CalculatedReport; edition?: IssuedReport }) {
+  const competencias = (course: ReportCourse) => course.rows.length ? course.rows.map(row => row.evaluacion).join('; ') : '—';
+  const nivel = (course: ReportCourse) => {
+    const calculado = calculation?.cursos.find(item => item.id === course.id);
+    if (calculado?.valor) return calculado.valor;
+    if (course.rows.length && course.rows.every(row => row.nota !== null)) return 'Registrado';
+    return 'Pendiente';
+  };
+  const conclusion = (course: ReportCourse) => {
+    const calculado = calculation?.cursos.find(item => item.id === course.id);
+    if (calculado?.condicion) return calculado.condicion;
+    const observaciones = course.rows.map(row => row.observaciones).filter(Boolean).join(' ');
+    return observaciones || '—';
+  };
   return createPortal(<article className="student-report-print" aria-hidden="true">
-    <header className="report-letterhead"><img src="/assets/logo.png" alt=""/><div><h1>Ciencias e Ingeniería</h1><h2>{edition ? `Libreta definitiva · Versión ${edition.version}` : 'Libreta preliminar'}</h2><p>Periodo académico: {group.periodo} · Grado: {group.grado || 'Sin atribución inequívoca'}</p></div></header>
-    <section className="report-identity"><h2>{record.alumno.apellido}, {record.alumno.nombre}</h2><p>Código: {record.alumno.codigo_alumno}{record.alumno.dni ? ` · DNI: ${record.alumno.dni}` : ''}</p></section>
-    <p className="report-note">Evaluaciones registradas y escalas originales. “Sin registrar” indica que no hay nota guardada; no equivale a cero. Las notas finales se muestran únicamente cuando las evaluaciones y reglas están completas.</p>
+    <header className="report-header">
+      <div className="report-republic">República del Perú</div>
+      <div className="report-minedu">Ministerio de Educación</div>
+      <h1>INFORME DE PROGRESO DEL ESTUDIANTE</h1>
+      <p className="report-subtitle">Periodo académico: {group.periodo} · Grado: {group.grado || 'Sin atribución inequívoca'}</p>
+    </header>
+    <section className="report-info">
+      <table className="report-info-table">
+        <tbody>
+          <tr><th>DRE</th><td>DRE LIMA METROPOLITANA</td><th>UGEL</th><td>UGEL 01</td></tr>
+          <tr><th>Nivel</th><td>Educación Básica</td><th>Código Modular</th><td>00000000</td></tr>
+          <tr><th>Institución educativa</th><td colSpan={3}>Ciencias e Ingeniería</td></tr>
+          <tr><th>Grado</th><td>{group.grado || '—'}</td><th>Sección</th><td>A</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section className="report-identity">
+      <table className="report-info-table">
+        <tbody>
+          <tr><th>Apellidos y nombres del estudiante</th><td colSpan={3}>{record.alumno.apellido}, {record.alumno.nombre}</td></tr>
+          <tr><th>Código del estudiante</th><td>{record.alumno.codigo_alumno}</td><th>DNI</th><td>{record.alumno.dni || '—'}</td></tr>
+          <tr><th>Apellidos y nombres del docente o tutor</th><td colSpan={3}>Docente del grado</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <table className="report-progress-table">
+      <thead>
+        <tr>
+          <th>Área curricular</th>
+          <th>Competencias</th>
+          <th>Nivel de logro alcanzado</th>
+          <th>Conclusión descriptiva</th>
+        </tr>
+      </thead>
+      <tbody>
+        {courses.map(course => (
+          <tr key={course.id}>
+            <td className="report-area">{course.nombre}</td>
+            <td>{competencias(course)}</td>
+            <td className="report-level">{nivel(course)}</td>
+            <td>{conclusion(course)}</td>
+          </tr>
+        ))}
+        {!courses.length && (
+          <tr><td colSpan={4}>Sin cursos ni evaluaciones registradas para esta selección.</td></tr>
+        )}
+      </tbody>
+    </table>
     {calculation && <p className="report-note">Ponderaciones: prácticas {calculation.reglas.pesos.practica} %, trabajos {calculation.reglas.pesos.trabajo} %, exámenes {calculation.reglas.pesos.examen} %. Mínimo aprobatorio: {calculation.reglas.minima}. Redondeo final: {calculation.reglas.decimales} {calculation.reglas.decimales===1?'decimal':'decimales'}.</p>}
-    {calculation && <ReportOutcomes calculation={calculation}/>}
-    {courses.map(course => <CourseResults key={course.id} course={course}/>)}
-    <footer className="report-footer"><span>Emitido: {new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima' }).format(edition ? new Date(edition.contenido.emitida_en) : new Date())}</span><p>Firma y sello de la institución: __________________________________</p></footer>
+    <footer className="report-footer">
+      <span>MINEDU - Informe de Progreso del Estudiante 2020</span>
+      <span>Página 1 de 1</span>
+      <p>Emitido: {new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima' }).format(edition ? new Date(edition.contenido.emitida_en) : new Date())} · {edition ? `Versión definitiva ${edition.version}` : 'Libreta preliminar'}</p>
+      <p>Firma y sello de la institución: __________________________________</p>
+    </footer>
   </article>, document.body);
 }
