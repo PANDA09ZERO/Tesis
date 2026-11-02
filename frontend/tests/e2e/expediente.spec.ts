@@ -20,7 +20,7 @@ test('expediente: grado, periodo, historial, documentos e impresión aislada', a
   await expect(current.getByText('18', { exact: true })).toBeVisible();
   await expect(current.getByText('13', { exact: true })).toBeVisible();
   await expect(current.getByText('Escala no registrada', { exact: true })).toBeVisible();
-  await expect(current.getByText('Segundo curso', { exact: true })).toBeVisible();
+  await expect(current.getByRole('heading', { name:'Segundo curso', exact:true, level:3 })).toBeVisible();
   await current.getByRole('button', { name: 'Imprimir libreta seleccionada' }).click();
   expect(await page.evaluate(() => (window as any).printCalls)).toBe(1);
   const print = page.locator('body > .student-report-print');

@@ -27,6 +27,11 @@ async function evaluations(db:DB,period:number,grade:number){
  WHERE o.periodo_academico_id=? AND o.grado_id=? ORDER BY cu.nombre,e.fecha_evaluacion,e.id`,[period,grade]);
  return rows;
 }
+function reportDetail(data: NonNullable<Awaited<ReturnType<typeof getExpedienteData>>>, p: number, g: number) {
+ const match=(row:any)=>Number(row.periodo_id)===p&&Number(row.grado_id)===g;
+ return {...data,matriculas:data.matriculas.filter(m=>Number(m.periodo_academico_id)===p&&Number(m.grado_id)===g),
+  calificaciones:data.calificaciones.filter(match),evaluaciones:data.evaluaciones.filter(match),asistencia:data.asistencia.filter(match),apoderados:[],documentos:[]};
+}
 function reportFingerprint(data: NonNullable<Awaited<ReturnType<typeof getExpedienteData>>>, calculo: ReturnType<typeof calculateReport>) {
  const match=(row:any)=>Number(row.periodo_id)===calculo.periodo_id&&Number(row.grado_id)===calculo.grado_id;
  return createHash('sha256').update(JSON.stringify({calculo,calificaciones:data.calificaciones.filter(match),evaluaciones:data.evaluaciones.filter(match)})).digest('hex');
@@ -75,8 +80,8 @@ export async function getCalculatedLibreta(req:AuthRequest,res:Response){
   const data=await getExpedienteData(id);if(!data)return sendError(res,'Alumno no encontrado',404);
   const policy=await rules(pool,p,g);
   const calculo=calculateReport(data,p,g,policy.configuracion);
-  const [emisiones]=await pool.query<RowDataPacket[]>('SELECT id, version, created_at FROM libreta_emisiones WHERE alumno_id=? AND periodo_academico_id=? AND grado_id=? ORDER BY version DESC',[id,p,g]);
-  return sendSuccess(res,{...policy,calculo,emisiones,huella:reportFingerprint(data,calculo)});
+  const [emisiones]=await pool.query<RowDataPacket[]>('SELECT id, version, JSON_UNQUOTE(JSON_EXTRACT(contenido, '$.emitida_en')) created_at FROM libreta_emisiones WHERE alumno_id=? AND periodo_academico_id=? AND grado_id=? ORDER BY version DESC',[id,p,g]);
+  return sendSuccess(res,{...policy,calculo,emisiones,detalle:reportDetail(data,p,g),huella:reportFingerprint(data,calculo)});
  }catch(error){return handleError(res,error);}
 }
 export async function emitLibreta(req:AuthRequest,res:Response){
@@ -97,9 +102,7 @@ export async function emitLibreta(req:AuthRequest,res:Response){
   const calculo=calculateReport(data,p,g,policy.configuracion);
   if(reportFingerprint(data,calculo)!==req.body.huella)return sendError(res,'Las notas o datos del alumno cambiaron. Actualiza y revisa nuevamente antes de emitir',409);
   if(!calculo.listo)return sendError(res,'La libreta tiene notas o reglas pendientes; revisa la preliminar',409);
-  const match=(row:any)=>Number(row.periodo_id)===p&&Number(row.grado_id)===g;
-  const detalle={...data,matriculas:data.matriculas.filter(m=>Number(m.periodo_academico_id)===p&&Number(m.grado_id)===g),
-   calificaciones:data.calificaciones.filter(match),evaluaciones:data.evaluaciones.filter(match),asistencia:data.asistencia.filter(match),apoderados:[],documentos:[]};
+  const detalle=reportDetail(data,p,g);
   const [versions]=await db.query<RowDataPacket[]>('SELECT COALESCE(MAX(version),0)+1 version FROM libreta_emisiones WHERE alumno_id=? AND periodo_academico_id=? AND grado_id=?',[id,p,g]);
   const contenido={calculo,detalle,revision:policy.revision,emitida_en:new Date().toISOString()};
   const [result]=await db.query<ResultSetHeader>('INSERT INTO libreta_emisiones(alumno_id,periodo_academico_id,grado_id,version,solicitud_id,contenido,emitido_por) VALUES(?,?,?,?,?,?,?)',[id,p,g,versions[0].version,req.body.solicitud_id,JSON.stringify(contenido),req.user!.userId]);

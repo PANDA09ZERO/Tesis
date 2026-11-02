@@ -36,9 +36,9 @@ export default function AutomaticReportPanel({record,group,courses}:{record:Stud
    if(current===generation.current){setData(fresh.data.data||null);request.current='';}
   }catch(e:any){if(current===generation.current)setError(e.response?.data?.message||'No se pudo emitir la libreta. Puedes reintentar sin duplicarla.');}finally{setBusy(false);}
  }
- const selectedRecord=edition?.contenido.detalle||record;
+ const selectedRecord=edition?.contenido.detalle||data?.detalle||record;
  const selectedCalculation=edition?.contenido.calculo||data?.calculo;
- const selectedCourses=edition?reportCourses(selectedRecord,group):courses;
+ const selectedCourses=data||edition?reportCourses(selectedRecord,group):courses;
  return <div className="space-y-4">
  <div className="card space-y-3"><div className="flex flex-wrap gap-2">
  {group.grado_id&&<button type="button" className="btn-secondary" disabled={busy||loading} onClick={()=>setEditing(true)}>Configurar reglas</button>}
@@ -50,10 +50,11 @@ export default function AutomaticReportPanel({record,group,courses}:{record:Stud
  {!group.grado_id&&<p className="text-sm text-gray-500">Se puede imprimir el detalle histórico; la nota final requiere un grado atribuible.</p>}
  {data&&<><p className="text-sm text-gray-500">{!data.guardado?'Configuración inicial sin confirmar. Guarda las reglas antes de emitir.':data.cerrado?'Reglas cerradas. La emisión definitiva requiere todas las notas completas.':'Revisión abierta. Puedes imprimir una libreta preliminar.'}</p>
  <p className="text-xs text-gray-500">Prácticas {data.configuracion.pesos.practica} % · Trabajos {data.configuracion.pesos.trabajo} % · Exámenes {data.configuracion.pesos.examen} %. Mínimo aprobatorio: {data.configuracion.minima}. Redondeo final: {data.configuracion.decimales} decimales.</p>
- <label className="block text-sm font-medium">Versión para consultar e imprimir<select className="input-field mt-1" value={edition?.id||''} disabled={busy} onChange={e=>void choose(e.target.value)}><option value="">Preliminar actual</option>{data.emisiones.map(item=><option key={item.id} value={item.id}>Definitiva v{item.version} · {new Date(item.created_at).toLocaleString('es-PE')}</option>)}</select></label></>}
+ <label className="block text-sm font-medium">Versión para consultar e imprimir<select className="input-field mt-1" value={edition?.id||''} disabled={busy} onChange={e=>void choose(e.target.value)}><option value="">Preliminar actual</option>{data.emisiones.map(item=><option key={item.id} value={item.id}>Definitiva v{item.version} · {new Date(item.created_at).toLocaleString('es-PE',{timeZone:'America/Lima'})}</option>)}</select></label></>}
  </div>
  {selectedCalculation&&<><h3 className="font-semibold">{edition?`Versión definitiva ${edition.version} · Contenido conservado`:'Cálculo preliminar actual'}</h3><ReportOutcomes calculation={selectedCalculation}/></>}
  {edition&&<details className="card"><summary className="cursor-pointer font-semibold">Notas guardadas en la versión {edition.version}</summary><div className="mt-3 space-y-3">{selectedCourses.map(course=><CourseResults key={course.id} course={course}/>)}</div></details>}
+ <h3 className="font-semibold">Notas actuales registradas</h3><div className="grid items-start gap-4 lg:grid-cols-2">{(data?reportCourses(data.detalle,group):courses).map(course=><CourseResults key={course.id} course={course}/>)}</div>
  {(!group.grado_id||data)&&!loading&&<PrintableReport record={selectedRecord} group={group} courses={selectedCourses} calculation={selectedCalculation} edition={edition||undefined}/>}
  {editing&&group.grado_id&&<ReportRulesEditor period={group.periodo_id} grade={group.grado_id} onClose={()=>setEditing(false)} onSaved={()=>{setEditing(false);setRevision(n=>n+1);}}/>}
  <Modal isOpen={confirm} onClose={()=>{if(!busy)setConfirm(false);}} title="Emitir libreta definitiva"><div className="space-y-4"><p className="text-sm">Se guardará una nueva versión de la libreta de {record.alumno.nombre} {record.alumno.apellido}, {group.grado}, periodo {group.periodo}. Las versiones anteriores se conservan.</p><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={reviewed} disabled={busy} onChange={e=>setReviewed(e.target.checked)}/><span>He revisado las notas, escalas y reglas de esta libreta.</span></label>{error&&<p role="alert" className="text-sm text-red-600">{error}</p>}<div className="form-actions"><button type="button" className="btn-secondary" disabled={busy} onClick={()=>setConfirm(false)}>Cancelar</button><button type="button" className="btn-primary" disabled={busy||!reviewed} onClick={()=>void emit()}>{busy?'Emitiendo…':'Confirmar emisión'}</button></div></div></Modal>

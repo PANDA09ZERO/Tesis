@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutGrid, Search, X, ArrowUpRight } from 'lucide-react';
+import { LayoutGrid, Search, X, ArrowUpRight, CalendarDays } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { usePeriodo } from '../../context/PeriodoContext';
+import PeriodoSelector from '../../components/layout/PeriodoSelector';
 import { getNavigationMenu, type NavigationLink } from '../../components/layout/navigation';
 
 const descriptions: Record<string, string> = {
@@ -41,7 +43,19 @@ const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u0
 
 export default function ModulesPage() {
   const { user } = useAuth();
+  const { aplica, periodo, esHistorico, todos } = usePeriodo();
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    const scrollToContext = () => {
+      if (window.location.hash === '#contexto-academico') {
+        document.getElementById('contexto-academico')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+    scrollToContext();
+    window.addEventListener('hashchange', scrollToContext);
+    return () => window.removeEventListener('hashchange', scrollToContext);
+  }, []);
   const [isDesktop, setIsDesktop] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches);
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px)');
@@ -66,6 +80,32 @@ export default function ModulesPage() {
   const count = visible.reduce((total, group) => total + group.links.length, 0);
 
   return <div className="modules-catalog mx-auto max-w-6xl space-y-5">
+    {aplica && (
+      <section id="contexto-academico" className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 sm:p-5">
+        <div className="flex items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-gray-100">
+            <CalendarDays className="h-6 w-6" aria-hidden="true"/>
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Contexto académico</h2>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Elige el periodo que se aplicará a todo el sistema. La selección se conserva entre pantallas y se indica como vigente o histórico en cada consulta.
+            </p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <PeriodoSelector />
+              {!todos && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Aplicado: <strong>{periodo?.nombre}</strong> · {esHistorico ? 'Histórico (solo consulta)' : 'Vigente'}
+                </p>
+              )}
+              {todos && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">Consultando todos los periodos.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
     <section className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 sm:p-5">
       <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-gray-100"><LayoutGrid className="h-6 w-6" aria-hidden="true"/></span><div className="min-w-0"><h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Módulos</h1><p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Elige el espacio al que quieres entrar.</p></div></div>
       <div className="relative mt-4"><label htmlFor="module-search" className="sr-only">Buscar módulo</label><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true"/><input id="module-search" type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar módulo…" className="input-field pl-10 pr-12 [&::-webkit-search-cancel-button]:appearance-none"/>{search && <button type="button" onClick={() => setSearch('')} aria-label="Limpiar búsqueda de módulos" className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"><X className="h-4 w-4" aria-hidden="true"/></button>}</div>

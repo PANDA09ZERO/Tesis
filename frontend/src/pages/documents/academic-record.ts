@@ -63,6 +63,6 @@ export interface CalculatedReport {
  listo:boolean; reglas:LibretaPolicy;
  cursos:{id:number;nombre:string;estado:string|null;final:number|null;valor:string|null;condicion:string;pendientes:string[];categorias:{categoria:string;peso:number;promedio:number|null}[]}[];
 }
-export interface CalculatedResponse { huella:string; configuracion:LibretaPolicy; revision:number; cerrado:boolean; guardado:boolean; calculo:CalculatedReport; emisiones:{id:number;version:number;created_at:string}[] }
+export interface CalculatedResponse { detalle:StudentRecord; huella:string; configuracion:LibretaPolicy; revision:number; cerrado:boolean; guardado:boolean; calculo:CalculatedReport; emisiones:{id:number;version:number;created_at:string}[] }
 export interface IssuedReport { id:number;version:number;created_at:string;contenido:{calculo:CalculatedReport;detalle:StudentRecord;revision:number;emitida_en:string} }
 export interface RulesResponse { configuracion:LibretaPolicy;revision:number;cerrado:boolean;guardado:boolean;grado:string;periodo:string;evaluaciones:{id:number;nombre:string;curso:string;curso_id:number;tipo:string;nota_maxima:number|string}[] }

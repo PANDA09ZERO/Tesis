@@ -7,7 +7,7 @@ import { NavigationContext } from '../../context/NavigationContext';
 import Sidebar from './Sidebar';
 import TaskPanel from './TaskPanel';
 import ContentHeader from './ContentHeader';
-import PeriodoSelector from './PeriodoSelector';
+
 import BottomNavigation from './BottomNavigation';
 import { usePeriodo } from '../../context/PeriodoContext';
 
@@ -23,7 +23,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
   const navigate = useNavigate(); const {user} = useAuth(); const {theme,toggleTheme} = useTheme();
   const openModules = useCallback(()=>navigate('/modulos'),[navigate]);
   const openProfile = useCallback(()=>{if(user?.rol==='profesor')navigate('/profesor/perfil');else if(user?.rol==='alumno')navigate('/estudiante/perfil');else if(user?.rol==='apoderado')navigate('/familia/perfil');else navigate('/perfil');},[user?.rol,navigate]);
-  const { aplica } = usePeriodo();
+  const { aplica, periodo, esHistorico, todos } = usePeriodo();
   const isProfile = ['/perfil','/profesor/perfil','/estudiante/perfil','/familia/perfil'].includes(pathname);
   const isCourseDetail = pathname.startsWith('/cursos/');
   const showHeader = !isCourseDetail && RUTAS_CON_HEADER.some(r => pathname === r || pathname.startsWith(r + '/'));
@@ -38,7 +38,12 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           <button type="button" onClick={toggleTheme} aria-label={theme==='dark'?'Cambiar a tema claro':'Cambiar a tema oscuro'} title={theme==='dark'?'Tema claro':'Tema oscuro'} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">{theme==='dark'?<Sun className="h-5 w-5"/>:<Moon className="h-5 w-5"/>}</button>
           <button type="button" onClick={openProfile} aria-label="Ver mi perfil" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 text-primary-600 ring-1 ring-blue-100 dark:bg-slate-800 dark:text-blue-400 dark:ring-slate-700"><UserRound className="h-5 w-5"/></button>
           {user?.rol!=='apoderado'&&<button type="button" onClick={()=>navigate('/calendario')} aria-label="Abrir calendario" title="Calendario" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${pathname==='/calendario'?'bg-blue-50 text-primary-600 ring-1 ring-blue-100 dark:bg-slate-800 dark:text-blue-400 dark:ring-slate-700':'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'}`}><CalendarDays className="h-5 w-5"/></button>}
-          {aplica&&!isProfile&&<div className="order-last flex w-full min-w-0 items-center border-t border-slate-100 py-2 dark:border-slate-800 lg:order-none lg:ml-auto lg:w-auto lg:border-0 lg:py-0"><PeriodoSelector/></div>}
+          {aplica&&!isProfile&&<button type="button" onClick={()=>navigate('/modulos#contexto-academico')} title="Cambiar periodo en Módulos → Contexto académico" className="order-last flex w-full min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-primary-300 hover:bg-primary-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 lg:order-none lg:ml-auto lg:w-auto lg:border-0 lg:bg-transparent lg:py-0">
+  <CalendarDays className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true"/>
+  <span className="truncate">{todos ? 'Todos los periodos' : (periodo?.nombre || 'Periodo')}</span>
+  {!todos && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${esHistorico ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>{esHistorico ? 'Histórico' : 'Vigente'}</span>}
+  <span className="hidden shrink-0 text-[10px] text-slate-400 sm:inline">Cambiar</span>
+</button>}
         </header>
         {showHeader && <ContentHeader title={title} />}
         <div className={`flex min-h-0 min-w-0 flex-1 overflow-hidden ${showTasks ? 'flex-col lg:flex-row' : ''}`}>
