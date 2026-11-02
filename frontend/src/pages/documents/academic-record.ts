@@ -65,4 +65,36 @@ export interface CalculatedReport {
 }
 export interface CalculatedResponse { detalle:StudentRecord; huella:string; configuracion:LibretaPolicy; revision:number; cerrado:boolean; guardado:boolean; calculo:CalculatedReport; emisiones:{id:number;version:number;created_at:string}[] }
 export interface IssuedReport { id:number;version:number;created_at:string;contenido:{calculo:CalculatedReport;detalle:StudentRecord;revision:number;emitida_en:string} }
+
+export interface LibretaInstitucion {
+  dre: string;
+  ugel: string;
+  nivel: string;
+  codigoModular: string;
+  institucion: string;
+  seccion: string;
+  docente: string;
+}
+
+export const DEFAULT_LIBRETA_INSTITUCION: LibretaInstitucion = {
+  dre: 'DRE LIMA METROPOLITANA',
+  ugel: 'UGEL 01',
+  nivel: 'Educación Básica',
+  codigoModular: '00000000',
+  institucion: 'Ciencias e Ingeniería',
+  seccion: 'A',
+  docente: 'Docente del grado',
+};
+
+export const LIBRETA_INSTITUCION_KEY = 'libreta_institucion';
+
+export function loadLibretaInstitucion(): LibretaInstitucion {
+  try {
+    const raw = localStorage.getItem(LIBRETA_INSTITUCION_KEY);
+    if (raw) return { ...DEFAULT_LIBRETA_INSTITUCION, ...JSON.parse(raw) };
+  } catch {
+    // ignore malformed storage
+  }
+  return { ...DEFAULT_LIBRETA_INSTITUCION };
+}
 export interface RulesResponse { configuracion:LibretaPolicy;revision:number;cerrado:boolean;guardado:boolean;grado:string;periodo:string;evaluaciones:{id:number;nombre:string;curso:string;curso_id:number;tipo:string;nota_maxima:number|string}[] }

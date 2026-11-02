@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Printer } from 'lucide-react';
 import { PrintableReport } from './ReportPresentation';
-import { reportCourses, type StudentRecord, type AcademicGroup, type CalculatedReport } from './academic-record';
+import { reportCourses, type StudentRecord, type AcademicGroup, type CalculatedReport, loadLibretaInstitucion } from './academic-record';
 
 const demoRecord: StudentRecord = {
   alumno: { id: 999, nombre: 'María', apellido: 'Gómez Pérez', codigo_alumno: 'DEMO-001', estado: 'matriculado', dni: '12345678', email: 'maria.gomez@example.invalid', telefono: '999888777', direccion: 'Av. Ejemplo 123, Lima', fecha_nacimiento: '2012-05-10' },
@@ -63,7 +63,7 @@ export default function LibretaDemoPreview() {
           {active && <button type="button" className="btn-primary gap-2" onClick={() => window.print()}><Printer aria-hidden="true" className="h-4 w-4" />Imprimir ejemplo</button>}
         </div>
       </div>
-      {active && <PrintableReport record={demoRecord} group={demoGroup} courses={demoCourses} calculation={demoCalculation} />}
+      {active && <PrintableReport record={demoRecord} group={demoGroup} courses={demoCourses} calculation={demoCalculation} institucion={loadLibretaInstitucion()} />}
       {active && <p className="text-xs text-gray-500">Al imprimir, el navegador permite guardar como PDF. Los datos son ficticios y no se guardan en el sistema.</p>}
     </section>
   );

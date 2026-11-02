@@ -5,7 +5,7 @@ import Modal from '../../components/ui/Modal';
 import ReportRulesEditor from './ReportRulesEditor';
 import { CourseResults, PrintableReport, ReportOutcomes } from './ReportPresentation';
 import { reportCourses, type StudentRecord, type AcademicGroup, type ReportCourse, type CalculatedResponse, type IssuedReport } from './academic-record';
-export default function AutomaticReportPanel({record,group,courses}:{record:StudentRecord;group:AcademicGroup;courses:ReportCourse[]}){
+export default function AutomaticReportPanel({record,group,courses,institucion}:{record:StudentRecord;group:AcademicGroup;courses:ReportCourse[];institucion?:import('./academic-record').LibretaInstitucion}){
  const [data,setData]=useState<CalculatedResponse|null>(null),[edition,setEdition]=useState<IssuedReport|null>(null);
  const [error,setError]=useState(''),[loading,setLoading]=useState(false),[busy,setBusy]=useState(false);
  const [revision,setRevision]=useState(0),[editing,setEditing]=useState(false),[confirm,setConfirm]=useState(false),[reviewed,setReviewed]=useState(false);
@@ -55,7 +55,7 @@ export default function AutomaticReportPanel({record,group,courses}:{record:Stud
  {selectedCalculation&&<><h3 className="font-semibold">{edition?`Versión definitiva ${edition.version} · Contenido conservado`:'Cálculo preliminar actual'}</h3><ReportOutcomes calculation={selectedCalculation}/></>}
  {edition&&<details className="card"><summary className="cursor-pointer font-semibold">Notas guardadas en la versión {edition.version}</summary><div className="mt-3 space-y-3">{selectedCourses.map(course=><CourseResults key={course.id} course={course}/>)}</div></details>}
  <h3 className="font-semibold">Notas actuales registradas</h3><div className="grid items-start gap-4 lg:grid-cols-2">{(data?reportCourses(data.detalle,group):courses).map(course=><CourseResults key={course.id} course={course}/>)}</div>
- {(!group.grado_id||data)&&!loading&&<PrintableReport record={selectedRecord} group={group} courses={selectedCourses} calculation={selectedCalculation} edition={edition||undefined}/>}
+ {(!group.grado_id||data)&&!loading&&<PrintableReport record={selectedRecord} group={group} courses={selectedCourses} calculation={selectedCalculation} edition={edition||undefined} institucion={institucion}/>}
  {editing&&group.grado_id&&<ReportRulesEditor period={group.periodo_id} grade={group.grado_id} onClose={()=>setEditing(false)} onSaved={()=>{setEditing(false);setRevision(n=>n+1);}}/>}
  <Modal isOpen={confirm} onClose={()=>{if(!busy)setConfirm(false);}} title="Emitir libreta definitiva"><div className="space-y-4"><p className="text-sm">Se guardará una nueva versión de la libreta de {record.alumno.nombre} {record.alumno.apellido}, {group.grado}, periodo {group.periodo}. Las versiones anteriores se conservan.</p><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={reviewed} disabled={busy} onChange={e=>setReviewed(e.target.checked)}/><span>He revisado las notas, escalas y reglas de esta libreta.</span></label>{error&&<p role="alert" className="text-sm text-red-600">{error}</p>}<div className="form-actions"><button type="button" className="btn-secondary" disabled={busy} onClick={()=>setConfirm(false)}>Cancelar</button><button type="button" className="btn-primary" disabled={busy||!reviewed} onClick={()=>void emit()}>{busy?'Emitiendo…':'Confirmar emisión'}</button></div></div></Modal>
  </div>;
