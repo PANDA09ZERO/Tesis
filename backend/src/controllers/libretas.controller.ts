@@ -80,7 +80,7 @@ export async function getCalculatedLibreta(req:AuthRequest,res:Response){
   const data=await getExpedienteData(id);if(!data)return sendError(res,'Alumno no encontrado',404);
   const policy=await rules(pool,p,g);
   const calculo=calculateReport(data,p,g,policy.configuracion);
-  const [emisiones]=await pool.query<RowDataPacket[]>('SELECT id, version, JSON_UNQUOTE(JSON_EXTRACT(contenido, '$.emitida_en')) created_at FROM libreta_emisiones WHERE alumno_id=? AND periodo_academico_id=? AND grado_id=? ORDER BY version DESC',[id,p,g]);
+  const [emisiones]=await pool.query<RowDataPacket[]>("SELECT id, version, JSON_UNQUOTE(JSON_EXTRACT(contenido, '$.emitida_en')) created_at FROM libreta_emisiones WHERE alumno_id=? AND periodo_academico_id=? AND grado_id=? ORDER BY version DESC",[id,p,g]);
   return sendSuccess(res,{...policy,calculo,emisiones,detalle:reportDetail(data,p,g),huella:reportFingerprint(data,calculo)});
  }catch(error){return handleError(res,error);}
 }
