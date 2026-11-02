@@ -10,10 +10,11 @@ interface SearchInputProps {
 
 export default function SearchInput({ value, onChange, placeholder = 'Buscar...', className = '' }: SearchInputProps) {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative min-w-0 w-full ${className}`}>
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
       <input
         type="text"
+        aria-label={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -21,8 +22,10 @@ export default function SearchInput({ value, onChange, placeholder = 'Buscar...'
       />
       {value && (
         <button
+          type="button"
           onClick={() => onChange('')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded text-gray-400 hover:text-gray-600 sm:h-11 sm:w-11"
+          aria-label="Limpiar búsqueda"
         >
           <X className="w-4 h-4" />
         </button>

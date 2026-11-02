@@ -6,30 +6,38 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:session": "node tests/session.test.cjs",
+    "test:e2e": "node scripts/test-e2e.cjs",
+    "test:dev-proxy": "node tests/dev-proxy.test.cjs && node tests/dev-proxy.integration.test.cjs"
   },
   "dependencies": {
+    "axios": "^1.6.2",
+    "clsx": "^2.0.0",
+    "date-fns": "^3.0.0",
+    "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "axios": "^1.6.2",
-    "lucide-react": "^0.294.0",
-    "recharts": "^2.10.3",
     "react-hot-toast": "^2.4.1",
-    "date-fns": "^3.0.0",
-    "clsx": "^2.0.0"
+    "react-router-dom": "^7.18.4",
+    "recharts": "^2.10.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "@vitejs/plugin-react": "^4.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.2.2",
-    "vite": "^5.0.0"
+    "vite": "^7.3.7"
   },
   "allowScripts": {
-    "esbuild@0.21.5": true
+    "esbuild": true
+  },
+  "engines": {
+    "node": ">=24 <25"
   }
 }

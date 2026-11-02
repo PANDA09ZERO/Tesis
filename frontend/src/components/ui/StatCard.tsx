@@ -19,14 +19,14 @@ const colorMap = {
 
 export default function StatCard({ title, value, icon: Icon, color = 'blue', subtitle }: StatCardProps) {
   return (
-    <div className="card flex items-center gap-4">
-      <div className={`p-3 rounded-xl ${colorMap[color]}`}>
-        <Icon className="w-6 h-6" />
+    <div className="card flex flex-col items-start gap-3 p-3 text-left sm:flex-row sm:items-center sm:p-4">
+      <div className={`shrink-0 rounded-lg p-1 sm:p-2 ${colorMap[color]}`}>
+        <Icon className="h-5 w-5" />
       </div>
-      <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
+      <div className="min-w-0">
+        <p className="text-xs text-gray-500 break-words">{title}</p>
+        <p className="text-xl font-bold text-gray-900">{value}</p>
+        {subtitle && <p className="text-[10px] text-gray-400 sm:text-xs">{subtitle}</p>}
       </div>
     </div>
   );

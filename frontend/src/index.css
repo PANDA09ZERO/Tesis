@@ -1,9 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "./styles/application.css";
+@config "../tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Compatibilidad visual con las utilidades anteriores. */
+@theme {
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --radius-sm: 0.125rem;
+  --radius: 0.25rem;
+}
+@layer base {
+  *, ::before, ::after {border-color: #e5e7eb;}
+  button:not(:disabled), [role="button"]:not(:disabled) {cursor: pointer;}
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
-  @apply bg-gray-50 text-gray-900;
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+  min-width: 320px;
 }
 
 @layer utilities {
@@ -13,40 +30,113 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  @media (max-width: 639px) {
+    .mobile-scroll-hint::before {
+      content: "Desliza horizontalmente para ver todas las columnas";
+      display: block;
+      padding: 0.5rem 0.75rem;
+      color: #6b7280;
+      font-size: 0.75rem;
+    }
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex min-h-12 items-center justify-center bg-primary-600 text-white px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed sm:min-h-11 sm:py-2 dark:bg-primary-600 dark:hover:bg-primary-700;
   }
   .btn-secondary {
-    @apply bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium;
+    @apply inline-flex min-h-12 items-center justify-center bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium sm:min-h-11 sm:py-2 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
   }
   .btn-danger {
-    @apply bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium;
+    @apply inline-flex min-h-12 items-center justify-center bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium sm:min-h-11 sm:py-2 dark:bg-red-600 dark:hover:bg-red-700;
   }
   .btn-success {
-    @apply bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium;
+    @apply inline-flex min-h-12 items-center justify-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium sm:min-h-11 sm:py-2 dark:bg-green-600 dark:hover:bg-green-700;
   }
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+    @apply min-h-12 w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors text-base sm:min-h-11 sm:px-3 sm:py-2 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:focus:ring-primary-500;
   }
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+    @apply min-w-0 bg-white rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4 dark:bg-gray-800 dark:border-gray-700;
   }
   .table-header {
-    @apply bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider;
+    @apply bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider dark:bg-gray-700 dark:text-gray-400;
   }
   .badge-success {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
   }
   .badge-warning {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
   }
   .badge-danger {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
   }
   .badge-info {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
   }
+  .form-actions {
+    @apply flex flex-col-reverse gap-2 border-t border-gray-200 pt-4 sm:flex-row sm:justify-end sm:gap-3 dark:border-gray-700;
+  }
+  .form-actions > * {
+    @apply w-full sm:w-auto;
+  }
+  .filter-field {
+    @apply w-full min-w-0 sm:w-auto;
+  }
+}
+/* Neutral surfaces in dark mode; the light palette and semantic accents stay intact. */
+.dark {
+  --color-slate-50: #fafafa;
+  --color-gray-50: #fafafa;
+  --color-slate-100: #f5f5f5;
+  --color-gray-100: #f5f5f5;
+  --color-slate-200: #e5e5e5;
+  --color-gray-200: #e5e5e5;
+  --color-slate-300: #d4d4d4;
+  --color-gray-300: #d4d4d4;
+  --color-slate-400: #a3a3a3;
+  --color-gray-400: #a3a3a3;
+  --color-slate-500: #737373;
+  --color-gray-500: #737373;
+  --color-slate-600: #525252;
+  --color-gray-600: #525252;
+  --color-slate-700: #3a3a3a;
+  --color-gray-700: #3a3a3a;
+  --color-slate-800: #262626;
+  --color-gray-800: #262626;
+  --color-slate-900: #1b1b1b;
+  --color-gray-900: #1b1b1b;
+  --color-slate-950: #101010;
+  --color-gray-950: #101010;
+}
+
+/* Neutral action colors, including hover/focus, only in dark mode. */
+.dark {
+  --color-blue-50: #fafafa;
+  --app-primary-50: #fafafa;
+  --color-blue-100: #f5f5f5;
+  --app-primary-100: #f5f5f5;
+  --color-blue-200: #e5e5e5;
+  --app-primary-200: #e5e5e5;
+  --color-blue-300: #d4d4d4;
+  --app-primary-300: #d4d4d4;
+  --color-blue-400: #bdbdbd;
+  --app-primary-400: #bdbdbd;
+  --color-blue-500: #8a8a8a;
+  --app-primary-500: #8a8a8a;
+  --color-blue-600: #454545;
+  --app-primary-600: #454545;
+  --color-blue-700: #555555;
+  --app-primary-700: #555555;
+  --color-blue-800: #303030;
+  --app-primary-800: #303030;
+  --color-blue-900: #242424;
+  --app-primary-900: #242424;
+  --color-blue-950: #141414;
+}
+.dark .text-primary-600, .dark .text-primary-700 { color: #e5e5e5; }
+
+@media (prefers-reduced-motion: reduce) {
+ .dashboard-mobile *, .profile-page *, nav[aria-label="Navegación inferior"] * { transition: none !important; animation: none !important; }
 }

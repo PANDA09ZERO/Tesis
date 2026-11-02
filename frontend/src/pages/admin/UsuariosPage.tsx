@@ -1,5 +1,6 @@
+import PageHeading from '../../components/ui/PageHeading';
 import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, Shield, Key } from 'lucide-react';
+import { Plus, Edit, Trash2, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
@@ -9,8 +10,9 @@ import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import { usersApi } from '../../api/endpoints';
 import { usePagination } from '../../hooks/usePagination';
 import { useDebounce } from '../../hooks/useDebounce';
-import type { User } from '../../types';
+import type { CreatedAccountCredentials, User } from '../../types';
 import toast from 'react-hot-toast';
+import CreatedCredentialsModal from '../../components/ui/CreatedCredentialsModal';
 
 export default function UsuariosPage() {
   const { user } = useAuth();
@@ -23,8 +25,9 @@ export default function UsuariosPage() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [createdCredentials, setCreatedCredentials] = useState<CreatedAccountCredentials | null>(null);
   const [formData, setFormData] = useState({
-    email: '', password: '', nombre: '', apellido: '', dni: '', telefono: '',
+    email: '', password: '', nombre: '', apellido: '', dni: '', telefono: '', direccion: '',
     fecha_nacimiento: '', genero: 'M', rol_id: '4'
   });
 
@@ -46,7 +49,11 @@ export default function UsuariosPage() {
     e.preventDefault();
     try {
       if (editing) { await usersApi.update(editing.id, formData); toast.success('Usuario actualizado'); }
-      else { await usersApi.create(formData); toast.success('Usuario creado'); }
+      else {
+        const { email: _email, password: _password, ...account } = formData;
+        const response = await usersApi.create(account);
+        setCreatedCredentials(response.data.data?.credentials || null);
+      }
       setShowModal(false); setEditing(null); resetForm(); loadData();
     } catch (error: any) { toast.error(error.response?.data?.message || 'Error'); }
   };
@@ -57,14 +64,14 @@ export default function UsuariosPage() {
     catch (error: any) { toast.error(error.response?.data?.message || 'Error'); }
   };
 
-  const resetForm = () => setFormData({ email: '', password: '', nombre: '', apellido: '', dni: '', telefono: '', fecha_nacimiento: '', genero: 'M', rol_id: '4' });
+  const resetForm = () => setFormData({ email: '', password: '', nombre: '', apellido: '', dni: '', telefono: '', direccion: '', fecha_nacimiento: '', genero: 'M', rol_id: '4' });
 
   const openEdit = (u: User) => {
     setEditing(u);
     setFormData({
       email: u.email, password: '', nombre: u.nombre, apellido: u.apellido,
-      dni: (u as any).dni || '', telefono: (u as any).telefono || '',
-      fecha_nacimiento: (u as any).fecha_nacimiento || '', genero: (u as any).genero || 'M', rol_id: String((u as any).rol_id || '4')
+      dni: (u as any).dni || '', telefono: (u as any).telefono || '', direccion: (u as any).direccion || '',
+      fecha_nacimiento: u.fecha_nacimiento?.slice(0, 10) || '', genero: u.genero || 'M', rol_id: String((u as any).rol_id || '4')
     });
     setShowModal(true);
   };
@@ -81,14 +88,6 @@ export default function UsuariosPage() {
   const columns = [
     { key: 'nombre', label: 'Nombre', render: (u: User) => `${u.nombre} ${u.apellido}` },
     { key: 'email', label: 'Email' },
-    ...(user?.rol === 'administrador' ? [{
-      key: 'password', label: 'Contraseña', render: (u: User) => (
-        <div className="flex items-center gap-1">
-          <Key className="w-3 h-3 text-gray-400" />
-          <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">{(u as any).password || '---'}</code>
-        </div>
-      )
-    }] : []),
     { key: 'rol', label: 'Rol', render: (u: User) => <Badge variant={getRolBadge(u.rol) as any}>{u.rol}</Badge> },
     { key: 'activo', label: 'Estado', render: (u: User) => <Badge variant={(u as any).activo ? 'success' : 'danger'}>{(u as any).activo ? 'Activo' : 'Inactivo'}</Badge> },
     { key: 'acciones', label: '', render: (u: User) => (
@@ -101,10 +100,11 @@ export default function UsuariosPage() {
 
   return (
     <div className="space-y-4">
+      <PageHeading title="Usuarios" description="Gestiona cuentas, roles y acceso al sistema."/>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex w-full min-w-0 flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
           <SearchInput value={search} onChange={setSearch} placeholder="Buscar usuario..." className="w-full sm:w-64" />
-          <select value={filtroRol} onChange={e => setFiltroRol(e.target.value)} className="input-field w-40">
+          <select value={filtroRol} onChange={e => setFiltroRol(e.target.value)} aria-label="Filtrar usuarios por rol" className="input-field w-full sm:w-40">
             <option value="">Todos los roles</option>
             <option value="administrador">Administrador</option>
             <option value="profesor">Profesor</option>
@@ -125,10 +125,13 @@ export default function UsuariosPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label><input type="text" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="input-field" required /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Apellido *</label><input type="text" value={formData.apellido} onChange={e => setFormData({...formData, apellido: e.target.value})} className="input-field" required /></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">Email *</label><input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="input-field" required /></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label><input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="input-field" placeholder={editing ? 'Dejar vacío para mantener actual' : '123456'} /></div>
+            {editing ? <>
+              <div><label className="block text-sm font-medium text-gray-700 mb-1">Usuario de acceso</label><input type="text" value={formData.email} className="input-field" readOnly /></div>
+              <div><label className="block text-sm font-medium text-gray-700 mb-1">Restablecer contraseña (opcional)</label><input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="input-field" minLength={6} autoComplete="new-password" placeholder="Dejar vacío para mantener actual" /></div>
+            </> : <p className="sm:col-span-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100">El usuario institucional y la contraseña temporal se generarán al crear la cuenta. No se crea un buzón de correo.</p>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input type="text" value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label><input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="input-field" /></div>
+            <div className="sm:col-span-2"><label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label><input type="text" maxLength={500} value={formData.direccion} onChange={e => setFormData({...formData, direccion: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Fecha Nacimiento</label><input type="date" value={formData.fecha_nacimiento} onChange={e => setFormData({...formData, fecha_nacimiento: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Género</label>
               <select value={formData.genero} onChange={e => setFormData({...formData, genero: e.target.value})} className="input-field">
@@ -139,12 +142,13 @@ export default function UsuariosPage() {
                 <option value="1">Administrador</option><option value="2">Profesor</option><option value="3">Alumno</option><option value="4">Apoderado</option>
               </select></div>
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t">
+          <div className="form-actions">
             <button type="button" onClick={() => { setShowModal(false); setEditing(null); }} className="btn-secondary">Cancelar</button>
             <button type="submit" className="btn-primary">{editing ? 'Actualizar' : 'Crear'}</button>
           </div>
         </form>
       </Modal>
+      <CreatedCredentialsModal credentials={createdCredentials} onClose={() => setCreatedCredentials(null)} />
 
       <ConfirmDialog isOpen={deleteId !== null} onClose={() => setDeleteId(null)} onConfirm={handleDelete}
         title="Desactivar Usuario" message="¿Está seguro de desactivar este usuario? No podrá acceder al sistema." confirmLabel="Desactivar" />

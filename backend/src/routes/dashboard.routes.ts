@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { getDashboardStats, getRendimientoPorGrado, getAsistenciaReciente, getActividadReciente } from '../controllers/dashboard.controller';
-import { authenticate } from '../middleware/auth';
+import { authenticate, authorize } from '../middleware/auth';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate,authorize('administrador','profesor'));
 
 router.get('/stats', getDashboardStats);
 router.get('/rendimiento', getRendimientoPorGrado);

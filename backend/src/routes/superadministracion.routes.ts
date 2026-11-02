@@ -1,0 +1,16 @@
+import {Router} from 'express';
+import {authenticate,authorize} from '../middleware/auth';
+import {createLoginLimiter} from '../middleware/loginLimit';
+import {estado,actualizarSuspension,listarRespaldos,crearRespaldo,recuperarRespaldo,descargarRespaldo,auditoria} from '../controllers/superadministracion.controller';
+const router=Router();
+router.use(authenticate,authorize('superadministrador'));
+const limiter=createLoginLimiter({accountLimit:40,ipLimit:80});
+router.use((req,res,next)=>['POST','PUT'].includes(req.method)?limiter(req,res,next):next());
+router.get('/estado',estado);
+router.get('/auditoria',auditoria);
+router.put('/suspension',actualizarSuspension);
+router.get('/respaldos',listarRespaldos);
+router.post('/respaldos',crearRespaldo);
+router.post('/respaldos/:id/recuperar',recuperarRespaldo);
+router.post('/respaldos/:id/descargar',descargarRespaldo);
+export default router;

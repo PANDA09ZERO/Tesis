@@ -1,0 +1,16 @@
+import { useEffect, useState } from 'react';
+import { RefreshCw } from 'lucide-react';
+import SearchInput from '../../components/ui/SearchInput';
+import DataTable from '../../components/ui/DataTable';
+import '../../components/ui/people-directory.css';
+import { profesoresApi } from '../../api/endpoints';
+export default function ProfesorApoderadosPage() {
+  const [apoderados,setApoderados]=useState<any[]>([]),[search,setSearch]=useState(''),[loadError,setLoadError]=useState(''),[loading,setLoading]=useState(true),[reload,setReload]=useState(0);
+  useEffect(()=>{let active=true;setLoading(true);setLoadError('');setApoderados([]);
+    profesoresApi.getMisApoderados().then(r=>{if(active)setApoderados(r.data.data||[]);}).catch(e=>{if(active)setLoadError(e.response?.data?.message||'No se pudieron cargar los apoderados');}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};
+  },[reload]);
+  const normalize=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const filtered=apoderados.filter(a=>normalize(`${a.nombre} ${a.apellido} ${a.alumno_nombre} ${a.alumno_apellido} ${a.email}`).includes(normalize(search.trim()))).map((a,i)=>({...a,id:`${a.apoderado_id}-${a.alumno_id}-${i}`}));
+  const columns=[{key:'nombre',label:'Apoderado',render:(a:any)=>`${a.nombre} ${a.apellido}`},{key:'email',label:'Correo'},{key:'telefono',label:'Teléfono',render:(a:any)=>a.telefono||'Sin registrar'},{key:'alumno_nombre',label:'Alumno',render:(a:any)=>`${a.alumno_nombre} ${a.alumno_apellido}`},{key:'grado',label:'Grado'},{key:'parentesco',label:'Parentesco'}];
+  return <div className="people-directory mx-auto max-w-7xl space-y-5"><header className="flex flex-wrap items-center justify-between gap-3"><div><h1 className="text-xl font-bold">Apoderados de mis alumnos</h1><p className="mt-1 text-sm text-gray-500">Contactos vinculados a los alumnos dentro de tus asignaciones.</p></div><button type="button" disabled={loading} onClick={()=>setReload(n=>n+1)} className="btn-secondary gap-2"><RefreshCw className="h-4 w-4"/>Actualizar lista</button></header><section className="card"><p className="mb-2 text-sm font-medium">Buscar apoderado o alumno</p><SearchInput value={search} onChange={setSearch} placeholder="Buscar apoderado o alumno..."/></section>{loadError?<div role="alert" className="card text-red-600 dark:text-red-400"><p>{loadError}</p><button type="button" className="btn-secondary mt-3" onClick={()=>setReload(n=>n+1)}>Reintentar</button></div>:<DataTable className="people-table" data={filtered} columns={columns} isLoading={loading} emptyMessage={search?'No hay coincidencias para esta búsqueda.':'No hay apoderados vinculados a tus alumnos.'} renderMobileCard={a=><article className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900"><h2 className="break-words font-semibold">{a.nombre} {a.apellido}</h2><p className="mt-2 break-all text-sm text-gray-500">{a.email}</p><p className="mt-1 text-sm text-gray-600">{a.telefono||'Teléfono sin registrar'}</p><div className="mt-3 border-t border-gray-100 pt-3 text-sm"><p className="break-words font-medium">{a.alumno_nombre} {a.alumno_apellido}</p><p className="mt-1 text-gray-500">{[a.grado,a.parentesco].filter(Boolean).join(' · ')||'Sin información adicional'}</p></div></article>}/>}</div>;
+}

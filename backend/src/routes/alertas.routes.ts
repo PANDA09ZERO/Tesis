@@ -8,7 +8,7 @@ router.use(authenticate);
 
 router.get('/', getAllAlertas);
 router.get('/estadisticas', getAlertasEstadisticas);
-router.put('/:id/estado', updateAlertaEstado);
+router.put('/:id/estado', authorize('administrador','profesor'), updateAlertaEstado);
 router.put('/:id/asignar', authorize('administrador'), asignarAlerta);
 
 export default router;

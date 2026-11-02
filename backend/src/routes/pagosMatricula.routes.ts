@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { getAllPagosMatricula, getPagoMatriculaById, createPagoMatricula, updatePagoMatricula, deletePagoMatricula, getResumenPagosMatricula } from '../controllers/pagosMatricula.controller';
+import { authenticate, authorize } from '../middleware/auth';
+const router = Router();
+router.use(authenticate);
+router.use(authorize('administrador'));
+router.get('/', getAllPagosMatricula);
+router.get('/resumen', getResumenPagosMatricula);
+router.get('/:id', getPagoMatriculaById);
+router.post('/', createPagoMatricula);
+router.put('/:id', updatePagoMatricula);
+router.delete('/:id', deletePagoMatricula);
+export default router;

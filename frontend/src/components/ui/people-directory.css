@@ -1,0 +1,14 @@
+.dark .people-dialog { background: var(--color-gray-900); color: var(--color-gray-100); }
+.dark :is(.people-directory, .people-dialog) .bg-white { background: var(--color-gray-900); }
+.dark :is(.people-directory, .people-dialog) :is(.bg-gray-50, .bg-gray-100, .bg-primary-100) { background: var(--color-gray-800); }
+.dark :is(.people-directory, .people-dialog) .text-gray-900 { color: var(--color-gray-100); }
+.dark :is(.people-directory, .people-dialog) :is(.text-gray-600, .text-gray-700) { color: var(--color-gray-300); }
+.dark :is(.people-directory, .people-dialog) .text-gray-500 { color: var(--color-gray-400); }
+.dark :is(.people-directory, .people-dialog) :is(.border-gray-100, .border-gray-200, .divide-gray-200 > :not(:last-child)) { border-color: var(--color-gray-700); }
+.people-directory .person-actions button { min-width: 44px; min-height: 44px; }
+@media (max-width: 639px) {
+  .people-directory .people-table, .dark .people-directory .people-table { background: transparent; border: 0; box-shadow: none; }
+  .people-table > .space-y-3 { padding: 0; }
+}
+
+.dark .people-directory tbody tr:hover { background: var(--color-gray-800); }

@@ -1,10 +1,17 @@
+import { accountFailure } from '../utils/accountErrors';
+import { logError } from '../utils/logger';
+import { accountError } from '../utils/accountValidation';
+import { positiveId } from '../utils/academicValidation';
 import { Request, Response } from 'express';
 import pool from '../config/database';
 import { sendSuccess, sendError, sendPaginated } from '../utils/response';
 import { getPagination } from '../utils/pagination';
 import { AuthRequest } from '../types';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { decrypt, encryptPassword } from '../utils/encrypt';
+import { encryptPasswordAsync } from '../utils/encrypt';
+import { createInstitutionalCredentials, generateStudentCode, type AccountRole } from '../utils/credentials';
+import { PoolConnection } from 'mysql2/promise';
+import { finishTransaction } from '../utils/transaction';
 
 export async function getAllUsers(req: Request, res: Response) {
   try {
@@ -12,7 +19,7 @@ export async function getAllUsers(req: Request, res: Response) {
     const search = req.query.search as string || '';
     const rol = req.query.rol as string;
 
-    let whereClause = 'WHERE 1=1';
+    let whereClause = "WHERE r.nombre <> 'superadministrador'";
     const params: any[] = [];
 
     if (search) {
@@ -32,7 +39,7 @@ export async function getAllUsers(req: Request, res: Response) {
 
     const [users] = await pool.query<RowDataPacket[]>(
       `SELECT u.id, u.email, u.nombre, u.apellido, u.dni, u.telefono,
-              u.fecha_nacimiento, u.genero, u.foto_url, u.password_hash, r.nombre as rol,
+              u.fecha_nacimiento, u.genero, u.foto_url, r.nombre as rol,
               u.activo, u.ultimo_acceso, u.created_at
         FROM usuarios u
         JOIN roles r ON u.rol_id = r.id
@@ -42,14 +49,9 @@ export async function getAllUsers(req: Request, res: Response) {
       [...params, limit, offset]
     );
 
-    const usersWithPassword = users.map((u: any) => ({
-      ...u,
-      password: decrypt(u.password_hash)
-    }));
-
-    return sendPaginated(res, usersWithPassword, countResult[0].total, page, limit);
+    return sendPaginated(res, users, countResult[0].total, page, limit);
   } catch (error) {
-    console.error('Error al obtener usuarios:', error);
+    logError('Error al obtener usuarios:', error);
     return sendError(res, 'Error al obtener usuarios');
   }
 }
@@ -62,7 +64,7 @@ export async function getUserById(req: Request, res: Response) {
               r.nombre as rol, u.activo, u.created_at
        FROM usuarios u
        JOIN roles r ON u.rol_id = r.id
-       WHERE u.id = ?`,
+       WHERE u.id = ? AND r.nombre <> 'superadministrador'`,
       [req.params.id]
     );
 
@@ -77,36 +79,56 @@ export async function getUserById(req: Request, res: Response) {
 }
 
 export async function createUser(req: Request, res: Response) {
+  const validation=accountError(req.body,true,true);if(validation)return sendError(res,validation,400);
+  if(![1,2,3,4].includes(Number(req.body.rol_id))||!positiveId(req.body.rol_id))return sendError(res,'Rol inválido',400);
+  let connection: PoolConnection | undefined;
+  let committed = false;
   try {
-    const { email, password, nombre, apellido, dni, telefono, direccion,
+    const { nombre, apellido, dni, telefono, direccion,
             fecha_nacimiento, genero, rol_id } = req.body;
 
-    const [existing] = await pool.query<RowDataPacket[]>(
-      'SELECT id FROM usuarios WHERE email = ?', [email]
-    );
+    const roleById: Record<number, AccountRole> = { 1: 'administrador', 2: 'profesor', 3: 'alumno', 4: 'apoderado' };
+    const role = roleById[Number(rol_id)];
+    const codigo = role === 'alumno' ? generateStudentCode() : undefined;
 
-    if (existing.length > 0) {
-      return sendError(res, 'El email ya está registrado', 409);
-    }
-
-    const passwordEncrypted = encryptPassword(password || '123456');
-
-    const [result] = await pool.query<ResultSetHeader & { insertId: number }>(
-      `INSERT INTO usuarios (email, password_hash, nombre, apellido, dni, telefono,
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const { email, temporaryPassword } = await createInstitutionalCredentials(connection, role, nombre, apellido);
+    const passwordEncrypted = await encryptPasswordAsync(temporaryPassword);
+    const [result] = await connection.query<ResultSetHeader & { insertId: number }>(
+      `INSERT INTO usuarios (email, password_hash, debe_cambiar_password, nombre, apellido, dni, telefono,
        direccion, fecha_nacimiento, genero, rol_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [email, passwordEncrypted, nombre, apellido, dni || null, telefono || null,
        direccion || null, fecha_nacimiento || null, genero || 'Otro', rol_id]
     );
 
-    return sendSuccess(res, { id: result.insertId }, 'Usuario creado exitosamente', 201);
+    if (role === 'alumno') {
+      await connection.query('INSERT INTO alumnos (usuario_id, codigo_alumno) VALUES (?, ?)', [result.insertId, codigo]);
+    } else if (role === 'profesor') {
+      await connection.query('INSERT INTO profesores (usuario_id) VALUES (?)', [result.insertId]);
+    } else if (role === 'apoderado') {
+      await connection.query('INSERT INTO apoderados (usuario_id) VALUES (?)', [result.insertId]);
+    }
+
+    await connection.commit();
+    committed = true;
+    return sendSuccess(res, {
+      id: result.insertId,
+      usuario_id: result.insertId,
+      ...(codigo ? { codigo_alumno: codigo } : {}),
+      credentials: { email, temporaryPassword, mustChangePassword: true, mailboxCreated: false }
+    }, 'Usuario creado. Comparta estas credenciales de forma segura; la contraseña se cambiará al primer ingreso', 201);
   } catch (error) {
-    console.error('Error al crear usuario:', error);
-    return sendError(res, 'Error al crear usuario');
+    return accountFailure(res,error,'Error al crear usuario');
+  } finally {
+    await finishTransaction(connection,committed);
   }
 }
 
 export async function updateUser(req: Request, res: Response) {
+  const validation=accountError(req.body,false);if(validation)return sendError(res,validation,400);
+  if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
   try {
     const { nombre, apellido, dni, telefono, direccion, fecha_nacimiento, genero, activo, password } = req.body;
     const userId = req.params.id;
@@ -122,8 +144,15 @@ export async function updateUser(req: Request, res: Response) {
     if (fecha_nacimiento !== undefined) { updateFields.push('fecha_nacimiento = ?'); updateValues.push(fecha_nacimiento); }
     if (genero !== undefined) { updateFields.push('genero = ?'); updateValues.push(genero); }
     if (activo !== undefined) { updateFields.push('activo = ?'); updateValues.push(activo); }
-    if (password) { updateFields.push('password_hash = ?'); updateValues.push(encryptPassword(password)); }
+    if (password) {
+      updateFields.push('password_hash = ?');
+      updateValues.push(await encryptPasswordAsync(password));
+      updateFields.push('debe_cambiar_password = 1');
+    }
 
+    if(!updateFields.length)return sendError(res,'No hay campos para actualizar',400);
+    const [existing]=await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id = ? AND rol_id IN (SELECT id FROM roles WHERE nombre <> \'superadministrador\')' ,[userId]);
+    if(!existing.length)return sendError(res,'Usuario no encontrado',404);
     updateValues.push(userId);
 
     await pool.query(
@@ -133,12 +162,15 @@ export async function updateUser(req: Request, res: Response) {
 
     return sendSuccess(res, null, 'Usuario actualizado exitosamente');
   } catch (error) {
-    return sendError(res, 'Error al actualizar usuario');
+    return accountFailure(res,error,'Error al actualizar usuario');
   }
 }
 
 export async function deleteUser(req: Request, res: Response) {
   try {
+    if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
+    const [existing]=await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id=? AND rol_id IN (SELECT id FROM roles WHERE nombre <> \'superadministrador\')' ,[req.params.id]);
+    if(!existing.length)return sendError(res,'Usuario no encontrado',404);
     await pool.query('UPDATE usuarios SET activo = 0 WHERE id = ?', [req.params.id]);
     return sendSuccess(res, null, 'Usuario desactivado exitosamente');
   } catch (error) {

@@ -1,10 +1,12 @@
+import { useTheme } from '../../context/ThemeContext';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { GraduationCap, Eye, EyeOff } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
+  const {theme,toggleTheme}=useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,14 +34,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
+    <div className="app-surface relative min-h-screen bg-linear-to-br from-primary-50 to-primary-100 dark:from-gray-950 dark:to-gray-900 flex items-center justify-center px-4 py-20">
+      <button type="button" onClick={toggleTheme} aria-label={theme==='dark'?'Cambiar a tema claro':'Cambiar a tema oscuro'} className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-200">{theme==='dark'?<Sun className="h-5 w-5"/>:<Moon className="h-5 w-5"/>}</button>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <GraduationCap className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm overflow-hidden">
+            <img src="/assets/logo.png" alt="Ciencias e Ingeniería" className="w-16 h-16 object-contain" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Sistema de Gestión Educativa</h1>
-          <p className="text-gray-500 mt-1">Inicie sesión para continuar</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Ciencias e Ingeniería</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Inicie sesión para continuar</p>
         </div>
 
         <div className="card">
@@ -47,7 +50,7 @@ export default function LoginPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
               <input
-                type="email"
+                aria-label="Correo Electrónico" type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field"
@@ -60,7 +63,7 @@ export default function LoginPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  aria-label="Contraseña" type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input-field pr-10"
@@ -70,7 +73,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'} className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -94,14 +97,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-500 font-medium mb-2">Credenciales de prueba:</p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p><span className="font-medium">Admin:</span> admin@escuela.edu / admin123</p>
-              <p><span className="font-medium">Profesor:</span> profesor@escuela.edu / prof123</p>
-              <p><span className="font-medium">Alumno:</span> alumno@escuela.edu / alu123</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

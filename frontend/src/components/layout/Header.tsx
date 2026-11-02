@@ -34,7 +34,7 @@ export default function Header({ onToggleSidebar, title }: HeaderProps) {
           <input
             type="text"
             placeholder="Buscar..."
-            className="bg-transparent text-sm outline-none w-48"
+            className="bg-transparent text-sm outline-hidden w-48"
           />
         </div>
 

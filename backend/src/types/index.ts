@@ -4,6 +4,7 @@ export interface JwtPayload {
   userId: number;
   email: string;
   rol: string;
+  rolSistema?: string;
 }
 
 export interface AuthRequest extends Request {
@@ -32,19 +33,4 @@ export interface DashboardStats {
   alertasActivas: number;
   documentosPendientes: number;
   asistenciaPromedio: number;
-}
-
-export interface RiesgoAcademico {
-  alumnoId: number;
-  nombreCompleto: string;
-  nivelRiesgo: 'bajo' | 'medio' | 'alto';
-  porcentaje: number;
-  indicadores: {
-    inasistencias: number;
-    tardanzas: number;
-    promedioGeneral: number;
-    cursosDesaprobados: number;
-    tendencia: 'mejora' | 'estable' | 'deterioro';
-  };
-  recomendacion: string;
 }

@@ -6,8 +6,8 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', getAllCursos);
-router.get('/:id', getCursoById);
+router.get('/', authorize('administrador','profesor'), getAllCursos);
+router.get('/:id', authorize('administrador','profesor'), getCursoById);
 router.post('/', authorize('administrador'), createCurso);
 router.put('/:id', authorize('administrador'), updateCurso);
 router.delete('/:id', authorize('administrador'), deleteCurso);

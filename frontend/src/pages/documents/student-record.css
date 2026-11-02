@@ -1,0 +1,37 @@
+.student-records .record-student-choice { display:flex; align-items:center; gap:.75rem; min-width:0; min-height:5rem; padding:1rem; border:1px solid var(--color-gray-200); border-radius:1rem; background:var(--color-gray-50); }
+.student-records .record-student-choice[aria-pressed="true"] { border-color:var(--color-gray-500); }
+.record-intro-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+.record-intro-grid > :first-child { grid-column:1 / -1; }
+.record-tabs { display:flex; flex-wrap:wrap; gap:.5rem; }
+.record-tabs button { flex:1 1 9rem; font-size:.8rem; }
+.record-course { min-width:0; border:1px solid var(--color-gray-200); background:white; padding:1rem; border-radius:1.25rem; }
+.record-evaluation { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; min-width:0; border-top:1px solid var(--color-gray-100); padding-top:.75rem; }
+.record-score { display:flex; flex-direction:column; gap:.25rem; text-align:right; flex-shrink:0; font-variant-numeric:tabular-nums; font-size:1.15rem; }
+.dark .record-course { background:var(--color-gray-900); border-color:var(--color-gray-700); }
+.dark .record-evaluation { border-color:var(--color-gray-700); }
+.dark .student-records .record-student-choice { background:var(--color-gray-900); border-color:var(--color-gray-700); }
+.dark .student-records .record-student-choice[aria-pressed="true"] { border-color:var(--color-gray-400); }
+.student-report-print { display:none; }
+@media (max-width:359px) { .record-intro-grid { grid-template-columns:minmax(0,1fr); } .record-score { max-width:6.5rem; flex-shrink:1; } }
+@page student-report { size:A4; margin:14mm; }
+@media print {
+ body:has(> .student-report-print) > :not(.student-report-print) { display:none !important; }
+ body:has(> .student-report-print), html:has(.student-report-print) { height:auto !important; min-height:0 !important; overflow:visible !important; background:#fff !important; color:#111 !important; color-scheme:light; }
+ .student-report-print { page:student-report; display:block !important; background:#fff; color:#111; font-family:Arial,sans-serif; font-size:10pt; }
+ .student-report-print *, .dark .student-report-print * { color:#111 !important; box-shadow:none !important; }
+ .report-letterhead { display:flex; align-items:center; gap:14pt; border-bottom:2px solid #444; padding-bottom:12pt; }
+ .report-letterhead img { width:48pt; height:48pt; object-fit:contain; }
+ .report-letterhead h1 { font-size:17pt; font-weight:700; }
+ .report-letterhead h2 { font-size:13pt; font-weight:700; margin:3pt 0; }
+ .report-identity { padding:12pt 0; }
+ .report-identity h2 { font-size:13pt; font-weight:700; }
+ .report-note { margin-bottom:12pt; font-size:9pt; }
+ .student-report-print .record-course, .dark .student-report-print .record-course { background:#fff; border:1px solid #bbb; border-radius:6pt; margin:0 0 10pt; padding:10pt; break-inside:auto; }
+ .student-report-print .record-course header { break-after:avoid; }
+ .student-report-print .record-evaluation, .dark .student-report-print .record-evaluation { border-color:#ddd; break-inside:avoid; }
+ .student-report-print .record-score { font-size:12pt; }
+ .report-footer { margin-top:18pt; font-size:9pt; break-inside:avoid; }
+ .report-footer p { margin-top:30pt; }
+}
+.dark .student-records .btn-primary { background:var(--color-gray-700); color:var(--color-gray-100); }
+.dark .student-records .btn-primary:hover { background:var(--color-gray-600); }

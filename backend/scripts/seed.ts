@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { encryptPassword } from '../src/utils/encrypt';
 
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
 const dbConfig = {
@@ -15,6 +16,7 @@ const dbConfig = {
 };
 
 async function main() {
+  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_DEMO_SEED !== 'true') throw new Error('Seed demo bloqueado. Solo entornos de desarrollo con ENABLE_DEMO_SEED=true');
   console.log('=== Seed del Sistema de Gestión Educativa ===');
 
   const connection = await mysql.createConnection(dbConfig);
@@ -65,8 +67,10 @@ async function main() {
   );
 
   const [alumnoId]: any = await connection.query(
-    `INSERT IGNORE INTO alumnos (usuario_id, codigo_alumno, grado_id, seccion_id, periodo_academico_id)
-     SELECT u.id, 'ALU-2026-001', 4, 7, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1)
+    `INSERT IGNORE INTO alumnos (usuario_id, codigo_alumno, grado_id, periodo_academico_id)
+     SELECT u.id, 'ALU-2026-001',
+            (SELECT id FROM grados WHERE nombre = '1er Grado' AND nivel = 'Primaria' ORDER BY id DESC LIMIT 1),
+            (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1)
      FROM usuarios u WHERE u.email = 'alumno@escuela.edu'`
   );
 
@@ -87,12 +91,32 @@ async function main() {
   const profesorId = profRows[0].id;
   const alumnoIdNum = alumnoRows[0].id;
 
+  await connection.query(
+    `INSERT IGNORE INTO apoderado_alumno (apoderado_id, alumno_id, parentesco)
+     SELECT ap.id, ?, 'Apoderado' FROM apoderados ap WHERE ap.usuario_id = ?`,
+    [alumnoIdNum, userIds['apoderado@escuela.edu']]
+  );
+
   // 5. Horarios
   console.log('5. Creando horarios, matrículas y calificaciones...');
   const cursos: any = await connection.query(
-    'SELECT id, codigo FROM cursos WHERE grado_id = 4'
+    `SELECT id, codigo, grado_id FROM cursos
+     WHERE grado_id = (
+       SELECT id FROM grados WHERE nombre = '1er Grado' AND nivel = 'Primaria'
+       ORDER BY id DESC LIMIT 1
+     )`
   );
   const cursosList: any[] = cursos[0];
+
+  const [periodRows]:any=await connection.query('SELECT id FROM periodos_academicos WHERE activo=1 LIMIT 1');
+  if(!periodRows.length)throw new Error('La demostración requiere un periodo configurado');
+  const periodoDemo=periodRows[0].id;
+  for(const curso of cursosList){
+    await connection.query('INSERT IGNORE INTO periodo_grados(periodo_academico_id,grado_id) VALUES(?,?)',[periodoDemo,curso.grado_id]);
+    await connection.query('INSERT IGNORE INTO periodo_grado_cursos(periodo_academico_id,grado_id,curso_id) VALUES(?,?,?)',[periodoDemo,curso.grado_id,curso.id]);
+    const [offers]:any=await connection.query('SELECT id FROM periodo_grado_cursos WHERE periodo_academico_id=? AND grado_id=? AND curso_id=?',[periodoDemo,curso.grado_id,curso.id]);curso.oferta_id=offers[0].id;
+    await connection.query('INSERT IGNORE INTO periodo_grado_curso_profesores(periodo_grado_curso_id,profesor_id) VALUES(?,?)',[curso.oferta_id,profesorId]);
+  }
 
   const horariosDatos = [
     ['Lunes', '08:00', '09:00', 'Aula 101'],
@@ -109,21 +133,21 @@ async function main() {
     const curso = cursosList[i];
     const horario = horariosDatos[i] || horariosDatos[0];
     await connection.query(
-      `INSERT IGNORE INTO horarios (curso_id, profesor_id, seccion_id, periodo_academico_id, dia_semana, hora_inicio, hora_fin, aula)
-       VALUES (?, ?, ?, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1), ?, ?, ?, ?)`,
-      [curso.id, profesorId, 7, horario[0], horario[1], horario[2], horario[3]]
+      `INSERT IGNORE INTO horarios (curso_id, profesor_id, periodo_academico_id, periodo_grado_curso_id, dia_semana, hora_inicio, hora_fin, aula)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [curso.id, profesorId, periodoDemo, curso.oferta_id, horario[0], horario[1], horario[2], horario[3]]
     );
   }
 
   // Matrículas
   for (const curso of cursosList) {
     await connection.query(
-      'INSERT IGNORE INTO matriculas (alumno_id, curso_id, periodo_academico_id) VALUES (?, ?, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1))',
-      [alumnoIdNum, curso.id]
+      'INSERT IGNORE INTO matriculas (alumno_id, curso_id, grado_id, periodo_academico_id) VALUES (?, ?, ?, ?)',
+      [alumnoIdNum, curso.id, curso.grado_id, periodoDemo]
     );
   }
 
-  // Calificaciones (promedio bajo para que la IA detecte riesgo)
+  // Calificaciones de demostración, ligadas a su oferta específica.
   const notasMat = [9, 8];
   const notasCom = [11, 10];
   const notasResto = [12, 11];
@@ -138,14 +162,14 @@ async function main() {
     else notas = notasResto;
 
     await connection.query(
-      `INSERT INTO calificaciones (alumno_id, curso_id, periodo_academico_id, nota, tipo_evaluacion, fecha_evaluacion)
-       VALUES (?, ?, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1), ?, 'parcial', ?)`,
-      [alumnoIdNum, curso.id, notas[0], fechaParcial1[i]]
+      `INSERT INTO calificaciones (alumno_id, curso_id, periodo_academico_id, periodo_grado_curso_id, nota, tipo_evaluacion, fecha_evaluacion)
+       VALUES (?, ?, ?, ?, ?, 'parcial', ?)`,
+      [alumnoIdNum, curso.id, periodoDemo, curso.oferta_id, notas[0], fechaParcial1[i]]
     );
     await connection.query(
-      `INSERT INTO calificaciones (alumno_id, curso_id, periodo_academico_id, nota, tipo_evaluacion, fecha_evaluacion)
-       VALUES (?, ?, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1), ?, 'parcial', ?)`,
-      [alumnoIdNum, curso.id, notas[1], fechaParcial2[i]]
+      `INSERT INTO calificaciones (alumno_id, curso_id, periodo_academico_id, periodo_grado_curso_id, nota, tipo_evaluacion, fecha_evaluacion)
+       VALUES (?, ?, ?, ?, ?, 'parcial', ?)`,
+      [alumnoIdNum, curso.id, periodoDemo, curso.oferta_id, notas[1], fechaParcial2[i]]
     );
   }
 

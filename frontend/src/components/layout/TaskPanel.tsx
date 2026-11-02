@@ -35,13 +35,13 @@ export default function TaskPanel() {
       title: 'Vence pronto',
       icon: <Calendar className="w-4 h-4" />,
       color: 'text-blue-500',
-      tareas: [
-        { titulo: 'Entregar Proyecto Integrador', modulo: 'Matemáticas', fechaLimite: '20 Ene 2026', restriccion: 'Sin extensión' },
-        { titulo: 'Reporte de Laboratorio', modulo: 'Ciencia y Tecnología', fechaLimite: '22 Ene 2026' },
-        { titulo: 'Ensayo Literario', modulo: 'Comunicación', fechaLimite: '25 Ene 2026' },
-      ]
+      tareas: []
     }
   ];
+
+  if (!secciones.some(seccion => seccion.tareas.length > 0)) {
+    return null;
+  }
 
   const toggleSection = (title: string) => {
     setOpenSections(prev =>
@@ -50,7 +50,7 @@ export default function TaskPanel() {
   };
 
   return (
-    <div className="w-80 border-l border-gray-200 bg-white flex flex-col overflow-hidden flex-shrink-0">
+    <div className="flex max-h-[38vh] w-full shrink-0 flex-col overflow-hidden border-t border-gray-200 bg-white lg:h-full lg:max-h-none lg:w-80 lg:border-l lg:border-t-0">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-200">
         <h2 className="text-lg font-bold text-gray-900">Tareas Pendientes</h2>
@@ -86,7 +86,7 @@ export default function TaskPanel() {
                 ) : (
                   seccion.tareas.map((tarea, i) => (
                     <div key={i} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
-                      <Calendar className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <Calendar className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900">{tarea.titulo}</p>
                         <p className="text-xs text-gray-500">{tarea.modulo}</p>

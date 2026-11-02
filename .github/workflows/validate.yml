@@ -1,0 +1,78 @@
+name: Validate production preparation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: synthetic-ci-only
+          MYSQL_DATABASE: ci_fixture
+        ports: ["3306:3306"]
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 --silent" --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      NODE_ENV: test
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: ci_fixture
+      DB_USER: root
+      DB_PASSWORD: synthetic-ci-only
+      JWT_SECRET: synthetic-ci-key-only-never-for-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - name: Install and build backend
+        working-directory: backend
+        run: npm ci --include=dev && npm run build
+      - name: Install MySQL clients
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+      - name: Install synthetic source schema
+        working-directory: backend
+        run: npm run db:install -- --empty-database-confirmed
+      - name: Backend regression and production tests
+        working-directory: backend
+        run: |
+          node tests/periodo-vigencia.test.cjs
+          node tests/profesores.test.cjs
+          node tests/profesores.integration.test.cjs
+          node tests/estudiantes.test.cjs
+          node tests/estudiantes.integration.test.cjs
+          node tests/payments.test.cjs
+          node tests/payments.integration.test.cjs
+          node tests/operations.test.cjs
+          node tests/asignaciones.integration.test.cjs
+          node tests/familia.test.cjs
+          node tests/integral.test.cjs
+          node tests/integral.integration.test.cjs
+          node tests/ai-removal.test.cjs
+          node tests/production.test.cjs
+          node tests/production.integration.test.cjs
+          node tests/private-prompt.test.cjs
+          node tests/superadmin.integration.test.cjs
+          npm audit --audit-level=high
+      - name: Install and validate frontend
+        working-directory: frontend
+        run: npm ci --include=dev && npm run build && npm run test:session && npm run test:dev-proxy && npm audit --audit-level=high
+      - name: Install Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps --no-shell chromium
+      - name: Browser tests with synthetic accounts
+        working-directory: frontend
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: synthetic-browser-diagnostics
+          path: frontend/test-results

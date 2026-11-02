@@ -1,3 +1,5 @@
+import PageHeading from '../../components/ui/PageHeading';
+import { useAuth } from '../../context/AuthContext';
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, CheckCircle, Clock, Filter } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
@@ -9,6 +11,11 @@ import type { Alerta } from '../../types';
 import toast from 'react-hot-toast';
 
 export default function AlertasPage() {
+  const {user}=useAuth();
+  const canManage=user?.rol==='administrador'||user?.rol==='profesor';
+  const [loadError,setLoadError]=useState('');
+  const [statsError,setStatsError]=useState('');
+  const [updating,setUpdating]=useState<number|null>(null);
   const [alertas, setAlertas] = useState<Alerta[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState('activa');
@@ -19,24 +26,24 @@ export default function AlertasPage() {
   useEffect(() => { loadAlertas(); loadStats(); }, [page, filtroEstado, filtroRiesgo]);
 
   const loadAlertas = async () => {
-    setLoading(true);
+    setLoading(true); setLoadError('');
     try {
       const params: any = { page, limit: 20, estado: filtroEstado };
       if (filtroRiesgo) params.tipo_riesgo = filtroRiesgo;
       const res = await alertasApi.getAll(params);
       setAlertas(res.data.data || []);
       updateFromResponse(res.data.total || 0, res.data.totalPages || 1);
-    } catch (error) { console.error(error); }
+    } catch (error:any) { setAlertas([]); setLoadError(error.response?.data?.message || 'No se pudieron cargar las alertas'); }
     finally { setLoading(false); }
   };
 
   const loadStats = async () => {
-    try { const res = await alertasApi.getEstadisticas(); setStats(res.data.data); } catch (error) {}
+    setStatsError(''); try { const res = await alertasApi.getEstadisticas(); setStats(res.data.data); } catch (error:any) { setStats(null); setStatsError(error.response?.data?.message || 'No se pudo cargar el resumen de alertas'); }
   };
 
   const handleEstado = async (id: number, estado: string) => {
-    try { await alertasApi.updateEstado(id, estado); toast.success('Alerta actualizada'); loadAlertas(); loadStats(); }
-    catch (error: any) { toast.error(error.response?.data?.message || 'Error'); }
+    setUpdating(id); try { await alertasApi.updateEstado(id, estado); toast.success('Alerta actualizada'); loadAlertas(); loadStats(); }
+    catch (error: any) { toast.error(error.response?.data?.message || 'No se pudo actualizar la alerta'); } finally { setUpdating(null); }
   };
 
   const getRiesgoColor = (tipo: string) => {
@@ -49,6 +56,8 @@ export default function AlertasPage() {
 
   return (
     <div className="space-y-4">
+      <PageHeading title="Alertas" description="Revisa las alertas académicas disponibles para tu cuenta."/>
+      {(loadError||statsError) && <div role="alert" className="card text-red-700">{loadError||statsError} <button className="btn-secondary" onClick={()=>{loadAlertas();loadStats();}}>Reintentar</button></div>}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="card p-3 text-center">
@@ -88,7 +97,7 @@ export default function AlertasPage() {
       <div className="space-y-3">
         {loading ? (
           [...Array(3)].map((_, i) => <div key={i} className="card animate-pulse h-32" />)
-        ) : alertas.length === 0 ? (
+        ) : loadError ? null : alertas.length === 0 ? (
           <div className="card text-center py-12">
             <AlertTriangle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500">No hay alertas {filtroEstado === 'activa' ? 'activas' : ''}</p>
@@ -105,7 +114,7 @@ export default function AlertasPage() {
                     <Badge variant="default">{alerta.estado}</Badge>
                   </div>
                   <h4 className="font-semibold text-gray-900">{alerta.alumno_nombre} {alerta.alumno_apellido}</h4>
-                  <p className="text-sm text-gray-500">{alerta.codigo_alumno} - {alerta.grado} {alerta.seccion}</p>
+                  <p className="text-sm text-gray-500">{alerta.codigo_alumno} - {alerta.grado}</p>
                   <p className="text-sm text-gray-600 mt-1">{alerta.descripcion}</p>
                   {alerta.recomendacion && (
                     <p className="text-sm text-blue-600 mt-1 italic">Recomendación: {alerta.recomendacion}</p>
@@ -115,12 +124,12 @@ export default function AlertasPage() {
                   </p>
                 </div>
                 <div className="flex gap-2 ml-4">
-                  {alerta.estado === 'activa' && (
+                  {canManage && alerta.estado === 'activa' && (
                     <>
-                      <button onClick={() => handleEstado(alerta.id, 'atendida')} className="btn-secondary text-xs py-1 flex items-center gap-1">
+                      <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'atendida')} className="btn-secondary text-xs py-1 flex items-center gap-1">
                         <Clock className="w-3 h-3" /> Atender
                       </button>
-                      <button onClick={() => handleEstado(alerta.id, 'resuelta')} className="btn-success text-xs py-1 flex items-center gap-1">
+                      <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'resuelta')} className="btn-success text-xs py-1 flex items-center gap-1">
                         <CheckCircle className="w-3 h-3" /> Resolver
                       </button>
                     </>

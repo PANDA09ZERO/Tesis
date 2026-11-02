@@ -1,613 +1,165 @@
-import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, DollarSign, Calendar, Search } from 'lucide-react';
-import { mensualidadesApi, sueldosApi, profesoresApi, cursosApi, alumnosApi, periodosApi } from '../../api/endpoints';
+import PageHeading from '../../components/ui/PageHeading';
+import { FormEvent, useEffect, useState } from 'react';
+import axios from 'axios';
+import { mensualidadesApi, pagosMatriculaApi, sueldosApi, profesoresApi, alumnosApi } from '../../api/endpoints';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
-import { useAuth } from '../../context/AuthContext';
+import DataTable from '../../components/ui/DataTable';
+import SearchInput from '../../components/ui/SearchInput';
 import toast from 'react-hot-toast';
+import { usePeriodo } from '../../context/PeriodoContext';
 
-type Tab = 'mensualidades' | 'sueldos';
-
+type Tab = 'matriculas' | 'mensualidades' | 'sueldos';
+type Pago = { id: number; [key: string]: any };
+type Persona = { id: number; nombre: string; apellido: string; codigo_alumno?: string; activo?: number | boolean };
+const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const apis = { matriculas: pagosMatriculaApi, mensualidades: mensualidadesApi, sueldos: sueldosApi };
+const labels = { matriculas: 'Matrícula', mensualidades: 'Mensualidad', sueldos: 'Pago de profesor' };
+const dinero = (v: unknown) => `S/ ${Number(v || 0).toFixed(2)}`;
+const hoy = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Lima' }).format(new Date());
+function mensaje(error: unknown) {
+  return axios.isAxiosError(error) ? error.response?.data?.message || 'No se pudo conectar con el servidor' : error instanceof Error ? error.message : 'No se pudo completar la operación';
+}
+async function personas(api: typeof alumnosApi | typeof profesoresApi, params: Record<string, boolean> = {}): Promise<Persona[]> {
+  const result: Persona[] = []; let page = 1, pages = 1;
+  do { const res = await api.getAll({page, limit:100, ...params}); result.push(...res.data.data); pages = res.data.totalPages; page++; } while (page <= pages);
+  return result;
+}
 export default function PagosPage() {
-  const { user } = useAuth();
-  const [tab, setTab] = useState<Tab>('mensualidades');
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingLists, setLoadingLists] = useState(true);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [filtroEstado, setFiltroEstado] = useState('');
-  const [filtroMes, setFiltroMes] = useState('');
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState<any | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [resumen, setResumen] = useState<any[]>([]);
-  const [añoResumen, setAñoResumen] = useState('2026');
-  const [alumnosConDeuda, setAlumnosConDeuda] = useState<any[]>([]);
-  const [loadingDeuda, setLoadingDeuda] = useState(false);
-
-  const [profesores, setProfesores] = useState<{id: number; nombre: string; apellido: string}[]>([]);
-  const [cursos, setCursos] = useState<{id: number; nombre: string; codigo: string}[]>([]);
-  const [cursosProfesor, setCursosProfesor] = useState<{id: number; nombre: string; codigo: string}[]>([]);
-  const [alumnos, setAlumnos] = useState<{id: number; nombre: string; apellido: string; codigo_alumno: string}[]>([]);
-  const [periodos, setPeriodos] = useState<{id: number; nombre: string}[]>([]);
-  const [selectedProfesor, setSelectedProfesor] = useState('');
-  const [selectedCurso, setSelectedCurso] = useState('');
-  const [selectedAlumno, setSelectedAlumno] = useState('');
-  const [selectedPeriodo, setSelectedPeriodo] = useState('');
-
-  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
-  const fetchLists = async () => {
-    setLoadingLists(true);
-    try {
-      const profRes = await profesoresApi.getAll().catch(() => null);
-      const curRes = await cursosApi.getAll({ limit: 50 }).catch(() => null);
-      const alumRes = await alumnosApi.getAll({ limit: 50 }).catch(() => null);
-      const perRes = await periodosApi.getAll().catch(() => null);
-      setProfesores((profRes?.data as any)?.data || []);
-      setCursos((curRes?.data as any)?.data || []);
-      setAlumnos((alumRes?.data as any)?.data || []);
-      setPeriodos((perRes?.data as any)?.data || []);
-    } catch (error) {
-      console.error('Error loading lists:', error);
-    } finally {
-      setLoadingLists(false);
-    }
-  };
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const params: any = { page, limit: 15 };
-      if (debouncedSearch) params.search = debouncedSearch;
-      if (filtroEstado) params.estado = filtroEstado;
-      if (filtroMes) params.mes = filtroMes;
-      if (filtroMes) params.año = añoResumen;
-      if (tab === 'mensualidades') {
-        const res = await mensualidadesApi.getAll(params);
-        setData((res.data as any)?.data || []);
-        setTotal((res.data as any)?.total || 0);
-      } else {
-        const res = await sueldosApi.getAll(params);
-        setData((res.data as any)?.data || []);
-        setTotal((res.data as any)?.total || 0);
-      }
-    } catch (error) {
-      toast.error('Error al cargar datos');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchResumen = async () => {
-    try {
-      const res = tab === 'mensualidades'
-        ? await mensualidadesApi.getResumen(añoResumen)
-        : await sueldosApi.getResumen(añoResumen);
-      setResumen((res.data as any)?.data || []);
-    } catch (error) {
-      // silent
-    }
-  };
-
-  const fetchAlumnosConDeuda = async () => {
-    if (tab !== 'mensualidades') return;
-    setLoadingDeuda(true);
-    try {
-      const res = await mensualidadesApi.getAlumnosConDeuda({ año: añoResumen });
-      setAlumnosConDeuda((res.data as any)?.data || []);
-    } catch (error) {
-      console.error('Error al cargar alumnos con deuda:', error);
-    } finally {
-      setLoadingDeuda(false);
-    }
-  };
-
-  const fetchCursosProfesor = async (profesorId: string) => {
-    if (!profesorId) {
-      setCursosProfesor([]);
-      return;
-    }
-    try {
-      const res = await profesoresApi.getCursos(parseInt(profesorId));
-      setCursosProfesor((res.data as any)?.data || []);
-    } catch (error) {
-      console.error('Error al cargar cursos del profesor:', error);
-      setCursosProfesor([]);
-    }
-  };
-
+  const [tab, setTab] = useState<Tab>('matriculas');
+  const [data, setData] = useState<Pago[]>([]), [resumen, setResumen] = useState<any[]>([]), [deudas, setDeudas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true), [error, setError] = useState(''), [listError, setListError] = useState(''), [loadingLists, setLoadingLists] = useState(true);
+  const [alumnos, setAlumnos] = useState<Persona[]>([]), [profesores, setProfesores] = useState<Persona[]>([]);
+  // Contexto global de periodo académico (vigente por defecto) — reemplaza el filtro local
+  const { periodoId: periodo, periodos } = usePeriodo();
+  const [search, setSearch] = useState(''), [debouncedSearch, setDebouncedSearch] = useState(''), [estado, setEstado] = useState(''), [mes, setMes] = useState(''), [año, setAño] = useState(hoy().slice(0,4));
+  const [page, setPage] = useState(1), [total, setTotal] = useState(0), [pages, setPages] = useState(1), [reload, setReload] = useState(0);
+  const [show, setShow] = useState(false), [editing, setEditing] = useState<Pago|null>(null), [saving, setSaving] = useState(false), [formError, setFormError] = useState('');
+  const [form, setForm] = useState({persona:'', periodo:'', matricula:'', mensual:'', monto:'', estado:'pendiente', fecha:''});
+  const [deleteId, setDeleteId] = useState<number|null>(null), [payment, setPayment] = useState<Pago|null>(null), [paymentDate, setPaymentDate] = useState(hoy());
+  const [matriculaOptions, setMatriculaOptions] = useState<{id:number;periodoId:number;periodo:string;grados:string}[]>([]);
+  const [loadingMatriculas, setLoadingMatriculas] = useState(false);
+  const [matriculaError, setMatriculaError] = useState('');
   useEffect(() => {
-    fetchLists();
+    let active = true;
+    if (!show || tab !== 'matriculas' || !form.persona) { setMatriculaOptions([]); setMatriculaError(''); setLoadingMatriculas(false); return; }
+    setLoadingMatriculas(true); setMatriculaOptions([]); setMatriculaError('');
+    alumnosApi.getMatriculas(Number(form.persona)).then(response => {
+      if (!active) return;
+      const grouped = new Map<number, {id:number;periodoId:number;periodo:string;grados:Set<string>}>();
+      for (const m of response.data.data || []) {
+        if (!grouped.has(m.periodo_academico_id)) grouped.set(m.periodo_academico_id, {id:m.id,periodoId:m.periodo_academico_id,periodo:m.periodo,grados:new Set()});
+        const option = grouped.get(m.periodo_academico_id)!;
+        option.id = Math.min(option.id,m.id); if (m.grado) option.grados.add(m.grado);
+      }
+      const options = [...grouped.values()].map(m=>({...m,grados:[...m.grados].join(', ')}));
+      const available = editing ? options.filter(m=>m.periodoId === Number(editing.periodo_academico_id)) : options;
+      setMatriculaOptions(available);
+      setForm(current=>({...current,matricula:available.length === 1 ? String(available[0].id) : ''}));
+      if (!available.length) setMatriculaError('El alumno no tiene una matrícula académica disponible. Registra primero su matrícula.');
+    }).catch(e=>{if(active)setMatriculaError(mensaje(e));}).finally(()=>{if(active)setLoadingMatriculas(false);});
+    return ()=>{active=false;};
+  }, [show,tab,form.persona,editing]);
+  const matriculaElegida = matriculaOptions.find(m=>String(m.id) === form.matricula);
+  const estados = tab === 'mensualidades' ? ['pendiente','pagado','vencido','descuento'] : tab === 'sueldos' ? ['pendiente','pagado','rechazado'] : ['pendiente','pagado'];
+  useEffect(() => {
+    let active = true;
+    Promise.all([personas(alumnosApi), personas(profesoresApi, {incluir_inactivos:true})]).then(([a,p]) => {
+      if (active) { setAlumnos(a); setProfesores(p); }
+    }).catch(e => { if (active) setListError(mensaje(e)); }).finally(() => { if (active) setLoadingLists(false); });
+    return () => { active = false; };
   }, []);
-
+  useEffect(() => { setPage(1); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [periodo]);
+  useEffect(() => { const timer = setTimeout(() => { setDebouncedSearch(search); setPage(1); },300); return () => clearTimeout(timer); }, [search]);
   useEffect(() => {
-    fetchData();
-  }, [page, debouncedSearch, filtroEstado, filtroMes, tab]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 300);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  useEffect(() => {
-    fetchResumen();
-    fetchAlumnosConDeuda();
-  }, [tab, añoResumen]);
-
-  useEffect(() => {
-    if (tab === 'sueldos' && selectedProfesor) {
-      fetchCursosProfesor(selectedProfesor);
-    }
-  }, [selectedProfesor, tab]);
-
-  const handleOpenModal = () => {
-    setEditing(null);
-    setSelectedProfesor('');
-    setSelectedCurso('');
-    setSelectedAlumno('');
-    setSelectedPeriodo('');
-    setShowModal(true);
-  };
-
-  const handleEdit = (item: any) => {
-    setEditing(item);
-    setSelectedProfesor(item.profesor_id || '');
-    setSelectedCurso(item.curso_id || '');
-    setSelectedAlumno(item.alumno_id || '');
-    setSelectedPeriodo(item.periodo_academico_id || '');
-    setShowModal(true);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    try {
-      if (tab === 'mensualidades') {
-        await mensualidadesApi.delete(deleteId);
-      } else {
-        await sueldosApi.delete(deleteId);
-      }
-      toast.success('Eliminado correctamente');
-      fetchData();
-    } catch (error) {
-      toast.error('Error al eliminar');
-    }
-    setDeleteId(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.currentTarget as HTMLFormElement;
-    try {
-      const formData: any = {
-        mes: form['form-mes'].value || '',
-        año: form['form-año'].value || '2026',
-        estado: form['form-estado'].value || 'pendiente',
-      };
-      if (tab === 'mensualidades') {
-        if (!selectedAlumno) {
-          toast.error('Debe seleccionar alumno');
-          return;
-        }
-        formData.alumno_id = parseInt(selectedAlumno);
-        formData.periodo_academico_id = parseInt(selectedPeriodo) || undefined;
-        formData.monto = parseFloat(form['form-monto'].value || '0');
-      } else {
-        if (!selectedProfesor || !selectedCurso) {
-          toast.error('Debe seleccionar profesor y curso');
-          return;
-        }
-        formData.profesor_id = parseInt(selectedProfesor);
-        formData.curso_id = parseInt(selectedCurso);
-        formData.periodo_academico_id = parseInt(selectedPeriodo) || undefined;
-        formData.salario_base = parseFloat(form['form-salario'].value || '0');
-        formData.horas_clase = parseFloat(form['form-horas'].value || '0');
-        formData.monto_extra = parseFloat(form['form-extra'].value || '0');
-      }
-      if (editing) {
-        if (tab === 'mensualidades') {
-          await mensualidadesApi.update(editing.id, formData);
-        } else {
-          await sueldosApi.update(editing.id, formData);
-        }
-        toast.success('Actualizado correctamente');
-      } else {
-        if (tab === 'mensualidades') {
-          await mensualidadesApi.create(formData);
-        } else {
-          await sueldosApi.create(formData);
-        }
-        toast.success('Registrado correctamente');
-      }
-      setShowModal(false);
-      await fetchData();
-      await fetchResumen();
-      if (tab === 'mensualidades') {
-        await fetchAlumnosConDeuda().catch(err => console.error('Error al actualizar alumnos con deuda:', err));
-      }
-    } catch (error: any) {
-      console.error('Error al guardar:', error);
-      const errorMessage = error?.response?.data?.message || error?.message || 'Error al guardar';
-      toast.error(errorMessage);
-    }
-  };
-
-  const columns = tab === 'mensualidades' ? [
-    { key: 'alumno_nombre', label: 'Alumno' },
-    { key: 'codigo_alumno', label: 'Código' },
-    { key: 'curso_nombre', label: 'Curso' },
-    { key: 'monto', label: 'Monto', render: (v: any) => `S/ ${Number(v || 0).toFixed(2)}` },
-    { key: 'mes', label: 'Mes' },
-    { key: 'año', label: 'Año' },
-    { key: 'estado', label: 'Estado', render: (v: any) => <Badge variant={v === 'pagado' ? 'success' : v === 'pendiente' ? 'warning' : 'danger'}>{v}</Badge> },
-    { key: 'actions', label: '', render: (_: any, row: any) => (
-      <div className="flex gap-1">
-        <button onClick={() => handleEdit(row)} className="p-1 text-primary-600 hover:bg-primary-50 rounded text-xs">Editar</button>
-        <button onClick={() => setDeleteId(row.id)} className="p-1 text-red-600 hover:bg-red-50 rounded text-xs">Eliminar</button>
-      </div>
-    )},
-  ] : [
-    { key: 'profesor_nombre', label: 'Profesor' },
-    { key: 'curso_nombre', label: 'Curso' },
-    { key: 'salario_base', label: 'Salario Base', render: (v: any) => `S/ ${Number(v || 0).toFixed(2)}` },
-    { key: 'monto_total', label: 'Total', render: (v: any) => `S/ ${Number(v || 0).toFixed(2)}` },
-    { key: 'mes', label: 'Mes' },
-    { key: 'año', label: 'Año' },
-    { key: 'estado', label: 'Estado', render: (v: any) => <Badge variant={v === 'pagado' ? 'success' : 'warning'}>{v}</Badge> },
-    { key: 'actions', label: '', render: (_: any, row: any) => (
-      <div className="flex gap-1">
-        <button onClick={() => handleEdit(row)} className="p-1 text-primary-600 hover:bg-primary-50 rounded text-xs">Editar</button>
-        <button onClick={() => setDeleteId(row.id)} className="p-1 text-red-600 hover:bg-red-50 rounded text-xs">Eliminar</button>
-      </div>
-    )},
+    let active = true;
+    const params = { search:debouncedSearch || undefined, estado:estado || undefined,
+      ...(tab !== 'sueldos' ? {periodo_academico_id:periodo || undefined} : {}), ...(tab !== 'matriculas' ? {mes:mes || undefined, año} : {}) };
+    setLoading(true); setError(''); setData([]); setResumen([]); setDeudas([]);
+    Promise.all([apis[tab].getAll({...params,page,limit:15}), apis[tab].getResumen(params),
+      tab === 'mensualidades' && (!estado || ['pendiente','vencido'].includes(estado)) ? mensualidadesApi.getAlumnosConDeuda(params) : Promise.resolve(null)
+    ]).then(([rows,summary,debt]) => { if (active) { setData(rows.data.data); setTotal(rows.data.total); setPages(Math.max(1,rows.data.totalPages)); setResumen(summary.data.data || []); setDeudas(debt?.data.data || []); } })
+      .catch(e => { if (active) setError(mensaje(e)); }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [tab,debouncedSearch,estado,periodo,mes,año,page,reload]);
+  function cambiarTab(next:Tab) { setTab(next); setEstado(''); setMes(''); setSearch(''); setDebouncedSearch(''); setPage(1); setShow(false); setPayment(null); setDeleteId(null); }
+  function abrir(row:Pago|null = null) {
+    setEditing(row); setFormError('');
+    setForm({matricula:'', persona:String(row?.profesor_id || row?.alumno_id || ''), periodo:String(row?.periodo_academico_id || periodo || ''),
+      mensual:row?.mes ? `${row.año}-${String(meses.indexOf(row.mes)+1).padStart(2,'0')}` : `${año}-${String(meses.indexOf(mes)+1 || Number(hoy().slice(5,7))).padStart(2,'0')}`,
+      monto:String(row ? (tab === 'sueldos' ? row.monto_total : row.monto) : ''), estado:row?.estado || 'pendiente', fecha:row?.fecha_pago?.slice(0,10) || ''}); setShow(true);
+  }
+  async function submit(e:FormEvent) {
+    e.preventDefault(); if(saving) return; setFormError('');
+    const amount = Number(form.monto), [year,month] = form.mensual.split('-').map(Number);
+    if (!form.persona || (tab === 'mensualidades' && !form.periodo)) { setFormError('Seleccione la persona y el periodo académico'); return; }
+    if (tab === 'matriculas' && !matriculaElegida) { setFormError('Seleccione una matrícula académica existente'); return; }
+    if (!/^\d+(\.\d{1,2})?$/.test(form.monto) || !Number.isFinite(amount) || amount < 0 || amount > 99999999.99) { setFormError('Indique un monto válido con hasta dos decimales'); return; }
+    if (tab !== 'matriculas' && (!Number.isInteger(year) || year < 1901 || year > 2155 || !meses[month-1])) { setFormError('Seleccione un mes y año válidos'); return; }
+    if (tab !== 'sueldos' && form.estado === 'pagado' && !form.fecha) { setFormError('Indique la fecha de pago'); return; }
+    const body = { [tab === 'sueldos' ? 'profesor_id' : 'alumno_id']:Number(form.persona), monto:amount,
+      ...(tab !== 'sueldos' ? {estado:form.estado, fecha_pago:form.estado === 'pagado' ? form.fecha : null} : {}),
+      ...(tab === 'mensualidades' ? {periodo_academico_id:Number(form.periodo)} : {}),
+      ...(tab === 'matriculas' ? {matricula_id:Number(form.matricula)} : {}),
+      ...(tab !== 'matriculas' ? {mes:meses[month-1], año:year} : {}) };
+    setSaving(true);
+    try { if (editing) await apis[tab].update(editing.id,body); else await apis[tab].create(body);
+      toast.success(editing ? 'Pago actualizado' : tab === 'sueldos' ? 'Pago de profesor registrado como pagado' : 'Concepto de pago registrado'); setShow(false); setReload(v=>v+1);
+    } catch(e) { setFormError(mensaje(e)); } finally { setSaving(false); }
+  }
+  async function eliminar() {
+    if (!deleteId || saving) return; setSaving(true);
+    try { await apis[tab].delete(deleteId); toast.success('Pago eliminado'); setDeleteId(null); setPage(1); setReload(v=>v+1); }
+    catch(e) { toast.error(mensaje(e)); } finally { setSaving(false); }
+  }
+  async function pagar(e:FormEvent) {
+    e.preventDefault(); if (!payment || !paymentDate || saving) return; setSaving(true); setFormError('');
+    try { await apis[tab].update(payment.id,{estado:'pagado',fecha_pago:paymentDate}); toast.success('Pago confirmado'); setPayment(null); setReload(v=>v+1); }
+    catch(e) { setFormError(mensaje(e)); } finally { setSaving(false); }
+  }
+  const sum = (key:string) => resumen.reduce((n,r)=>n+Number(r[key] || 0),0);
+  const columns = [
+    {key:'persona',label:tab === 'sueldos' ? 'Profesor' : 'Alumno',render:(r:Pago)=>tab === 'sueldos' ? `${r.profesor_nombre} ${r.profesor_apellido}` : `${r.alumno_nombre} ${r.alumno_apellido} (${r.codigo_alumno})`},
+    ...(tab !== 'sueldos' ? [{key:'periodo',label:'Periodo académico'}] : []),
+    ...(tab !== 'matriculas' ? [{key:'mes',label:'Mes/año',render:(r:Pago)=>`${r.mes} ${r.año}`}] : []),
+    {key:'monto',label:'Monto',render:(r:Pago)=>dinero(tab === 'sueldos' ? r.monto_total : r.monto)},
+    {key:'estado',label:'Estado',render:(r:Pago)=><Badge variant={r.estado === 'pagado' ? 'success' : r.estado === 'pendiente' ? 'warning' : 'danger'}>{r.estado}</Badge>},
+    {key:'fecha_pago',label:'Fecha de pago',render:(r:Pago)=>r.fecha_pago?.slice(0,10) || '—'},
+    ...(tab === 'sueldos' ? [{key:'historial',label:'Detalle histórico',render:(r:Pago)=><span className="text-xs text-gray-500">{[r.curso_nombre,`Base histórica: ${dinero(r.salario_base)}`,Number(r.horas_clase) ? `${r.horas_clase} horas` : '',Number(r.monto_extra) ? `Extra: ${dinero(r.monto_extra)}` : '',r.observaciones].filter(Boolean).join(' · ') || '—'}</span>}] : []),
+    {key:'actions',label:'Acciones',render:(r:Pago)=><div className="flex flex-wrap gap-2"><button disabled={loadingLists || !!listError} className="text-primary-600" onClick={()=>abrir(r)}>Editar</button>{r.estado !== 'pagado' && <button className="text-green-700" onClick={()=>{setPayment(r);setPaymentDate(hoy());setFormError('');}}>Registrar pago</button>}<button className="text-red-600" onClick={()=>setDeleteId(r.id)}>Eliminar</button></div>}
   ];
-
-  return (
-    <div className="space-y-4">
-      <div className="bg-white rounded-xl border border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setTab('mensualidades')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'mensualidades' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-            >
-              <DollarSign className="w-4 h-4 inline mr-1" />
-              Mensualidades
-            </button>
-            <button
-              onClick={() => setTab('sueldos')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'sueldos' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-            >
-              <Calendar className="w-4 h-4 inline mr-1" />
-              Sueldos Profesores
-            </button>
-          </div>
-          <button onClick={handleOpenModal} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors">
-            <Plus className="w-4 h-4" />
-            Nuevo {tab === 'mensualidades' ? 'Mensualidad' : 'Sueldo'}
-          </button>
-        </div>
-
-        {/* Filters */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={tab === 'mensualidades' ? 'Buscar alumno...' : 'Buscar profesor...'}
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-            />
-          </div>
-          <select className="px-3 py-2 bg-gray-100 border-none rounded-lg text-sm text-gray-600 outline-none cursor-pointer" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
-            <option value="">Todos los estados</option>
-            {tab === 'mensualidades' ? (
-              <>
-                <option value="pendiente">Pendiente</option>
-                <option value="pagado">Pagado</option>
-                <option value="vencido">Vencido</option>
-                <option value="descuento">Descuento</option>
-              </>
-            ) : (
-              <>
-                <option value="pendiente">Pendiente</option>
-                <option value="pagado">Pagado</option>
-                <option value="rechazado">Rechazado</option>
-              </>
-            )}
-          </select>
-          <select className="px-3 py-2 bg-gray-100 border-none rounded-lg text-sm text-gray-600 outline-none cursor-pointer" value={filtroMes} onChange={(e) => setFiltroMes(e.target.value)}>
-            <option value="">Todos los meses</option>
-            {meses.map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
-        </div>
+  return <div className="space-y-4">
+      <PageHeading title="Pagos" description="Consulta matrículas, mensualidades y pagos de profesores por separado."/>
+    <div className="card space-y-4"><div className="flex flex-col justify-between gap-3 sm:flex-row"><div className="flex flex-wrap gap-2">{(['matriculas','mensualidades','sueldos'] as Tab[]).map(t=><button key={t} disabled={saving} onClick={()=>cambiarTab(t)} className={tab === t ? 'btn-primary' : 'btn-secondary'}>{t === 'matriculas' ? 'Matrículas' : t === 'mensualidades' ? 'Mensualidades' : 'Pagos de profesores'}</button>)}</div><button disabled={loadingLists || !!listError} className="btn-primary disabled:opacity-50" onClick={()=>abrir()}>{tab === 'sueldos' ? 'Registrar pago' : 'Nuevo concepto'}</button></div>
+      <p className="text-sm text-gray-500">{tab === 'matriculas' ? 'Un pago de matrícula por alumno y periodo académico, independiente de los cursos y las mensualidades.' : tab === 'mensualidades' ? 'Una mensualidad por alumno, periodo académico y mes/año.' : 'Profesor, mes/año y monto: el registro confirma el pago con la fecha de hoy.'}</p>
+      {loadingLists && <p>Cargando listas…</p>}{listError && <p role="alert" className="text-red-600">No se pudieron cargar las listas: {listError}. Recarga para reintentar.</p>}
+      <div className="flex flex-col flex-wrap gap-3 sm:flex-row"><SearchInput value={search} onChange={setSearch} placeholder={tab === 'sueldos' ? 'Buscar profesor…' : 'Buscar alumno…'} />
+        <select aria-label="Estado" className="input-field sm:w-auto" value={estado} onChange={e=>{setEstado(e.target.value);setPage(1);}}><option value="">Todos los estados</option>{estados.map(s=><option key={s}>{s}</option>)}</select>
+        {tab !== 'matriculas' && <><select aria-label="Mes" className="input-field sm:w-auto" value={mes} onChange={e=>{setMes(e.target.value);setPage(1);}}><option value="">Todos los meses</option>{meses.map(m=><option key={m}>{m}</option>)}</select><input aria-label="Año" type="number" min="1901" max="2155" className="input-field sm:w-28" value={año} onChange={e=>{setAño(e.target.value);setPage(1);}} /></>}
       </div>
-
-      {/* Summary */}
-      <div className="bg-white rounded-xl border border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-900">Resumen</h3>
-          <select className="px-3 py-1 bg-gray-100 border-none rounded-lg text-sm text-gray-600 outline-none cursor-pointer" value={añoResumen} onChange={(e) => setAñoResumen(e.target.value)}>
-            {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-        </div>
-        <div className="grid grid-cols-4 gap-4">
-          {meses.map(m => {
-            const item = resumen.find((r: any) => r.mes === m);
-            return (
-              <div key={m} className="bg-gray-50 rounded-lg p-3 text-center">
-                <p className="text-xs text-gray-500">{m}</p>
-                <p className="text-lg font-bold text-gray-900">S/ {Number(item?.total_mes || 0).toFixed(2)}</p>
-                <p className="text-xs text-gray-500">{item?.pagados || 0} pagados / {item?.pendientes || 0} pendientes</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Alumnos con Deuda - Solo para mensualidades */}
-      {tab === 'mensualidades' && (
-        <div className="bg-white rounded-xl border border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-gray-900">Alumnos con Mensualidades Pendientes</h3>
-            <Badge variant="warning">{alumnosConDeuda.length} alumnos</Badge>
-          </div>
-          {loadingDeuda ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
-            </div>
-          ) : alumnosConDeuda.length === 0 ? (
-            <div className="flex items-center justify-center h-32 text-gray-500">
-              No hay alumnos con deudas pendientes
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alumno</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grado/Sección</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mensualidades Pendientes</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Deuda</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contacto</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {alumnosConDeuda.map((alumno: any) => (
-                    <tr key={alumno.alumno_id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900 font-medium">{alumno.codigo_alumno}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {alumno.alumno_nombre} {alumno.alumno_apellido}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {alumno.grado} - {alumno.seccion}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        <Badge variant="warning">{alumno.mensualidades_pendientes}</Badge>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 font-bold">
-                        S/ {Number(alumno.total_deuda || 0).toFixed(2)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {alumno.alumno_telefono || 'N/A'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Data Table */}
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                {columns.map(col => (
-                  <th key={col.key} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {col.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {data.map((row: any) => (
-                <tr key={row.id} className="hover:bg-gray-50">
-                  {columns.map(col => (
-                    <td key={col.key} className="px-4 py-3 text-sm text-gray-900">
-                      {col.render ? col.render(row[col.key], row) : row[col.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {data.length === 0 && (
-            <div className="flex items-center justify-center h-32 text-gray-500">
-              No hay registros encontrados
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Modal */}
-      {showModal && (
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editing ? `Editar ${tab === 'mensualidades' ? 'Mensualidad' : 'Sueldo'}` : `Nueva ${tab === 'mensualidades' ? 'Mensualidad' : 'Sueldo'}`} size="md">
-          {tab === 'mensualidades' ? (
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alumno</label>
-                <select
-                  value={selectedAlumno}
-                  onChange={(e) => setSelectedAlumno(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-                  required
-                >
-                  <option value="">Seleccionar alumno...</option>
-                  {alumnos.map(a => (
-                    <option key={a.id} value={a.id}>{a.nombre} {a.apellido} ({a.codigo_alumno})</option>
-                  ))}
-                </select>
-              </div>
-<div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">Período Académico</label>
-                 <select
-                   value={selectedPeriodo}
-                   onChange={(e) => setSelectedPeriodo(e.target.value)}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-                 >
-                   <option value="">Sin período</option>
-                   {periodos.map(p => (
-                     <option key={p.id} value={p.id}>{p.nombre}</option>
-                   ))}
-                 </select>
-               </div>
-               <div className="grid grid-cols-2 gap-3">
-                 <div>
-                   <label className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
-                  <input type="number" step="0.01" name="form-monto" defaultValue={editing?.monto || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Año</label>
-                  <select name="form-año" defaultValue={editing?.año || '2026'} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500">
-                    {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mes</label>
-                  <select name="form-mes" defaultValue={editing?.mes || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" required>
-                    {meses.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                  <select name="form-estado" defaultValue={editing?.estado || 'pendiente'} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500">
-                    <option value="pendiente">Pendiente</option>
-                    <option value="pagado">Pagado</option>
-                    <option value="vencido">Vencido</option>
-                    <option value="descuento">Descuento</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex gap-3 justify-end mt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
-                <button type="submit" className="btn-primary">Guardar</button>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Profesor</label>
-                <select
-                  value={selectedProfesor}
-                  onChange={(e) => setSelectedProfesor(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-                  required
-                >
-                  <option value="">Seleccionar profesor...</option>
-                  {profesores.map(p => (
-                    <option key={p.id} value={p.id}>{p.nombre} {p.apellido}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Curso</label>
-                <select
-                  value={selectedCurso}
-                  onChange={(e) => setSelectedCurso(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-                  required
-                  disabled={!selectedProfesor}
-                >
-                  <option value="">Seleccionar curso...</option>
-                  {cursosProfesor.map(c => (
-                    <option key={c.id} value={c.id}>{c.nombre} ({c.codigo})</option>
-                  ))}
-                </select>
-                {!selectedProfesor && <small className="text-gray-500">Seleccione un profesor primero</small>}
-              </div>
-<div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">Período Académico</label>
-                 <select
-                   value={selectedPeriodo}
-                   onChange={(e) => setSelectedPeriodo(e.target.value)}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
-                 >
-                   <option value="">Sin período</option>
-                   {periodos.map(p => (
-                     <option key={p.id} value={p.id}>{p.nombre}</option>
-                   ))}
-                 </select>
-               </div>
-               <div className="grid grid-cols-2 gap-3">
-                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Salario Base</label>
-                  <input type="number" step="0.01" name="form-salario" defaultValue={editing?.salario_base || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Horas Clase</label>
-                  <input type="number" step="0.5" name="form-horas" defaultValue={editing?.horas_clase || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Monto Extra</label>
-                <input type="number" step="0.01" name="form-extra" defaultValue={editing?.monto_extra || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mes</label>
-                  <select name="form-mes" defaultValue={editing?.mes || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" required>
-                    {meses.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Año</label>
-                  <select name="form-año" defaultValue={editing?.año || '2026'} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500">
-                    {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                <select name="form-estado" defaultValue={editing?.estado || 'pendiente'} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500">
-                  <option value="pendiente">Pendiente</option>
-                  <option value="pagado">Pagado</option>
-                  <option value="rechazado">Rechazado</option>
-                </select>
-              </div>
-              <div className="flex gap-3 justify-end mt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
-                <button type="submit" className="btn-primary">Guardar</button>
-              </div>
-            </form>
-          )}
-        </Modal>
-      )}
-
-      {deleteId && (
-        <ConfirmDialog
-          isOpen={!!deleteId}
-          onClose={() => setDeleteId(null)}
-          onConfirm={handleDelete}
-          title={`Eliminar ${tab === 'mensualidades' ? 'Mensualidad' : 'Sueldo'}`}
-          message="¿Estás seguro de que deseas eliminar este registro?"
-        />
-      )}
     </div>
-  );
+    {error ? <div role="alert" className="card text-red-600">{error}<button className="btn-secondary ml-3" onClick={()=>setReload(v=>v+1)}>Reintentar</button></div> : <>
+      <section className="card"><h3 className="mb-3 font-semibold">Resumen de {labels[tab].toLowerCase()} — filtros actuales</h3>{loading ? <p>Cargando resumen…</p> : <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">{[['Importe registrado',dinero(sum('total_mes'))],[`Pagado (${sum('pagados')})`,dinero(sum('total_pagado'))],[`Pendiente o vencido (${sum('pendientes')})`,dinero(sum('total_pendiente'))]].map(([k,v])=><div key={k} className="rounded-lg bg-gray-50 p-3"><p className="text-sm text-gray-500">{k}</p><p className="text-lg font-bold">{v}</p></div>)}</div>}</section>
+      {tab === 'mensualidades' && !loading && <section className="card"><h3 className="mb-3 font-semibold">Alumnos con mensualidades pendientes o vencidas</h3>{deudas.length ? <div className="space-y-2">{deudas.map(a=><div key={a.alumno_id} className="flex flex-wrap justify-between gap-2 rounded-lg bg-gray-50 p-3"><span>{a.alumno_nombre} {a.alumno_apellido} ({a.codigo_alumno})</span><span>{a.mensualidades_pendientes} mensualidades · {dinero(a.total_deuda)}</span></div>)}</div> : <p className="text-gray-500">Sin deudas para los filtros actuales.</p>}</section>}
+      <DataTable columns={columns} data={data} isLoading={loading} page={page} total={total} totalPages={pages} onPageChange={setPage} emptyMessage="No hay pagos para los filtros actuales" />
+    </>}
+    <Modal isOpen={show} onClose={()=>{if(!saving)setShow(false);}} title={`${editing ? 'Editar' : 'Registrar'} ${labels[tab].toLowerCase()}`} size="md"><form onSubmit={submit} className="space-y-4">
+      <label className="block text-sm font-medium">{tab === 'sueldos' ? 'Profesor' : 'Alumno'}<select required className="input-field mt-1" value={form.persona} disabled={tab === 'matriculas' && !!editing} onChange={e=>setForm({...form,persona:e.target.value,matricula:'',...(tab === 'matriculas' ? {periodo:''} : {})})}><option value="">Seleccionar…</option>{(tab === 'sueldos' ? profesores : alumnos).map(p=><option key={p.id} value={p.id}>{p.nombre} {p.apellido}{p.codigo_alumno ? ` (${p.codigo_alumno})` : ''}{tab === 'sueldos' && p.activo === 0 ? ' (inactivo)' : ''}</option>)}</select></label>
+      {tab === 'mensualidades' && <label className="block text-sm font-medium">Periodo académico<select required className="input-field mt-1" value={form.periodo} onChange={e=>setForm({...form,periodo:e.target.value})}><option value="">Seleccionar…</option>{periodos.map(p=><option key={p.id} value={p.id}>{p.nombre}</option>)}</select></label>}
+      {tab === 'matriculas' && <div className="space-y-2">
+        <label className="block text-sm font-medium">Matrícula académica<select required disabled={loadingMatriculas || !form.persona || !!editing} className="input-field mt-1" value={form.matricula} onChange={e=>setForm({...form,matricula:e.target.value})}><option value="">Seleccionar matrícula…</option>{matriculaOptions.map(m=><option key={m.periodoId} value={m.id}>{m.periodo} · {m.grados || 'Sin grado registrado'}</option>)}</select></label>
+        {loadingMatriculas && <p className="text-sm text-gray-500">Cargando matrículas…</p>}
+        {matriculaError && <p role="alert" className="text-red-600">{matriculaError}</p>}
+        {matriculaElegida && <p className="text-sm text-gray-600">Periodo: {matriculaElegida.periodo}. Grado: {matriculaElegida.grados || 'Sin grado registrado'}. Un pago por alumno y periodo, independiente del número de cursos.</p>}
+      </div>}
+      {tab !== 'matriculas' && <label className="block text-sm font-medium">Mes y año<input required type="month" min="1901-01" max="2155-12" className="input-field mt-1" value={form.mensual} onChange={e=>setForm({...form,mensual:e.target.value})} /></label>}
+      <label className="block text-sm font-medium">Monto (S/)<input required type="number" min="0" max="99999999.99" step="0.01" className="input-field mt-1" value={form.monto} onChange={e=>setForm({...form,monto:e.target.value})} /></label>
+      {tab !== 'sueldos' && <><label className="block text-sm font-medium">Estado<select className="input-field mt-1" value={form.estado} onChange={e=>setForm({...form,estado:e.target.value,fecha:e.target.value === 'pagado' ? form.fecha || hoy() : ''})}>{estados.map(s=><option key={s}>{s}</option>)}</select></label>{form.estado === 'pagado' && <label className="block text-sm font-medium">Fecha de pago<input required type="date" className="input-field mt-1" value={form.fecha} onChange={e=>setForm({...form,fecha:e.target.value})} /></label>}</>}
+      {tab === 'sueldos' && <p className="text-sm text-gray-500">{editing ? `Estado: ${editing.estado}. Fecha: ${editing.fecha_pago?.slice(0,10) || 'sin pago registrado'}.` : 'Se registrará como pagado con la fecha de hoy.'}</p>}
+      {formError && <p role="alert" className="text-red-600">{formError}</p>}<div className="flex justify-end gap-3"><button type="button" disabled={saving} className="btn-secondary" onClick={()=>setShow(false)}>Cancelar</button><button disabled={saving || loadingLists || !!listError || (tab === 'matriculas' && (loadingMatriculas || !!matriculaError))} className="btn-primary">{saving ? 'Guardando…' : 'Guardar'}</button></div>
+    </form></Modal>
+    <Modal isOpen={!!payment} onClose={()=>{if(!saving)setPayment(null);}} title="Confirmar pago realizado" size="sm"><form onSubmit={pagar} className="space-y-4"><p>{labels[tab]}: {dinero(tab === 'sueldos' ? payment?.monto_total : payment?.monto)}</p><label className="block text-sm font-medium">Fecha de pago<input required type="date" className="input-field mt-1" value={paymentDate} onChange={e=>setPaymentDate(e.target.value)} /></label>{formError && <p role="alert" className="text-red-600">{formError}</p>}<button disabled={saving} className="btn-primary">{saving ? 'Registrando…' : 'Confirmar pago'}</button></form></Modal>
+    <ConfirmDialog isOpen={!!deleteId} onClose={()=>{if(!saving)setDeleteId(null);}} onConfirm={eliminar} isLoading={saving} title="Eliminar pago" message="¿Eliminar este registro de pago?" />
+  </div>;
 }

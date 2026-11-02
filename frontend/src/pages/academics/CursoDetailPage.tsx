@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   BookOpen, Calendar, Users, FileText, ChevronDown, ChevronUp, ChevronRight,
-  ArrowLeft, CheckCircle, Clock, Star, Mail, GraduationCap
+  ArrowLeft, CheckCircle, Clock, Star, Mail, GraduationCap, UserPlus, X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { cursosApi, calificacionesApi } from '../../api/endpoints';
+import { cursosApi, calificacionesApi, matriculasApi, alumnosApi, periodosApi } from '../../api/endpoints';
+import Modal from '../../components/ui/Modal';
+import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import type { Curso, Calificacion } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -51,6 +53,147 @@ export default function CursoDetailPage() {
   ]);
 
   const [profesores, setProfesores] = useState<Profesor[]>([]);
+  const [alumnos, setAlumnos] = useState<any[]>([]);
+  const [alumnosDisponibles, setAlumnosDisponibles] = useState<any[]>([]);
+  const [periodos, setPeriodos] = useState<any[]>([]);
+  const [showAsignar, setShowAsignar] = useState(false);
+  const [showAsignarMasivo, setShowAsignarMasivo] = useState(false);
+  const [asignarForm, setAsignarForm] = useState({ alumno_id: '', periodo_academico_id: '' });
+  const [asignarMasivoForm, setAsignarMasivoForm] = useState({ periodo_academico_id: '', seleccionAlumnos: [] as number[] });
+  const [savingAsignar, setSavingAsignar] = useState(false);
+  const [savingAsignarMasivo, setSavingAsignarMasivo] = useState(false);
+  const [quitarMatriculaId, setQuitarMatriculaId] = useState<number | null>(null);
+  const esAdmin = user?.rol === 'administrador';
+
+  const refreshAlumnos = async () => {
+    try {
+      const res = await cursosApi.getById(parseInt(id || '1'));
+      setAlumnos((res.data.data as any)?.alumnos || []);
+    } catch (error) {
+      console.error('Error al actualizar los alumnos del curso:', error);
+    }
+  };
+
+  const openAsignar = async () => {
+    setAsignarForm({ alumno_id: '', periodo_academico_id: '' });
+    setShowAsignar(true);
+    try {
+      const [alumRes, perRes] = await Promise.all([
+        alumnosApi.getAll({ limit: 100 }),
+        periodosApi.getAll()
+      ]);
+      setAlumnosDisponibles(alumRes.data.data || []);
+      const listaPeriodos = perRes.data.data || [];
+      setPeriodos(listaPeriodos);
+      const activo = listaPeriodos.find((p: any) => p.activo) || listaPeriodos[0];
+      setAsignarForm({ alumno_id: '', periodo_academico_id: activo ? String(activo.id) : '' });
+    } catch (error) {
+      console.error('Error al cargar alumnos y periodos:', error);
+      toast.error('No se pudieron cargar los alumnos y periodos');
+    }
+  };
+
+  const handleAsignar = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!asignarForm.alumno_id || !asignarForm.periodo_academico_id) {
+      toast.error('Seleccione alumno y periodo');
+      return;
+    }
+    setSavingAsignar(true);
+    try {
+      await matriculasApi.create({
+        alumno_id: Number(asignarForm.alumno_id),
+        curso_id: curso.id,
+        periodo_academico_id: Number(asignarForm.periodo_academico_id)
+      });
+      toast.success('Alumno asignado al curso');
+      setShowAsignar(false);
+      refreshAlumnos();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'No se pudo asignar el alumno');
+    } finally {
+      setSavingAsignar(false);
+    }
+  };
+
+  const handleQuitarAlumno = async () => {
+    if (!quitarMatriculaId) return;
+    try {
+      await matriculasApi.delete(quitarMatriculaId);
+      toast.success('Alumno quitado del curso');
+      setQuitarMatriculaId(null);
+      refreshAlumnos();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'No se pudo quitar el alumno');
+    }
+  };
+
+  const openAsignarMasivo = async () => {
+    setAsignarMasivoForm({ periodo_academico_id: '', seleccionAlumnos: [] });
+    setShowAsignarMasivo(true);
+    try {
+      const [alumRes, perRes] = await Promise.all([
+        alumnosApi.getAll({ limit: 100 }),
+        periodosApi.getAll()
+      ]);
+      const todosAlumnos = alumRes.data.data || [];
+      const alumnosYaAsignados = alumnos.map((a: any) => a.alumno_id);
+      setAlumnosDisponibles(todosAlumnos.filter((a: any) => !alumnosYaAsignados.includes(a.id)));
+      const listaPeriodos = perRes.data.data || [];
+      setPeriodos(listaPeriodos);
+      const activo = listaPeriodos.find((p: any) => p.activo) || listaPeriodos[0];
+      setAsignarMasivoForm({ periodo_academico_id: activo ? String(activo.id) : '', seleccionAlumnos: [] });
+    } catch (error) {
+      console.error('Error al cargar alumnos y periodos:', error);
+      toast.error('No se pudieron cargar los alumnos y periodos');
+    }
+  };
+
+  const handleAsignarMasivo = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!asignarMasivoForm.periodo_academico_id || asignarMasivoForm.seleccionAlumnos.length === 0) {
+      toast.error('Seleccione periodo y al menos un alumno');
+      return;
+    }
+    setSavingAsignarMasivo(true);
+    let asignados = 0;
+    let yaExistentes = 0;
+    try {
+      for (const alumnoId of asignarMasivoForm.seleccionAlumnos) {
+        try {
+          await matriculasApi.create({
+            alumno_id: alumnoId,
+            curso_id: curso.id,
+            periodo_academico_id: Number(asignarMasivoForm.periodo_academico_id)
+          });
+          asignados++;
+        } catch (error: any) {
+          if (error.response?.status === 409) {
+            yaExistentes++;
+          } else {
+            throw error;
+          }
+        }
+      }
+      toast.success(`${asignados} alumnos asignados${yaExistentes > 0 ? `, ${yaExistentes} ya estaban matriculados` : ''}`);
+      setShowAsignarMasivo(false);
+      refreshAlumnos();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'No se pudo asignar los alumnos');
+      await refreshAlumnos();
+    } finally {
+      setSavingAsignarMasivo(false);
+    }
+  };
+
+  const toggleAlumnoSeleccion = (alumnoId: number) => {
+    setAsignarMasivoForm(prev => ({
+      ...prev,
+      seleccionAlumnos: prev.seleccionAlumnos.includes(alumnoId)
+        ? prev.seleccionAlumnos.filter(id => id !== alumnoId)
+        : [...prev.seleccionAlumnos, alumnoId]
+    }));
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,10 +202,12 @@ export default function CursoDetailPage() {
         console.log('Respuesta completa:', res);
         console.log('Respuesta data:', res.data);
         console.log('Curso data:', res.data.data);
-        const cursoData = res.data.data || res.data;
+        const cursoData = res.data.data;
+        if (!cursoData) throw new Error('El curso no existe');
         console.log('Profesores:', (cursoData as any)?.profesores);
         setCurso(cursoData);
         setProfesores((cursoData as any)?.profesores || []);
+        setAlumnos((cursoData as any)?.alumnos || []);
       } catch (error) {
         console.error('Error al cargar curso:', error);
         toast.error('Error al cargar curso');
@@ -116,12 +261,12 @@ export default function CursoDetailPage() {
         </div>
 
         {/* Pestañas */}
-        <div className="flex items-center gap-1 px-5 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center gap-1 overflow-x-auto overscroll-x-contain px-2 sm:px-5 border-b border-gray-200 bg-gray-50" role="tablist" aria-label="Secciones del curso">
           {tabs.map(tab => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-4 py-3 text-sm font-medium transition-colors relative ${
+              className={`min-h-11 shrink-0 px-3 py-3 text-sm font-medium transition-colors relative sm:px-4 ${
                 tab.active
                   ? 'text-primary-600 border-b-2 border-primary-600'
                   : 'text-gray-500 hover:text-gray-700'
@@ -139,14 +284,14 @@ export default function CursoDetailPage() {
       </div>
 
 {/* Banner Institucional */}
-        <div className="relative h-36 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 to-primary-800/20" />
+        <div className="relative h-36 bg-linear-to-r from-slate-800 to-slate-900 rounded-xl overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-r from-primary-600/20 to-primary-800/20" />
           <div className="absolute inset-0 flex items-center justify-center text-white">
             <h1 className="text-2xl font-bold">{curso.nombre}</h1>
           </div>
         </div>
 
-      <div className="flex gap-4">
+      <div className="flex min-w-0 flex-col gap-4 lg:flex-row">
         {/* Área Central */}
         <div className="flex-1 space-y-4">
           {/* Contenido / Calendario / Calificaciones */}
@@ -240,7 +385,7 @@ export default function CursoDetailPage() {
         </div>
 
         {/* Panel Lateral Derecho */}
-        <div className="w-72 flex-shrink-0 space-y-4">
+        <div className="w-full min-w-0 space-y-4 lg:w-72 lg:shrink-0">
           {/* Profesores */}
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
@@ -251,7 +396,7 @@ export default function CursoDetailPage() {
             <div className="p-3 space-y-3">
               {profesores.map((prof, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center shrink-0">
                     <span className="text-sm font-semibold text-primary-700">
                       {prof.nombre[0]}{prof.apellido[0]}
                     </span>
@@ -268,6 +413,57 @@ export default function CursoDetailPage() {
             </div>
           </div>
 
+          {/* Alumnos del curso */}
+          <div id="alumnos-curso" className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <GraduationCap className="w-4 h-4 text-primary-600" /> Alumnos ({alumnos.length})
+              </h3>
+              {esAdmin && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={openAsignarMasivo}
+                    className="flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" /> Asignar varios
+                  </button>
+                  <button
+                    onClick={openAsignar}
+                    className="flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" /> Asignar
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="p-3 space-y-3">
+              {alumnos.length === 0 ? (
+                <p className="py-3 text-center text-xs text-gray-400">Sin alumnos asignados</p>
+              ) : alumnos.map(alumno => (
+                <div key={alumno.matricula_id} className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+                    <span className="text-sm font-semibold text-emerald-700">
+                      {alumno.nombre?.[0]}{alumno.apellido?.[0]}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{alumno.nombre} {alumno.apellido}</p>
+                    <p className="text-xs text-gray-500 font-mono">{alumno.codigo_alumno}</p>
+                  </div>
+                  {esAdmin && (
+                    <button
+                      onClick={() => setQuitarMatriculaId(alumno.matricula_id)}
+                      title="Quitar del curso"
+                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Acciones Rápidas */}
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
@@ -276,7 +472,10 @@ export default function CursoDetailPage() {
               </h3>
             </div>
             <div className="p-3 space-y-2">
-              <button className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition-colors font-medium">
+              <button
+                onClick={() => document.getElementById('alumnos-curso')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition-colors font-medium"
+              >
                 <Users className="w-4 h-4" /> Lista de participantes
               </button>
               <button className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium">
@@ -320,6 +519,119 @@ export default function CursoDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal para asignar alumno al curso */}
+      <Modal
+        isOpen={showAsignar}
+        onClose={() => setShowAsignar(false)}
+        title={`Asignar alumno a ${curso.nombre}`}
+      >
+        <form onSubmit={handleAsignar} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alumno *</label>
+            <select
+              value={asignarForm.alumno_id}
+              onChange={event => setAsignarForm({ ...asignarForm, alumno_id: event.target.value })}
+              className="input-field"
+              required
+            >
+              <option value="">Seleccionar alumno...</option>
+              {alumnosDisponibles.map(alumno => (
+                <option key={alumno.id} value={alumno.id}>
+                  {alumno.apellido} {alumno.nombre} ({alumno.codigo_alumno})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Periodo académico *</label>
+            <select
+              value={asignarForm.periodo_academico_id}
+              onChange={event => setAsignarForm({ ...asignarForm, periodo_academico_id: event.target.value })}
+              className="input-field"
+              required
+            >
+              <option value="">Seleccionar periodo...</option>
+              {periodos.map(periodo => (
+                <option key={periodo.id} value={periodo.id}>{periodo.nombre}</option>
+              ))}
+            </select>
+          </div>
+          <div className="form-actions">
+            <button type="button" onClick={() => setShowAsignar(false)} className="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" disabled={savingAsignar} className="btn-primary disabled:opacity-50">
+              {savingAsignar ? 'Asignando…' : 'Asignar alumno'}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal para asignar varios alumnos al curso */}
+      <Modal
+        isOpen={showAsignarMasivo}
+        onClose={() => setShowAsignarMasivo(false)}
+        title={`Asignar varios alumnos a ${curso.nombre}`}
+        size="lg"
+      >
+        <form onSubmit={handleAsignarMasivo} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Periodo académico *</label>
+            <select
+              value={asignarMasivoForm.periodo_academico_id}
+              onChange={event => setAsignarMasivoForm({ ...asignarMasivoForm, periodo_academico_id: event.target.value })}
+              className="input-field"
+              required
+            >
+              <option value="">Seleccionar periodo...</option>
+              {periodos.map(periodo => (
+                <option key={periodo.id} value={periodo.id}>{periodo.nombre}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Alumnos ({asignarMasivoForm.seleccionAlumnos.length} seleccionados)
+            </label>
+            <div className="max-h-80 space-y-1 overflow-y-auto border rounded-lg p-2">
+              {alumnosDisponibles.length === 0 ? (
+                <p className="py-3 text-center text-xs text-gray-400">No hay alumnos disponibles</p>
+              ) : (
+                alumnosDisponibles.map(alumno => (
+                  <label key={alumno.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={asignarMasivoForm.seleccionAlumnos.includes(alumno.id)}
+                      onChange={() => toggleAlumnoSeleccion(alumno.id)}
+                      className="rounded"
+                    />
+                    <span className="text-gray-900">{alumno.apellido} {alumno.nombre}</span>
+                    <span className="text-xs text-gray-400 font-mono">({alumno.codigo_alumno})</span>
+                  </label>
+                ))
+              )}
+            </div>
+          </div>
+          <div className="form-actions">
+            <button type="button" onClick={() => setShowAsignarMasivo(false)} className="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" disabled={savingAsignarMasivo} className="btn-primary disabled:opacity-50">
+              {savingAsignarMasivo ? 'Asignando…' : `Asignar ${asignarMasivoForm.seleccionAlumnos.length} alumnos`}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <ConfirmDialog
+        isOpen={quitarMatriculaId !== null}
+        onClose={() => setQuitarMatriculaId(null)}
+        onConfirm={handleQuitarAlumno}
+        title="Quitar alumno del curso"
+        message="¿Está seguro de quitar a este alumno del curso? Se eliminará su matrícula en este curso."
+      />
+
     </div>
   );
 }

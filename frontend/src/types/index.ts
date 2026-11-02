@@ -1,12 +1,30 @@
 export interface User {
+  rolSistema?: string;
+  debe_cambiar_password?: boolean;
   id: number;
   email: string;
   nombre: string;
   apellido: string;
   rol: string;
   foto_url?: string;
-  password_hash?: string;
-  password?: string;
+  dni?: string;
+  telefono?: string;
+  fecha_nacimiento?: string | null;
+  genero?: string;
+}
+
+export interface CreatedAccountCredentials {
+  email: string;
+  temporaryPassword: string;
+  mustChangePassword: true;
+  mailboxCreated: false;
+}
+
+export interface CreatedAccount {
+  id: number;
+  usuario_id?: number;
+  codigo_alumno?: string;
+  credentials: CreatedAccountCredentials;
 }
 
 export interface AuthState {
@@ -17,6 +35,9 @@ export interface AuthState {
 }
 
 export interface Alumno {
+  tiene_matricula?: number;
+  tiene_matricula_activa_periodo?: number | null;
+  estado_matricula?: string | null;
   id: number;
   usuario_id: number;
   codigo_alumno: string;
@@ -29,9 +50,10 @@ export interface Alumno {
   telefono?: string;
   foto_url?: string;
   grado?: string;
+  grado_id?: number;
   nivel?: string;
-  seccion?: string;
   periodo_academico?: string;
+  periodo_academico_id?: number;
   estado: string;
   activo: number;
   created_at: string;
@@ -54,9 +76,11 @@ export interface Profesor {
 }
 
 export interface CursoAsignado {
+  periodo_activo?:number;
+  periodo_grado_curso_id?:number;
+  periodo_academico_id?:number;
   nombre: string;
   codigo?: string;
-  seccion: string;
   grado: string;
   periodo: string;
   dia_semana: string;
@@ -77,6 +101,36 @@ export interface Curso {
   grado?: string;
 }
 
+export interface OfertaAcademica {
+  periodo_grado_curso_id: number;
+  periodo_academico_id: number;
+  periodo: string;
+  periodo_activo: number;
+  fecha_inicio?: string;
+  fecha_fin?: string;
+  grado_id: number;
+  grado: string;
+  nivel: string;
+  curso_id: number;
+  curso: string;
+  codigo?: string;
+  descripcion?: string;
+  alumnos_count?: number;
+  profesores?: Profesor[];
+  alumnos?: AlumnoOferta[];
+}
+
+export interface AlumnoOferta {
+  matricula_id: number;
+  alumno_id: number;
+  codigo_alumno: string;
+  nombre: string;
+  apellido: string;
+  estado_matricula: string;
+  periodo_academico_id: number;
+  grado_id: number;
+}
+
 export interface Calificacion {
   id: number;
   alumno_id: number;
@@ -89,6 +143,24 @@ export interface Calificacion {
   curso_codigo?: string;
   periodo_nombre?: string;
   fecha_evaluacion?: string;
+}
+
+export interface EvaluacionAcademica {
+  id: number;
+  periodo_grado_curso_id: number;
+  nombre: string;
+  tipo: string;
+  fecha_evaluacion: string;
+  nota_maxima: number;
+  estado: 'activa' | 'cerrada';
+}
+
+export interface AlumnoLibro {
+  alumno_id: number;
+  codigo_alumno: string;
+  nombre: string;
+  apellido: string;
+  grado_id: number;
 }
 
 export interface Asistencia {
@@ -106,10 +178,11 @@ export interface Documento {
   id: number;
   titulo: string;
   descripcion?: string;
-  archivo_url: string;
+  archivo_url?: string | null;
   tipo_archivo: string;
   tamano_bytes: number;
   categoria?: string;
+  categoria_id?: number | null;
   subcategoria?: string;
   alumno_id?: number;
   profesor_id?: number;
@@ -119,11 +192,66 @@ export interface Documento {
   created_at: string;
 }
 
+export interface DocumentoCategoria {
+  id: number;
+  nombre: string;
+  estado: 'activa' | 'archivada';
+}
+
+export type FormularioCampoTipo =
+  | 'texto'
+  | 'parrafo'
+  | 'numero'
+  | 'fecha'
+  | 'correo'
+  | 'seleccion'
+  | 'casilla';
+
+export interface FormularioCampo {
+  id: string;
+  etiqueta: string;
+  tipo: FormularioCampoTipo;
+  requerido: boolean;
+  opciones?: string[];
+  minimo?: number;
+  maximo?: number;
+}
+
+export interface FormularioDocumental {
+  id: number;
+  titulo: string;
+  descripcion?: string | null;
+  categoria_id?: number | null;
+  categoria?: string | null;
+  campos?: FormularioCampo[];
+  estado: 'borrador' | 'publicada' | 'archivada';
+  creado_por: number;
+  created_at: string;
+  updated_at: string;
+  cantidad_campos?: number;
+  envios_count?: number | null;
+}
+
+export interface FormularioEnvio {
+  id: number;
+  usuario_id: number;
+  alumno_id: number | null;
+  respuestas: Record<string, unknown>;
+  created_at: string;
+  usuario_nombre?: string;
+  usuario_apellido?: string;
+  codigo_alumno?: string | null;
+  alumno_nombre?: string | null;
+  alumno_apellido?: string | null;
+}
+
 export interface Horario {
   id: number;
   curso_id: number;
   profesor_id: number;
-  seccion_id: number;
+  periodo_academico_id: number;
+  periodo_grado_curso_id: number | null;
+  oferta_academica_id?: number | null;
   dia_semana: string;
   hora_inicio: string;
   hora_fin: string;
@@ -131,9 +259,37 @@ export interface Horario {
   curso_nombre?: string;
   curso_codigo?: string;
   profesor_nombre?: string;
-  seccion?: string;
   grado?: string;
+  nivel?: string;
   periodo?: string;
+}
+
+export interface HorarioPayload {
+  periodo_grado_curso_id: number;
+  profesor_id: number;
+  dia_semana: string;
+  hora_inicio: string;
+  hora_fin: string;
+  aula: string | null;
+}
+
+export type CalendarEventType = 'clase' | 'evaluacion' | 'institucional' | 'feriado' | 'reunion' | 'otro';
+
+export interface CalendarEvent {
+  id: string;
+  tipo: CalendarEventType;
+  titulo: string;
+  descripcion?: string | null;
+  fecha: string;
+  hora_inicio: string | null;
+  hora_fin: string | null;
+  aula: string | null;
+  curso: string;
+  curso_codigo?: string | null;
+  grado: string;
+  periodo: string;
+  periodo_academico_id: number | null;
+  periodo_grado_curso_id: number | null;
 }
 
 export interface PeriodoAcademico {
@@ -158,13 +314,13 @@ export interface Alerta {
   alumno_apellido?: string;
   codigo_alumno?: string;
   grado?: string;
-  seccion?: string;
   created_at: string;
 }
 
 export interface DashboardStats {
   totalAlumnos: number;
   totalProfesores: number;
+  totalApoderados?: number;
   totalCursos: number;
   alertasActivas: number;
   documentosPendientes: number;
@@ -180,24 +336,13 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
 }
 
-export interface RiesgoAcademico {
-  alumno_id: number;
-  nombre_completo: string;
-  codigo_alumno: string;
-  grado: string;
-  seccion: string;
-  nivel_riesgo: number;
-  tipo_riesgo: 'bajo' | 'medio' | 'alto';
-  indicadores: string[];
-  promedio_general: number;
-  porcentaje_ausencias: number;
-  cursos_desaprobados: number;
-  tendencia: string;
-  recomendacion: string;
+export interface DetallePeriodo {
+  periodo: PeriodoAcademico;
+  resumen: { grados: number; cursos: number; ofertas: number; profesores: number; alumnos_activos: number; inscripciones: number; horarios: number };
 }

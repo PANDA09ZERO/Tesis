@@ -1,87 +1,64 @@
+import { rendimientoSourceSql, asistenciaSourceSql } from '../utils/reporteAcademico';
 import { Request, Response } from 'express';
 import pool from '../config/database';
 import { sendSuccess, sendError } from '../utils/response';
 import { RowDataPacket } from 'mysql2';
+import { positiveId, validDate } from '../utils/academicValidation';
+
+
 
 export async function reporteRendimientoGeneral(req: Request, res: Response) {
+  if (req.query.periodo_id !== undefined && !positiveId(req.query.periodo_id)) return sendError(res, 'Periodo inválido', 400);
   try {
-    const periodoId = req.query.periodo_id as string;
-
-    let whereClause = '';
-    const params: any[] = [];
-    if (periodoId) { whereClause = 'WHERE c.periodo_academico_id = ?'; params.push(periodoId); }
-
-    const [reporte] = await pool.query<RowDataPacket[]>(
-      `SELECT g.nombre as grado, s.nombre as seccion, cu.nombre as curso,
-              ROUND(AVG(c.nota), 2) as promedio,
-              MIN(c.nota) as nota_minima,
-              MAX(c.nota) as nota_maxima,
-              SUM(CASE WHEN c.nota >= 11 THEN 1 ELSE 0 END) as aprobados,
-              SUM(CASE WHEN c.nota < 11 THEN 1 ELSE 0 END) as desaprobados,
-              COUNT(*) as total_evaluaciones
-       FROM calificaciones c
-       JOIN cursos cu ON c.curso_id = cu.id
-       JOIN alumnos a ON c.alumno_id = a.id
-       JOIN grados g ON a.grado_id = g.id
-       JOIN secciones s ON a.seccion_id = s.id
-       ${whereClause}
-       GROUP BY g.nombre, s.nombre, cu.nombre
-       ORDER BY g.nombre, s.nombre, cu.nombre`,
-      params
-    );
-
-    return sendSuccess(res, reporte);
-  } catch (error) {
-    return sendError(res, 'Error al generar reporte de rendimiento');
-  }
+    const [rows] = await pool.query<RowDataPacket[]>(`
+      SELECT n.periodo_id, p.nombre AS periodo, n.grado_id, g.nombre AS grado, n.curso_id, cu.nombre AS curso,
+        n.escala_maxima, CASE WHEN n.escala_maxima IS NULL THEN NULL ELSE ROUND(AVG(n.nota),2) END AS promedio, MIN(n.nota) AS nota_minima, MAX(n.nota) AS nota_maxima,
+        COUNT(*) AS total_notas, COUNT(DISTINCT n.alumno_id) AS total_alumnos,
+        COUNT(DISTINCT n.evaluacion_id) AS total_evaluaciones,
+        SUM(n.evaluacion_id IS NULL) AS notas_sin_evaluacion, NULL AS aprobados, NULL AS desaprobados
+      FROM (
+        ${rendimientoSourceSql}
+      ) n LEFT JOIN periodos_academicos p ON p.id=n.periodo_id LEFT JOIN grados g ON g.id=n.grado_id LEFT JOIN cursos cu ON cu.id=n.curso_id
+      ${req.query.periodo_id ? 'WHERE n.periodo_id = ?' : ''}
+      GROUP BY n.periodo_id,p.nombre,n.grado_id,g.nombre,n.curso_id,cu.nombre,n.escala_maxima
+      ORDER BY n.periodo_id,g.nombre,cu.nombre,n.escala_maxima`, req.query.periodo_id ? [req.query.periodo_id] : []);
+    return sendSuccess(res,rows);
+  } catch { return sendError(res, 'Error al generar reporte de rendimiento'); }
 }
 
 export async function reporteAsistencia(req: Request, res: Response) {
+  const {periodo_id, grado_id, fecha_inicio, fecha_fin} = req.query;
+  if ((periodo_id !== undefined && !positiveId(periodo_id)) || (grado_id !== undefined && !positiveId(grado_id)) || (fecha_inicio !== undefined && !validDate(fecha_inicio)) || (fecha_fin !== undefined && !validDate(fecha_fin)) || (typeof fecha_inicio === 'string' && typeof fecha_fin === 'string' && fecha_inicio > fecha_fin)) return sendError(res, 'Filtros de asistencia inválidos',400);
+  const conditions: string[] = []; const params: unknown[] = [];
+  for (const [field,value] of [['n.periodo_id',periodo_id],['n.grado_id',grado_id]]) if (value) { conditions.push(field+' = ?'); params.push(value); }
+  if (fecha_inicio) { conditions.push('n.fecha >= ?'); params.push(fecha_inicio); }
+  if (fecha_fin) { conditions.push('n.fecha <= ?'); params.push(fecha_fin); }
   try {
-    const { fecha_inicio, fecha_fin, grado_id } = req.query;
-
-    let whereClause = 'WHERE 1=1';
-    const params: any[] = [];
-
-    if (fecha_inicio) { whereClause += ' AND a.fecha >= ?'; params.push(fecha_inicio); }
-    if (fecha_fin) { whereClause += ' AND a.fecha <= ?'; params.push(fecha_fin); }
-    if (grado_id) { whereClause += ' AND al.grado_id = ?'; params.push(grado_id); }
-
-    const [reporte] = await pool.query<RowDataPacket[]>(
-      `SELECT u.nombre, u.apellido, al.codigo_alumno, g.nombre as grado, s.nombre as seccion,
-        COUNT(*) as total_dias,
-        SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) as presentes,
-        SUM(CASE WHEN a.estado = 'ausente' THEN 1 ELSE 0 END) as ausentes,
-        SUM(CASE WHEN a.estado = 'tardanza' THEN 1 ELSE 0 END) as tardanzas,
-        ROUND(SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) as porcentaje
-       FROM asistencias a
-       JOIN alumnos al ON a.alumno_id = al.id
-       JOIN usuarios u ON al.usuario_id = u.id
-       JOIN grados g ON al.grado_id = g.id
-       JOIN secciones s ON al.seccion_id = s.id
-       ${whereClause}
-       GROUP BY u.nombre, u.apellido, al.codigo_alumno, g.nombre, s.nombre
-       ORDER BY g.nombre, s.nombre, u.apellido`,
-      params
-    );
-
-    return sendSuccess(res, reporte);
-  } catch (error) {
-    return sendError(res, 'Error al generar reporte de asistencia');
-  }
+    const [rows] = await pool.query<RowDataPacket[]>(`
+      SELECT n.alumno_id, u.nombre,u.apellido,al.codigo_alumno,n.periodo_id,p.nombre AS periodo,n.grado_id,g.nombre AS grado,
+        COUNT(DISTINCT n.fecha) AS total_dias, COUNT(*) AS total_sesiones,
+        SUM(n.estado='presente') AS presentes, SUM(n.estado='ausente') AS ausentes,
+        SUM(n.estado='tardanza') AS tardanzas, SUM(n.estado='justificado') AS justificados,
+        ROUND(SUM(n.estado='presente')*100.0/COUNT(*),2) AS porcentaje
+      FROM (
+        ${asistenciaSourceSql}
+      ) n JOIN alumnos al ON al.id=n.alumno_id JOIN usuarios u ON u.id=al.usuario_id
+      LEFT JOIN periodos_academicos p ON p.id=n.periodo_id LEFT JOIN grados g ON g.id=n.grado_id
+      ${conditions.length ? 'WHERE '+conditions.join(' AND ') : ''}
+      GROUP BY n.alumno_id,u.nombre,u.apellido,al.codigo_alumno,n.periodo_id,p.nombre,n.grado_id,g.nombre ORDER BY n.periodo_id,g.nombre,u.apellido`,params);
+    return sendSuccess(res,rows);
+  } catch { return sendError(res, 'Error al generar reporte de asistencia'); }
 }
 
 export async function reporteAlumnosEnRiesgo(req: Request, res: Response) {
   try {
     const [alumnos] = await pool.query<RowDataPacket[]>(
-      `SELECT u.nombre, u.apellido, a.codigo_alumno, g.nombre as grado, s.nombre as seccion,
+      `SELECT u.nombre, u.apellido, a.codigo_alumno, (SELECT GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' / ', g.nombre) ORDER BY p.fecha_inicio SEPARATOR '; ') FROM matriculas m JOIN periodos_academicos p ON p.id=m.periodo_academico_id LEFT JOIN cursos cu ON cu.id=m.curso_id LEFT JOIN grados g ON g.id=COALESCE(m.grado_id,cu.grado_id) WHERE m.alumno_id=a.id AND m.estado='activa' AND p.activo=1) as grado,
               aa.tipo_riesgo, aa.nivel_riesgo, aa.indicadores, aa.descripcion,
               aa.recomendacion, aa.created_at as fecha_alerta
        FROM alertas_academicas aa
        JOIN alumnos a ON aa.alumno_id = a.id
        JOIN usuarios u ON a.usuario_id = u.id
-       JOIN grados g ON a.grado_id = g.id
-       JOIN secciones s ON a.seccion_id = s.id
        WHERE aa.estado = 'activa'
        ORDER BY FIELD(aa.tipo_riesgo, 'alto', 'medio', 'bajo'), u.apellido`
     );

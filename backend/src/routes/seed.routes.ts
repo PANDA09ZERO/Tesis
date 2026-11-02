@@ -1,3 +1,4 @@
+import { logError } from '../utils/logger';
 import { Router } from 'express';
 import { sendError, sendSuccess } from '../utils/response';
 import { authenticate, authorize } from '../middleware/auth';
@@ -7,6 +8,7 @@ import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 const router = Router();
 
+router.use((_req,res,next)=>{if(process.env.NODE_ENV==='production'||process.env.ENABLE_DEMO_SEED!=='true')return sendError(res,'Ruta no disponible',404);next();});
 router.use(authenticate);
 router.use(authorize('administrador'));
 
@@ -42,7 +44,7 @@ router.post('/seed-users', async (_req, res) => {
       data: results
     });
   } catch (error) {
-    console.error('Error al crear usuarios de prueba:', error);
+    logError('Error al crear usuarios de prueba:', error);
     return sendError(res, 'Error al crear usuarios de prueba');
   }
 });
@@ -56,8 +58,10 @@ router.post('/seed-relaciones', async (_req, res) => {
     );
 
     await pool.query(
-      `INSERT IGNORE INTO alumnos (usuario_id, codigo_alumno, grado_id, seccion_id, periodo_academico_id)
-       SELECT u.id, 'ALU-2026-001', 4, 7, (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1)
+      `INSERT IGNORE INTO alumnos (usuario_id, codigo_alumno, grado_id, periodo_academico_id)
+      SELECT u.id, 'ALU-2026-001',
+        (SELECT id FROM grados WHERE nombre = '1er Grado' AND nivel = 'Primaria' ORDER BY id DESC LIMIT 1),
+        (SELECT id FROM periodos_academicos WHERE activo = 1 LIMIT 1)
        FROM usuarios u WHERE u.email = 'alumno@escuela.edu'`
     );
 
@@ -66,13 +70,32 @@ router.post('/seed-relaciones', async (_req, res) => {
        SELECT id, 'Comerciante' FROM usuarios WHERE email = 'apoderado@escuela.edu'`
     );
 
+    await pool.query(
+      `INSERT IGNORE INTO apoderado_alumno (apoderado_id, alumno_id, parentesco)
+       SELECT ap.id, al.id, 'Apoderado'
+       FROM apoderados ap
+       JOIN usuarios ua ON ua.id = ap.usuario_id
+       JOIN alumnos al ON al.codigo_alumno = 'ALU-2026-001'
+       WHERE ua.email = 'apoderado@escuela.edu'`
+    );
+
+    await pool.query(
+      `INSERT IGNORE INTO periodo_grado_curso_profesores (profesor_id, periodo_grado_curso_id)
+       SELECT DISTINCT p.id, pgc.id
+       FROM profesores p
+       JOIN usuarios u ON u.id = p.usuario_id
+       JOIN matriculas m ON m.estado = 'activa'
+       JOIN periodo_grado_cursos pgc ON pgc.periodo_academico_id=m.periodo_academico_id AND pgc.curso_id=m.curso_id AND pgc.grado_id=COALESCE(m.grado_id,(SELECT grado_id FROM cursos WHERE id=m.curso_id))
+       WHERE u.email = 'profesor@escuela.edu'`
+    );
+
     return res.status(200).json({
       success: true,
       message: 'Relaciones creadas (profesor, alumno, apoderado)',
       data: null
     });
   } catch (error) {
-    console.error('Error al crear relaciones:', error);
+    logError('Error al crear relaciones:', error);
     return sendError(res, 'Error al crear relaciones');
   }
 });

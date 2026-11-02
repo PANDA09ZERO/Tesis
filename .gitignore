@@ -1,0 +1,25 @@
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules/
+**/dist/
+**/uploads/
+**/*.log
+**/coverage/
+**/test-results/
+**/playwright-report/
+backups/
+*.sql.gz
+.vercel/
+.DS_Store
+
+
+# Private operational state and backups
+backend/var/
+
+# Saved web pages / local artifacts
+Recomendar interfaces móviles*
+Recomendar interfaces moviles*

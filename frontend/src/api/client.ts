@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -16,12 +16,19 @@ client.interceptors.request.use((config) => {
 });
 
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.config.url === '/auth/change-password' && response.config.headers?.Authorization === `Bearer ${localStorage.getItem('token')}`) {
+      localStorage.removeItem('token'); localStorage.removeItem('user');
+      window.dispatchEvent(new Event('auth:invalid'));
+    }
+    return response;
+  },
   (error) => {
-    if (error.response?.status === 401) {
+    if(error.response?.data?.code==='SYSTEM_SUSPENDED'&&error.config?.url!=='/auth/login')window.dispatchEvent(new Event('system:suspended'));
+    if (error.response?.status === 401 && error.config?.url !== '/auth/login' && error.config?.headers?.Authorization === `Bearer ${localStorage.getItem('token')}`) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.dispatchEvent(new Event('auth:invalid'));
     }
     return Promise.reject(error);
   }

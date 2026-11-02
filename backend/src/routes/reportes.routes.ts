@@ -5,7 +5,7 @@ import { authenticate, authorize } from '../middleware/auth';
 const router = Router();
 
 router.use(authenticate);
-router.use(authorize('administrador', 'profesor'));
+router.use(authorize('administrador'));
 
 router.get('/rendimiento', reporteRendimientoGeneral);
 router.get('/asistencia', reporteAsistencia);

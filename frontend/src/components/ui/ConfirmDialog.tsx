@@ -23,7 +23,7 @@ export default function ConfirmDialog({
           <AlertTriangle className="w-6 h-6 text-red-600" />
         </div>
         <p className="text-gray-600 mb-6">{message}</p>
-        <div className="flex gap-3 justify-center">
+        <div className="form-actions border-0 pt-0">
           <button onClick={onClose} className="btn-secondary">
             Cancelar
           </button>
