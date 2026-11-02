@@ -1,5 +1,6 @@
 import { CourseResults } from './ReportPresentation';
 import AutomaticReportPanel from './AutomaticReportPanel';
+import LibretaDemoPreview from './LibretaDemoPreview';
 import { useEffect, useState } from 'react';
 import { Printer, Search, GraduationCap, ChevronRight, FileText, Download } from 'lucide-react';
 import { alumnosApi, documentosApi } from '../../api/endpoints';
@@ -71,6 +72,7 @@ export default function StudentRecordsPanel({ onUploadDocument, version }: { onU
       {pages > 1 && <div className="mt-4 flex items-center justify-between gap-2"><button className="btn-secondary" disabled={listLoading || page <= 1} onClick={() => setPage(p => p - 1)}>Anterior</button><span className="text-xs">{page} / {pages}</span><button className="btn-secondary" disabled={listLoading || page >= pages} onClick={() => setPage(p => p + 1)}>Siguiente</button></div>}
     </details>
     {!studentId && <div className="record-intro-grid">{sections.map(([key, title]) => <div className="card" key={key}><FileText aria-hidden="true" className="mb-3 h-5 w-5 text-gray-500"/><h3 className="text-sm font-semibold">{title}</h3></div>)}</div>}
+    {!studentId && <LibretaDemoPreview />}
     {loading && <p role="status" className="card py-8">Cargando expediente…</p>}
     {error && <div role="alert" className="card text-red-600">{error}<button className="btn-secondary ml-3" onClick={() => setReload(n => n + 1)}>Reintentar</button></div>}
     {record && !loading && <>
