@@ -112,11 +112,28 @@
 - Mejora continua según necesidades del colegio
 - Listo para crecer con nuevos módulos
 
-## Sugerencias de capturas para el PPTX
-- Pantalla de login
-- Módulos y contexto académico
-- Dashboard
-- Estructura académica
-- Calificaciones
-- Libreta imprimible
-- Vista móvil
+## Capturas guardadas para el PPTX
+Las imágenes se guardaron en `docs/capturas/sistema/`:
+
+- `dashboard.jpg` — Panel de inicio
+- `modulos.jpg` — Módulos y contexto académico
+- `alumnos.jpg` — Gestión de alumnos
+- `cursos.jpg` — Cursos
+- `calificaciones.jpg` — Calificaciones
+- `asistencias.jpg` — Asistencia
+- `periodos.jpg` — Periodos
+- `horarios.jpg` — Horarios
+- `documentos.jpg` — Documentos y expedientes
+- `pagos.jpg` — Pagos
+- `reportes.jpg` — Reportes
+- `usuarios.jpg` — Usuarios
+- `matriculas.jpg` — Matrículas
+
+### Referencias sugeridas en las diapositivas
+- Inicio: `docs/capturas/sistema/dashboard.jpg`
+- Módulos: `docs/capturas/sistema/modulos.jpg`
+- Alumnos: `docs/capturas/sistema/alumnos.jpg`
+- Cursos: `docs/capturas/sistema/cursos.jpg`
+- Calificaciones: `docs/capturas/sistema/calificaciones.jpg`
+- Asistencia: `docs/capturas/sistema/asistencias.jpg`
+- Documentos: `docs/capturas/sistema/documentos.jpg`
