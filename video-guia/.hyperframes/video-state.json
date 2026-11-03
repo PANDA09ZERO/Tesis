@@ -1,7 +1,7 @@
 {
   "version": 1,
   "historyId": "beb0e5a0-ac75-48a0-8487-a7811be96117",
-  "currentRevision": null,
+  "currentRevision": "ce80be16-9245-4772-8590-bfbdbc757bba",
   "pendingChanges": false,
   "files": {
     "AGENTS.md": {
@@ -69,8 +69,8 @@
       "content": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\53\\53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50"
     },
     "index.html": {
-      "hash": "47885f43742da5af33334d6c683483185cb874c144a9a423f7ccca13d81f59fe",
-      "content": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\47\\47885f43742da5af33334d6c683483185cb874c144a9a423f7ccca13d81f59fe"
+      "hash": "da1614faac8b2be949293b6d68c6e6a3006eb60ac783c77bb5d5b77762e357b2",
+      "content": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\da\\da1614faac8b2be949293b6d68c6e6a3006eb60ac783c77bb5d5b77762e357b2"
     },
     "meta.json": {
       "hash": "bbfe3b14ef4a77a0606f3de5480c33c6d07210d19197e5c6c4ece34a0f8a5479",
@@ -81,13 +81,74 @@
       "content": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\30\\30a70d11f358ff6915489f5e385225b8c24d0dd5a89009e81e1ab9039c1fb951"
     }
   },
-  "revisions": {},
+  "revisions": {
+    "4770763b-a445-406a-9a32-f8cb135af0c2": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1793741305196,
+      "endedAt": 1793741305199,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\47\\47885f43742da5af33334d6c683483185cb874c144a9a423f7ccca13d81f59fe",
+          "after": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\70\\70bdb41c1da568f1a68e00bb484030a05d10359b9d58b5c5337eea179e4a3a99"
+        }
+      }
+    },
+    "ce80be16-9245-4772-8590-bfbdbc757bba": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1793741517024,
+      "endedAt": 1793741519033,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\70\\70bdb41c1da568f1a68e00bb484030a05d10359b9d58b5c5337eea179e4a3a99",
+          "after": "C:\\Users\\P_A_N\\.cache\\hyperframes\\history\\beb0e5a0-ac75-48a0-8487-a7811be96117\\blobs\\da\\da1614faac8b2be949293b6d68c6e6a3006eb60ac783c77bb5d5b77762e357b2"
+        }
+      }
+    }
+  },
   "checks": {
     "latest": {
-      "revision": null,
-      "id": "b6fe4023-7cf0-415f-90b5-27a76774b804"
+      "revision": "ce80be16-9245-4772-8590-bfbdbc757bba",
+      "id": "3fa5a78f-da1c-48c3-8dfc-bd4965b27318"
     },
-    "revisions": {},
+    "revisions": {
+      "ce80be16-9245-4772-8590-bfbdbc757bba": [
+        {
+          "id": "3fa5a78f-da1c-48c3-8dfc-bd4965b27318",
+          "scope": "project",
+          "report": "C:\\xampp\\htdocs\\Tesis\\video-guia\\.hyperframes\\artifacts\\checks\\3fa5a78f-da1c-48c3-8dfc-bd4965b27318.json",
+          "metadata": {
+            "ok": true,
+            "browserSkipped": false,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 10000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1793741538090,
+          "contentHash": "d304659784f9099ff7623bb0142c0035f199996a7043dd80db1162d7ed3e130b",
+          "revision": "ce80be16-9245-4772-8590-bfbdbc757bba",
+          "inputFingerprint": "e6600e1063ae4d56977f706e848ebf518d1376c9f72fde423bf69357d550a85c",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision"
+        }
+      ]
+    },
     "unversioned": [
       {
         "id": "b6fe4023-7cf0-415f-90b5-27a76774b804",

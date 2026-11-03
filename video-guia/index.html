@@ -6,10 +6,12 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <style>
       :root {
-        --ground: #0f172a;
+        --ground: #0b1220;
         --ink: #ffffff;
         --accent: #38bdf8;
         --muted: #cbd5e1;
+        --card: rgba(15, 23, 42, 0.88);
+        --border: rgba(56, 189, 248, 0.35);
         --font-display: "Segoe UI", Arial, sans-serif;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,7 +20,7 @@
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: var(--ground);
+        background: radial-gradient(circle at top right, #1e293b, var(--ground));
         font-family: var(--font-display);
       }
       #root {
@@ -27,7 +29,7 @@
         position: relative;
         overflow: hidden;
       }
-      .step {
+      .scene {
         position: absolute;
         inset: 0;
         display: flex;
@@ -35,40 +37,67 @@
         align-items: center;
         justify-content: center;
         opacity: 0;
+        padding: 80px;
       }
-      .step img {
-        max-width: 82%;
-        max-height: 62%;
-        object-fit: contain;
-        border: 4px solid rgba(255,255,255,0.15);
-        border-radius: 18px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      .card {
+        width: 1500px;
+        max-width: 90%;
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 28px;
+        padding: 56px 64px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.45);
       }
-      .step h2 {
+      .scene h1 {
         color: var(--ink);
-        font-size: 58px;
+        font-size: 74px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 18px;
+      }
+      .scene h2 {
+        color: var(--accent);
+        font-size: 46px;
         font-weight: 700;
         margin-bottom: 28px;
         text-align: center;
       }
-      .step p {
-        color: var(--muted);
-        font-size: 28px;
-        margin-top: 24px;
-        text-align: center;
-        max-width: 1500px;
-      }
-      .hero h1 {
+      .scene h3 {
         color: var(--ink);
-        font-size: 86px;
-        font-weight: 800;
-        text-align: center;
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 20px;
       }
-      .hero p {
+      .scene p, .scene li {
+        color: var(--muted);
+        font-size: 30px;
+        line-height: 1.35;
+      }
+      .scene ul {
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+      .scene li::before {
+        content: "•";
         color: var(--accent);
-        font-size: 34px;
-        margin-top: 24px;
-        text-align: center;
+        font-weight: 700;
+        margin-right: 12px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 10px 22px;
+        border-radius: 999px;
+        background: rgba(56, 189, 248, 0.18);
+        color: var(--accent);
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
       }
     </style>
   </head>
@@ -77,118 +106,199 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="75"
+      data-duration="95"
       data-width="1920"
       data-height="1080"
     >
-      <!-- Hero -->
-      <section class="clip step hero" data-start="0" data-duration="5" data-track-index="0">
-        <h1>Sistema de Gestion Educativa</h1>
-        <p>Paso a paso para usar el sistema</p>
+      <!-- Intro -->
+      <section class="clip scene" data-start="0" data-duration="5" data-track-index="0">
+        <div class="card">
+          <span class="badge">Sistema de Gestion Educativa</span>
+          <h1>Guia interactiva por roles</h1>
+          <p>Explica que hace el administrador, el profesor, el alumno y el apoderado, segun el codigo del sistema.</p>
+        </div>
       </section>
 
-      <!-- Modulos -->
-      <section class="clip step" data-start="5" data-duration="5" data-track-index="0">
-        <h2>1. Modulos y contexto academico</h2>
-        <img src="assets/screenshots/modulos.jpg" alt="Modulos" />
-        <p>Elige el periodo academico que se aplicara a todo el sistema.</p>
+      <!-- Contexto -->
+      <section class="clip scene" data-start="5" data-duration="5" data-track-index="0">
+        <div class="card">
+          <h2>Contexto academico</h2>
+          <ul>
+            <li>Se elige en Modulos, seccion Contexto academico.</li>
+            <li>Define el periodo que se aplica a todo el sistema.</li>
+            <li>Puede ser Vigente o Historico.</li>
+            <li>La seleccion se conserva entre pantallas.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Dashboard -->
-      <section class="clip step" data-start="10" data-duration="5" data-track-index="0">
-        <h2>2. Dashboard</h2>
-        <img src="assets/screenshots/dashboard.jpg" alt="Dashboard" />
-        <p>Panel de inicio con resumen y accesos rapidos.</p>
+      <!-- Admin -->
+      <section class="clip scene" data-start="10" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Administrador</span>
+          <h3>Gestion institucional</h3>
+          <ul>
+            <li>Dashboard con resumen y accesos rapidos.</li>
+            <li>Personas: alumnos, profesores y apoderados.</li>
+            <li>Usuarios y permisos de acceso.</li>
+            <li>Matriculas e inscripcion por periodo.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Alumnos -->
-      <section class="clip step" data-start="15" data-duration="5" data-track-index="0">
-        <h2>3. Alumnos</h2>
-        <img src="assets/screenshots/alumnos.jpg" alt="Alumnos" />
-        <p>Registro, consulta y expediente academico.</p>
+      <section class="clip scene" data-start="16" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Administrador</span>
+          <h3>Gestion academica</h3>
+          <ul>
+            <li>Periodos: calendario e historial.</li>
+            <li>Estructura academica: grados, cursos y docentes.</li>
+            <li>Cursos y ofertas academicas.</li>
+            <li>Horarios y calendario.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Cursos -->
-      <section class="clip step" data-start="20" data-duration="5" data-track-index="0">
-        <h2>4. Cursos</h2>
-        <img src="assets/screenshots/cursos.jpg" alt="Cursos" />
-        <p>Ofertas academicas y asignaciones.</p>
+      <section class="clip scene" data-start="22" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Administrador</span>
+          <h3>Control y reportes</h3>
+          <ul>
+            <li>Calificaciones y asistencia.</li>
+            <li>Documentos y expedientes estudiantiles.</li>
+            <li>Pagos: matricula, mensualidades y sueldos.</li>
+            <li>Alertas y reportes institucionales.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Calificaciones -->
-      <section class="clip step" data-start="25" data-duration="5" data-track-index="0">
-        <h2>5. Calificaciones</h2>
-        <img src="assets/screenshots/calificaciones.jpg" alt="Calificaciones" />
-        <p>Registro de notas por curso, grado y periodo.</p>
+      <section class="clip scene" data-start="28" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Administrador</span>
+          <h3>Libreta de notas</h3>
+          <ul>
+            <li>Configura reglas: pesos, minima, redondeo.</li>
+            <li>Calcula notas finales automaticamente.</li>
+            <li>Emite versiones definitivas y conserva historial.</li>
+            <li>Imprime en formato de informe de progreso.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Asistencia -->
-      <section class="clip step" data-start="30" data-duration="5" data-track-index="0">
-        <h2>6. Asistencia</h2>
-        <img src="assets/screenshots/asistencias.jpg" alt="Asistencia" />
-        <p>Control de asistencia por clase.</p>
+      <!-- Profesor -->
+      <section class="clip scene" data-start="34" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Profesor</span>
+          <h3>Su espacio de trabajo</h3>
+          <ul>
+            <li>Dashboard y mis horarios.</li>
+            <li>Mis alumnos y apoderados.</li>
+            <li>Mis cursos y periodos.</li>
+            <li>Notificaciones y alertas.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Periodos -->
-      <section class="clip step" data-start="35" data-duration="5" data-track-index="0">
-        <h2>7. Periodos</h2>
-        <img src="assets/screenshots/periodos.jpg" alt="Periodos" />
-        <p>Calendario academico e historial.</p>
+      <section class="clip scene" data-start="40" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Profesor</span>
+          <h3>Docencia diaria</h3>
+          <ul>
+            <li>Registra calificaciones por curso.</li>
+            <li>Registra asistencia por clase.</li>
+            <li>Consulta periodos y calendario.</li>
+            <li>Revisa alertas academicas.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Horarios -->
-      <section class="clip step" data-start="40" data-duration="5" data-track-index="0">
-        <h2>8. Horarios</h2>
-        <img src="assets/screenshots/horarios.jpg" alt="Horarios" />
-        <p>Organizacion y consulta de clases.</p>
+      <!-- Alumno -->
+      <section class="clip scene" data-start="46" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Alumno</span>
+          <h3>Consulta academica</h3>
+          <ul>
+            <li>Mi panel y mi perfil.</li>
+            <li>Mis cursos y calificaciones.</li>
+            <li>Mi asistencia e historial.</li>
+            <li>Mis horarios y calendario.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Documentos -->
-      <section class="clip step" data-start="45" data-duration="5" data-track-index="0">
-        <h2>9. Documentos y expedientes</h2>
-        <img src="assets/screenshots/documentos.jpg" alt="Documentos" />
-        <p>Expediente estudiantil y libreta de notas.</p>
+      <section class="clip scene" data-start="52" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Alumno</span>
+          <h3>Servicios personales</h3>
+          <ul>
+            <li>Consulta mis pagos.</li>
+            <li>Recibe notificaciones y alertas.</li>
+            <li>Acceso desde celular o computadora.</li>
+            <li>Informacion siempre actualizada.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Pagos -->
-      <section class="clip step" data-start="50" data-duration="5" data-track-index="0">
-        <h2>10. Pagos</h2>
-        <img src="assets/screenshots/pagos.jpg" alt="Pagos" />
-        <p>Matricula, mensualidades y sueldos.</p>
+      <!-- Apoderado -->
+      <section class="clip scene" data-start="58" data-duration="6" data-track-index="0">
+        <div class="card">
+          <span class="badge">Apoderado</span>
+          <h3>Seguimiento familiar</h3>
+          <ul>
+            <li>Mi perfil.</li>
+            <li>Estudiantes a mi cargo.</li>
+            <li>Consulta de informacion academica.</li>
+            <li>Acceso seguro y personalizado.</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Reportes -->
-      <section class="clip step" data-start="55" data-duration="5" data-track-index="0">
-        <h2>11. Reportes</h2>
-        <img src="assets/screenshots/reportes.jpg" alt="Reportes" />
-        <p>Consultas institucionales.</p>
+      <!-- Flujo -->
+      <section class="clip scene" data-start="64" data-duration="7" data-track-index="0">
+        <div class="card">
+          <h2>Flujo de uso tipico</h2>
+          <div class="two-col">
+            <ul>
+              <li>Administrador configura periodos.</li>
+              <li>Define estructura y usuarios.</li>
+              <li>Matricula alumnos.</li>
+            </ul>
+            <ul>
+              <li>Profesor registra notas.</li>
+              <li>Profesor registra asistencia.</li>
+              <li>Se generan reportes y libretas.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <!-- Usuarios -->
-      <section class="clip step" data-start="60" data-duration="5" data-track-index="0">
-        <h2>12. Usuarios</h2>
-        <img src="assets/screenshots/usuarios.jpg" alt="Usuarios" />
-        <p>Cuentas y permisos de acceso.</p>
-      </section>
-
-      <!-- Matriculas -->
-      <section class="clip step" data-start="65" data-duration="5" data-track-index="0">
-        <h2>13. Matriculas</h2>
-        <img src="assets/screenshots/matriculas.jpg" alt="Matriculas" />
-        <p>Inscripcion de alumnos por periodo.</p>
+      <!-- Beneficios -->
+      <section class="clip scene" data-start="71" data-duration="6" data-track-index="0">
+        <div class="card">
+          <h2>Beneficios</h2>
+          <ul>
+            <li>Informacion centralizada.</li>
+            <li>Mejor seguimiento academico.</li>
+            <li>Menos trabajo manual.</li>
+            <li>Mayor transparencia para familias.</li>
+            <li>Acceso desde cualquier dispositivo.</li>
+          </ul>
+        </div>
       </section>
 
       <!-- Cierre -->
-      <section class="clip step hero" data-start="70" data-duration="5" data-track-index="0">
-        <h1>Listo para usar el sistema</h1>
-        <p>Configura, registra, consulta y reporta</p>
+      <section class="clip scene" data-start="77" data-duration="5" data-track-index="0">
+        <div class="card">
+          <h1>Listo para usar el sistema</h1>
+          <p>Configura, registra, consulta y reporta.</p>
+        </div>
       </section>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
-      document.querySelectorAll(".step").forEach((el) => {
-        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, Number(el.dataset.start));
-        tl.to(el, { opacity: 0, duration: 0.35, ease: "power2.in" }, Number(el.dataset.start) + Number(el.dataset.duration) - 0.35);
+      document.querySelectorAll(".scene").forEach((el) => {
+        tl.fromTo(el, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, Number(el.dataset.start));
+        tl.to(el, { opacity: 0, y: -24, duration: 0.35, ease: "power2.in" }, Number(el.dataset.start) + Number(el.dataset.duration) - 0.35);
       });
       window.__timelines["main"] = tl;
       tl.seek(0);
