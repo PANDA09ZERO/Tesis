@@ -14,6 +14,12 @@ import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { verifyPasswordAsync, encryptPasswordAsync, needsPasswordRehash } from '../utils/encrypt';
 import { createInstitutionalCredentials } from '../utils/credentials';
 import { validDate } from '../utils/academicValidation';
+import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
+
+// Seguridad: hash señuelo para que un correo inexistente tarde lo mismo que una
+// contraseña incorrecta y no se pueda enumerar usuarios midiendo el tiempo de respuesta.
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync(randomBytes(16).toString('hex'), 12);
 
 export async function login(req: Request, res: Response) {
   try {
@@ -32,6 +38,7 @@ export async function login(req: Request, res: Response) {
     );
 
     if (users.length === 0) {
+      await bcrypt.compare(password, DUMMY_PASSWORD_HASH); // Igualar tiempo de respuesta (anti-enumeración)
       return sendError(res, 'Credenciales inválidas', 401);
     }
 
@@ -67,13 +74,13 @@ export async function login(req: Request, res: Response) {
     const token = jwt.sign(
       { userId, email: userEmail, rol: userRol, rolSistema: userRol === 'superadministrador' ? 'superadministrador' : undefined, credentialVersion: credentialVersion(user.password_hash, jwtSecret) },
       jwtSecret,
-      { expiresIn: jwtExpires }
+      { expiresIn: jwtExpires, algorithm: 'HS256' } // Seguridad: algoritmo explícito, coincide con la verificación
     ) as string;
 
     await pool.query(
       `INSERT INTO registro_actividades (usuario_id, accion, entidad, detalles, ip_address)
        VALUES (?, 'login', 'usuarios', ?, ?)`,
-      [user.id, JSON.stringify({ email }), req.ip]
+      [user.id, JSON.stringify({ email: email.trim() }), req.ip]
     );
 
     return sendSuccess(res, {
@@ -207,6 +214,10 @@ export async function changePassword(req: AuthRequest, res: Response) {
 
     if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || !currentPassword || !newPassword) {
       return sendError(res, 'Contraseña actual y nueva contraseña requeridas', 400);
+    }
+    // Lógica: evitar "cambiar" a la misma contraseña (anulaba el cambio obligatorio del primer ingreso).
+    if (currentPassword === newPassword) {
+      return sendError(res, 'La nueva contraseña debe ser diferente de la actual', 400);
     }
 
     const [users] = await pool.query<RowDataPacket[]>(

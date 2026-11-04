@@ -496,8 +496,20 @@ export async function createEventoCalendario(req: AuthRequest, res: Response) {
     return sendError(res, 'No tiene permisos para crear eventos en el calendario', 403);
   }
   const { titulo, descripcion, fecha, hora_inicio, hora_fin, tipo, periodo_academico_id } = req.body || {};
-  if (!titulo || !fecha) {
-    return sendError(res, 'Título y fecha son obligatorios', 400);
+  // Validación: tipos, longitudes y valores permitidos según el esquema (VARCHAR(150), ENUM tipo).
+  const tituloLimpio = typeof titulo === 'string' ? titulo.trim() : '';
+  if (!tituloLimpio || !validDate(fecha)) {
+    return sendError(res, 'Título y fecha válida (AAAA-MM-DD) son obligatorios', 400);
+  }
+  if (tituloLimpio.length > 150) return sendError(res, 'El título admite como máximo 150 caracteres', 400);
+  if (descripcion !== undefined && descripcion !== null && (typeof descripcion !== 'string' || descripcion.length > 5000)) {
+    return sendError(res, 'Descripción inválida (máximo 5000 caracteres)', 400);
+  }
+  const tipoEvento = tipo === undefined || tipo === null || tipo === '' ? 'institucional' : tipo;
+  if (!['institucional', 'feriado', 'reunion', 'otro'].includes(tipoEvento)) return sendError(res, 'Tipo de evento inválido', 400);
+  const periodoId = periodo_academico_id === undefined || periodo_academico_id === null || periodo_academico_id === '' ? null : parseId(periodo_academico_id);
+  if (periodo_academico_id !== undefined && periodo_academico_id !== null && periodo_academico_id !== '' && !periodoId) {
+    return sendError(res, 'Periodo académico inválido', 400);
   }
   const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
   const inicio = hora_inicio ? String(hora_inicio).slice(0, 5) : null;
@@ -513,11 +525,13 @@ export async function createEventoCalendario(req: AuthRequest, res: Response) {
     const [result] = await pool.query<ResultSetHeader>(
       `INSERT INTO eventos_calendario(titulo, descripcion, fecha, hora_inicio, hora_fin, tipo, periodo_academico_id, creado_por_usuario_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [titulo, descripcion || null, fecha, inicio ? `${inicio}:00` : null, fin ? `${fin}:00` : null,
-        tipo || 'institucional', periodo_academico_id ? Number(periodo_academico_id) : null, req.user!.userId]
+      [tituloLimpio, typeof descripcion === 'string' && descripcion.trim() ? descripcion.trim() : null, fecha,
+        inicio ? `${inicio}:00` : null, fin ? `${fin}:00` : null,
+        tipoEvento, periodoId, req.user!.userId]
     );
     return sendSuccess(res, { id: result.insertId }, 'Evento creado con éxito', 201);
   } catch (error) {
+    if ((error as any)?.code === 'ER_NO_REFERENCED_ROW_2') return sendError(res, 'El periodo académico no existe', 400);
     logError('Error al crear evento de calendario:', error);
     return sendError(res, 'No se pudo crear el evento');
   }
@@ -528,12 +542,15 @@ export async function deleteEventoCalendario(req: AuthRequest, res: Response) {
   if (role !== 'administrador' && role !== 'profesor') {
     return sendError(res, 'No tiene permisos para eliminar eventos', 403);
   }
-  const id = Number(req.params.id);
+  const id = parseId(req.params.id);
   if (!id) return sendError(res, 'ID de evento inválido', 400);
   try {
-    // If it's custom event id starts with custom- in frontend, but backend receives numeric id
-    const [result] = await pool.query<ResultSetHeader>('DELETE FROM eventos_calendario WHERE id = ?', [id]);
-    if (result.affectedRows === 0) return sendError(res, 'Evento no encontrado', 404);
+    // Seguridad (IDOR): antes cualquier profesor podía borrar cualquier evento, incluidos los
+    // institucionales creados por administración. Ahora un profesor solo elimina los eventos que creó.
+    const [result] = role === 'administrador'
+      ? await pool.query<ResultSetHeader>('DELETE FROM eventos_calendario WHERE id = ?', [id])
+      : await pool.query<ResultSetHeader>('DELETE FROM eventos_calendario WHERE id = ? AND creado_por_usuario_id = ?', [id, req.user!.userId]);
+    if (result.affectedRows === 0) return sendError(res, role === 'administrador' ? 'Evento no encontrado' : 'Evento no encontrado o creado por otro usuario', 404);
     return sendSuccess(res, null, 'Evento eliminado');
   } catch (error) {
     logError('Error al eliminar evento de calendario:', error);

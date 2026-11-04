@@ -18,11 +18,11 @@ export default function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
-      <div className="text-center">
-        <div className="mx-auto w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
-          <AlertTriangle className="w-6 h-6 text-red-600" />
+      <div>
+        <div className="mb-5 flex items-start gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-700" aria-hidden="true" />
+          <p className="text-[0.9375rem] text-gray-700">{message}</p>
         </div>
-        <p className="text-gray-600 mb-6">{message}</p>
         <div className="form-actions border-0 pt-0">
           <button onClick={onClose} className="btn-secondary">
             Cancelar

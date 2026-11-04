@@ -20,7 +20,8 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
     const [rows] = await pool.query<RowDataPacket[]>('SELECT u.id, u.email, u.activo, u.password_hash, u.debe_cambiar_password, r.nombre AS rol FROM usuarios u JOIN roles r ON r.id = u.rol_id WHERE u.id = ?', [decoded.userId]);
     const user = rows[0];
     if (!user || Number(user.activo) !== 1 || user.rol !== decoded.rol || credentialVersion(user.password_hash, secret) !== decoded.credentialVersion) return sendError(res, 'Sesión inválida. Inicie sesión nuevamente', 401);
-    const apiPath = req.originalUrl.replace(/^\/api(?=\/|$)/, '').split('?')[0];
+    // Robustez: si originalUrl no está definido (pruebas/montajes), se usa url para no fallar con 503.
+    const apiPath = String(req.originalUrl ?? req.url ?? '').replace(/^\/api(?=\/|$)/, '').split('?')[0];
     if (Number(user.debe_cambiar_password) === 1 && !(
       (req.method === 'GET' && apiPath === '/auth/profile') ||
       (req.method === 'PUT' && apiPath === '/auth/change-password')

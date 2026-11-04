@@ -16,8 +16,9 @@ import { finishTransaction } from '../utils/transaction';
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const { page, limit, offset } = getPagination(req.query as any);
-    const search = req.query.search as string || '';
-    const rol = req.query.rol as string;
+    // Validación: los filtros deben ser cadenas (un array en la query string rompía la consulta).
+    const search = typeof req.query.search === 'string' ? req.query.search.trim().slice(0, 100) : '';
+    const rol = typeof req.query.rol === 'string' ? req.query.rol : '';
 
     let whereClause = "WHERE r.nombre <> 'superadministrador'";
     const params: any[] = [];
@@ -58,6 +59,7 @@ export async function getAllUsers(req: Request, res: Response) {
 
 export async function getUserById(req: Request, res: Response) {
   try {
+    if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
     const [users] = await pool.query<RowDataPacket[]>(
       `SELECT u.id, u.email, u.nombre, u.apellido, u.dni, u.telefono,
               u.direccion, u.fecha_nacimiento, u.genero, u.foto_url,
@@ -126,9 +128,11 @@ export async function createUser(req: Request, res: Response) {
   }
 }
 
-export async function updateUser(req: Request, res: Response) {
+export async function updateUser(req: AuthRequest, res: Response) {
   const validation=accountError(req.body,false);if(validation)return sendError(res,validation,400);
   if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
+  // Lógica: un administrador no puede desactivar su propia cuenta (quedaría bloqueado sin acceso).
+  if(Number(req.params.id)===req.user?.userId&&req.body.activo!==undefined&&!req.body.activo)return sendError(res,'No puede desactivar su propia cuenta',400);
   try {
     const { nombre, apellido, dni, telefono, direccion, fecha_nacimiento, genero, activo, password } = req.body;
     const userId = req.params.id;
@@ -166,9 +170,10 @@ export async function updateUser(req: Request, res: Response) {
   }
 }
 
-export async function deleteUser(req: Request, res: Response) {
+export async function deleteUser(req: AuthRequest, res: Response) {
   try {
     if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
+    if(Number(req.params.id)===req.user?.userId)return sendError(res,'No puede desactivar su propia cuenta',400); // Evita autobloqueo
     const [existing]=await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id=? AND rol_id IN (SELECT id FROM roles WHERE nombre <> \'superadministrador\')' ,[req.params.id]);
     if(!existing.length)return sendError(res,'Usuario no encontrado',404);
     await pool.query('UPDATE usuarios SET activo = 0 WHERE id = ?', [req.params.id]);

@@ -94,22 +94,17 @@ export default function DashboardPage() {
   return (
     <>
     {mobileStats && <MobileDashboard stats={mobileStats} activity={actividad} scope={scope} periodId={periodoId}/>}
-    <div className="hidden space-y-6 lg:block">
-      {/* Saludo personalizado */}
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden dark:bg-gray-800">
-          <img src="/assets/logo.png" alt="Ciencias e Ingeniería" className="w-10 h-10 object-contain" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            {getGreeting()}, {user?.nombre?.split(' ')[0]}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{user?.rol}</p>
-        </div>
+    <div className="hidden space-y-8 lg:block">
+      {/* Saludo personalizado: el escudo ya está en la barra lateral, no se repite aquí. */}
+      <div className="app-page-heading">
+        <h1>
+          {getGreeting()}, {user?.nombre?.split(' ')[0]}
+        </h1>
+        <p>{periodo ? `${periodo.nombre} · ${esHistorico ? 'histórico' : 'vigente'}` : user?.rol}</p>
       </div>
 
       {/* Estadísticas compactas */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard title={isTeacher ? 'Mis alumnos' : 'Alumnos'} value={stats?.totalAlumnos || 0} icon={GraduationCap} color="blue" />
         <StatCard title={isTeacher ? 'Apoderados' : 'Profesores'} value={isTeacher ? stats?.totalApoderados || 0 : stats?.totalProfesores || 0} icon={Users} color="green" />
         <StatCard title={isTeacher ? 'Mis cursos' : 'Cursos'} value={stats?.totalCursos || 0} icon={BookOpen} color="purple" />
@@ -120,32 +115,24 @@ export default function DashboardPage() {
 
       {/* Accesos rápidos */}
       <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Accesos rápidos</h2>
-          <button onClick={() => navigate('/modulos')} className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-[1.1875rem] font-bold text-gray-900 dark:text-gray-100">Accesos rápidos</h2>
+          <button onClick={() => navigate('/modulos')} className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-primary-700 hover:bg-primary-50 dark:text-primary-400">
             Ver todos
           </button>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
           {quickAccessItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => navigate(item.path)}
-                className="flex flex-col items-center justify-center p-3 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-xl border border-transparent p-3 transition-colors hover:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-2 ${
-                  item.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' :
-                  item.color === 'green' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' :
-                  item.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400' :
-                  item.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400' :
-                  item.color === 'red' ? 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400' :
-                  'bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400'
-                }`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
+                {/* Un solo color de icono: el color ya no compite con el contenido. */}
+                <Icon className="h-6 w-6 text-primary-600 dark:text-gray-300" aria-hidden="true" />
+                <span className="text-center text-sm font-semibold text-gray-700 dark:text-gray-300">{item.label}</span>
               </button>
             );
           })}
@@ -155,14 +142,14 @@ export default function DashboardPage() {
       {/* Actividad reciente */}
       {actividad.length > 0 && (
         <div className="card">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Actividad reciente</h2>
-          <div className="space-y-3">
+          <h2 className="mb-2 text-[1.1875rem] font-bold text-gray-900 dark:text-gray-100">Actividad reciente</h2>
+          <div className="divide-y divide-gray-100 dark:divide-gray-700">
             {actividad.slice(0, 5).map((act, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div className="w-2 h-2 mt-2 rounded-full bg-primary-500 shrink-0" />
+              <div key={idx} className="flex items-start gap-3 py-3">
+                <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{act.accion || act.descripcion || 'Actividad registrada'}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{activityDate(act.created_at)}</p>
+                  <p className="mt-0.5 text-[0.8125rem] text-gray-500 dark:text-gray-400">{activityDate(act.created_at)}</p>
                 </div>
               </div>
             ))}
@@ -173,13 +160,13 @@ export default function DashboardPage() {
       {/* Gráficos - solo en desktop */}
       <div className="hidden lg:grid lg:grid-cols-2 gap-6">
         <div className="card">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Rendimiento por Grado</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{periodo ? `${esHistorico ? 'Histórico' : 'Vigente'}: ${periodo.nombre}` : 'Periodo activo'}. Promedios separados por escala; no constituyen una nota final.</p>
+          <h3 className="mb-2 text-[1.1875rem] font-bold text-gray-900 dark:text-gray-100">Rendimiento por Grado</h3>
+          <p className="mb-4 text-[0.8125rem] text-gray-500 dark:text-gray-400">{periodo ? `${esHistorico ? 'Histórico' : 'Vigente'}: ${periodo.nombre}` : 'Periodo activo'}. Promedios separados por escala; no constituyen una nota final.</p>
           {rendimiento.length ? <div className="space-y-2">{rendimiento.map((r,i)=><div key={i} className="flex flex-wrap justify-between gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm dark:text-gray-200"><span>{r.grado||'Grado sin identificar'} · {r.periodo}</span><span>{r.promedio_nota??'—'} / {r.escala_maxima??'escala histórica sin identificar'}</span></div>)}</div> : <p className="text-gray-500 dark:text-gray-400 py-8 text-sm">Sin datos de rendimiento</p>}
         </div>
 
         <div className="card">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Alertas por Nivel de Riesgo</h3>
+          <h3 className="mb-2 text-[1.1875rem] font-bold text-gray-900 dark:text-gray-100">Alertas por Nivel de Riesgo</h3>
           {alertas.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>

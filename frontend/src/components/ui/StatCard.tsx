@@ -9,24 +9,25 @@ interface StatCardProps {
   subtitle?: string;
 }
 
+// Iconos neutros: solo el rojo conserva color porque comunica un estado que requiere atención.
 const colorMap = {
-  blue: 'bg-blue-50 text-blue-600',
-  green: 'bg-green-50 text-green-600',
-  yellow: 'bg-yellow-50 text-yellow-600',
-  red: 'bg-red-50 text-red-600',
-  purple: 'bg-purple-50 text-purple-600'
+  blue: 'text-gray-400',
+  green: 'text-gray-400',
+  yellow: 'text-gray-400',
+  red: 'text-red-700',
+  purple: 'text-gray-400'
 };
 
 export default function StatCard({ title, value, icon: Icon, color = 'blue', subtitle }: StatCardProps) {
   return (
-    <div className="card flex flex-col items-start gap-3 p-3 text-left sm:flex-row sm:items-center sm:p-4">
-      <div className={`shrink-0 rounded-lg p-1 sm:p-2 ${colorMap[color]}`}>
-        <Icon className="h-5 w-5" />
+    <div className="card flex flex-col gap-3 text-left">
+      <div className="flex items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-[0.875rem] font-semibold text-gray-600">{title}</p>
+        <Icon className={`h-5 w-5 shrink-0 ${colorMap[color]}`} aria-hidden="true" />
       </div>
       <div className="min-w-0">
-        <p className="text-xs text-gray-500 break-words">{title}</p>
-        <p className="text-xl font-bold text-gray-900">{value}</p>
-        {subtitle && <p className="text-[10px] text-gray-400 sm:text-xs">{subtitle}</p>}
+        <p className="text-[1.75rem] font-bold leading-none tracking-tight text-gray-900 tabular-nums">{value}</p>
+        {subtitle && <p className="mt-2 text-[0.8125rem] text-gray-500">{subtitle}</p>}
       </div>
     </div>
   );

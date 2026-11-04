@@ -5,15 +5,24 @@ import { getPagination } from '../utils/pagination';
 import { AuthRequest } from '../types';
 import { profesorTieneAccesoAlumno, profesorAlumnoScope } from '../utils/profesorAlcance';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import { positiveId } from '../utils/academicValidation';
+
+const ESTADOS_ALERTA = ['activa', 'atendida', 'resuelta', 'expirada'];
+const RIESGOS = ['bajo', 'medio', 'alto'];
 
 export async function getAllAlertas(req: AuthRequest, res: Response) {
   try {
     const { page, limit, offset } = getPagination(req.query as any);
-    const estado = req.query.estado as string || 'activa';
-    const tipoRiesgo = req.query.tipo_riesgo as string;
+    // Corrección: el filtro "Todas" del frontend envía estado='' y antes se convertía en 'activa'.
+    // Ahora: sin parámetro => 'activa' (comportamiento por defecto); '' => todos los estados.
+    const estado = req.query.estado === undefined ? 'activa' : req.query.estado;
+    const tipoRiesgo = req.query.tipo_riesgo;
+    // Validación: filtros restringidos a los valores del ENUM.
+    if (typeof estado !== 'string' || (estado !== '' && !ESTADOS_ALERTA.includes(estado))) return sendError(res, 'Estado de alerta inválido', 400);
+    if (tipoRiesgo !== undefined && tipoRiesgo !== '' && (typeof tipoRiesgo !== 'string' || !RIESGOS.includes(tipoRiesgo))) return sendError(res, 'Tipo de riesgo inválido', 400);
 
-    let whereClause = 'WHERE aa.estado = ?';
-    const params: any[] = [estado];
+    let whereClause = estado ? 'WHERE aa.estado = ?' : 'WHERE 1=1';
+    const params: any[] = estado ? [estado] : [];
 
     if (req.user?.rol === 'profesor') {
       const scope = profesorAlumnoScope('a_scope', req.user.userId);
@@ -22,7 +31,7 @@ export async function getAllAlertas(req: AuthRequest, res: Response) {
     }
 
     if (req.user?.rol === 'alumno') { whereClause += ' AND aa.alumno_id = (SELECT id FROM alumnos WHERE usuario_id = ?)';params.push(req.user.userId); }
-    if (tipoRiesgo) { whereClause += ' AND aa.tipo_riesgo = ?'; params.push(tipoRiesgo); }
+    if (typeof tipoRiesgo === 'string' && tipoRiesgo) { whereClause += ' AND aa.tipo_riesgo = ?'; params.push(tipoRiesgo); }
 
     const [countResult] = await pool.query<RowDataPacket[]>(
       `SELECT COUNT(*) as total FROM alertas_academicas aa ${whereClause}`, params
@@ -52,7 +61,8 @@ export async function getAllAlertas(req: AuthRequest, res: Response) {
 export async function updateAlertaEstado(req: AuthRequest, res: Response) {
   try {
     const { estado } = req.body;
-    if (!['activa','atendida','resuelta','expirada'].includes(estado)) return sendError(res, 'Estado de alerta inválido', 400);
+    if (!positiveId(req.params.id)) return sendError(res, 'Alerta inválida', 400);
+    if (!ESTADOS_ALERTA.includes(estado)) return sendError(res, 'Estado de alerta inválido', 400);
 
     // Primero obtener el alumno_id de la alerta
     const [alerta] = await pool.query<RowDataPacket[]>(
@@ -85,11 +95,23 @@ export async function updateAlertaEstado(req: AuthRequest, res: Response) {
 export async function asignarAlerta(req: Request, res: Response) {
   try {
     const { asignada_a } = req.body;
+    // Corrección: antes no se validaba nada y se respondía éxito aunque la alerta no existiera.
+    if (!positiveId(req.params.id)) return sendError(res, 'Alerta inválida', 400);
+    if (asignada_a !== null && !positiveId(asignada_a)) return sendError(res, 'Responsable inválido', 400);
+    if (asignada_a !== null) {
+      const [responsable] = await pool.query<RowDataPacket[]>(
+        `SELECT u.id FROM usuarios u JOIN roles r ON r.id = u.rol_id
+         WHERE u.id = ? AND u.activo = 1 AND r.nombre IN ('administrador', 'profesor')`,
+        [Number(asignada_a)]
+      );
+      if (!responsable.length) return sendError(res, 'El responsable debe ser un administrador o profesor activo', 400);
+    }
 
-    await pool.query(
+    const [result] = await pool.query<ResultSetHeader>(
       'UPDATE alertas_academicas SET asignada_a = ? WHERE id = ?',
-      [asignada_a, req.params.id]
+      [asignada_a === null ? null : Number(asignada_a), Number(req.params.id)]
     );
+    if (!result.affectedRows) return sendError(res, 'Alerta no encontrada', 404);
 
     return sendSuccess(res, null, 'Alerta asignada');
   } catch (error) {

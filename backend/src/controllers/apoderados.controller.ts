@@ -42,8 +42,12 @@ export async function getAllApoderados(req: Request, res: Response) {
     const params: any[] = [];
 
     if (search) {
-      whereClause = 'WHERE u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ?';
-      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      // También permite encontrar al apoderado escribiendo el nombre de uno de sus alumnos.
+      whereClause = `WHERE u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ?
+        OR EXISTS (SELECT 1 FROM apoderado_alumno sa JOIN alumnos sal ON sal.id = sa.alumno_id
+          JOIN usuarios su ON su.id = sal.usuario_id
+          WHERE sa.apoderado_id = a.id AND CONCAT(su.nombre, ' ', su.apellido) LIKE ?)`;
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
     }
 
     const [countResult] = await pool.query<RowDataPacket[]>(
@@ -53,7 +57,14 @@ export async function getAllApoderados(req: Request, res: Response) {
 
     const [apoderados] = await pool.query<RowDataPacket[]>(
       `SELECT a.id, a.usuario_id, a.ocupacion, u.nombre, u.apellido, u.email, 
-              u.dni, u.telefono, u.direccion, u.foto_url, u.activo
+              u.dni, u.telefono, u.direccion, u.foto_url, u.activo,
+              -- Corrección: el listado no incluía los alumnos vinculados; solo se veían al abrir el modal.
+              (SELECT GROUP_CONCAT(CONCAT(ua.nombre, ' ', ua.apellido) ORDER BY ua.apellido, ua.nombre SEPARATOR ', ')
+                 FROM apoderado_alumno aa
+                 JOIN alumnos al ON al.id = aa.alumno_id
+                 JOIN usuarios ua ON ua.id = al.usuario_id
+                WHERE aa.apoderado_id = a.id) AS alumnos_vinculados,
+              (SELECT COUNT(*) FROM apoderado_alumno aa WHERE aa.apoderado_id = a.id) AS total_alumnos
        FROM apoderados a
        JOIN usuarios u ON a.usuario_id = u.id
        ${whereClause}
@@ -190,17 +201,41 @@ export async function updateApoderado(req: Request, res: Response) {
 }
 
 export async function deleteApoderado(req: Request, res: Response) {
+  if (!positiveId(req.params.id)) return sendError(res, 'ID inválido', 400);
+  let connection: PoolConnection | undefined;
+  let committed = false;
   try {
-    await pool.query('DELETE FROM apoderados WHERE id = ?', [req.params.id]);
-    return sendSuccess(res, null, 'Apoderado eliminado');
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const [current] = await connection.query<RowDataPacket[]>('SELECT id, usuario_id FROM apoderados WHERE id = ? FOR UPDATE', [req.params.id]);
+    if (!current.length) return sendError(res, 'Apoderado no encontrado', 404);
+    // Seguridad: antes se borraba el perfil pero la cuenta de usuario seguía activa y podía iniciar sesión.
+    // Ahora se desactiva la cuenta en la misma transacción (los vínculos se eliminan por ON DELETE CASCADE).
+    await connection.query('UPDATE usuarios SET activo = 0 WHERE id = ?', [current[0].usuario_id]);
+    await connection.query('DELETE FROM apoderados WHERE id = ?', [req.params.id]);
+    await connection.commit(); committed = true;
+    return sendSuccess(res, null, 'Apoderado eliminado y cuenta desactivada');
   } catch (error) {
+    logError('Error al eliminar apoderado:', error);
     return sendError(res, 'Error al eliminar apoderado');
+  } finally {
+    await finishTransaction(connection, committed);
   }
 }
 
 export async function asignarAlumno(req: Request, res: Response) {
   try {
     const { alumno_id, parentesco } = req.body;
+    // Validación: IDs enteros, parentesco acotado a VARCHAR(50) y existencia de ambas entidades
+    // (antes un ID inexistente provocaba un error 500 por clave foránea).
+    if (!positiveId(req.params.id) || !positiveId(alumno_id)) return sendError(res, 'Apoderado o alumno inválido', 400);
+    if (parentesco !== undefined && parentesco !== null && parentesco !== '' && (typeof parentesco !== 'string' || parentesco.trim().length > 50)) {
+      return sendError(res, 'Parentesco inválido (máximo 50 caracteres)', 400);
+    }
+    const [apoderado] = await pool.query<RowDataPacket[]>('SELECT id FROM apoderados WHERE id = ?', [req.params.id]);
+    if (!apoderado.length) return sendError(res, 'Apoderado no encontrado', 404);
+    const [alumno] = await pool.query<RowDataPacket[]>('SELECT id FROM alumnos WHERE id = ?', [alumno_id]);
+    if (!alumno.length) return sendError(res, 'Alumno no encontrado', 404);
 
     const [existing] = await pool.query<RowDataPacket[]>(
       'SELECT id FROM apoderado_alumno WHERE apoderado_id = ? AND alumno_id = ?',
@@ -213,21 +248,27 @@ export async function asignarAlumno(req: Request, res: Response) {
 
     await pool.query(
       'INSERT INTO apoderado_alumno (apoderado_id, alumno_id, parentesco) VALUES (?, ?, ?)',
-      [req.params.id, alumno_id, parentesco || 'Padre/Madre']
+      [req.params.id, alumno_id, (typeof parentesco === 'string' && parentesco.trim()) || 'Padre/Madre']
     );
 
     return sendSuccess(res, null, 'Alumno asignado exitosamente', 201);
   } catch (error) {
+    // Dos solicitudes simultáneas: la clave única evita el duplicado; se informa como conflicto.
+    if ((error as any)?.code === 'ER_DUP_ENTRY') return sendError(res, 'El alumno ya está asignado a este apoderado', 409);
+    logError('Error al asignar alumno:', error);
     return sendError(res, 'Error al asignar alumno');
   }
 }
 
 export async function removerAlumno(req: Request, res: Response) {
+  if (!positiveId(req.params.id) || !positiveId(req.params.alumnoId)) return sendError(res, 'Apoderado o alumno inválido', 400);
   try {
-    await pool.query(
+    const [result] = await pool.query<ResultSetHeader>(
       'DELETE FROM apoderado_alumno WHERE apoderado_id = ? AND alumno_id = ?',
       [req.params.id, req.params.alumnoId]
     );
+    // Corrección: antes respondía éxito aunque el vínculo no existiera.
+    if (!result.affectedRows) return sendError(res, 'El alumno no está asignado a este apoderado', 404);
 
     return sendSuccess(res, null, 'Alumno removido exitosamente');
   } catch (error) {

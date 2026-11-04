@@ -8,17 +8,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Tinta institucional: rampa continua (antes 500 era más claro y saturado que 600).
         primary: {
-          50: '#E8F0FE',
-          100: '#D1E3FD',
-          200: '#A4C7F9',
-          300: '#76A9F5',
-          400: '#498BF1',
-          500: '#1C6DEE',
-          600: '#1E40AF',
-          700: '#1E3A8A',
-          800: '#163366',
-          900: '#0F2744',
+          50: '#EEF2FB',
+          100: '#DCE4F7',
+          200: '#B9C8EE',
+          300: '#8FA6E0',
+          400: '#5F7FCF',
+          500: '#3A5FBF',
+          600: '#23408E',
+          700: '#1D3577',
+          800: '#182C62',
+          900: '#13234D',
         },
         secondary: {
           50: '#F5E6D3',

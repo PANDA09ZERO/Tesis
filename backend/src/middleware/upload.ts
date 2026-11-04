@@ -37,17 +37,20 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFil
   }
 };
 
+const MAX_UPLOAD_BYTES = integerSetting(process.env, 'MAX_UPLOAD_BYTES', 10 * 1024 * 1024, 1, 100 * 1024 * 1024);
+
 export const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: integerSetting(process.env, 'MAX_UPLOAD_BYTES', 10 * 1024 * 1024, 1, 100 * 1024 * 1024), fields:20, fieldSize:16384, parts:21, files:1 }
+  limits: { fileSize: MAX_UPLOAD_BYTES, fields:20, fieldSize:16384, parts:21, files:1 }
 });
 
 export function uploadDocumentoFile(req: Request, res: Response, next: NextFunction) {
   upload.single('archivo')(req, res, error => {
     if (!error) return next();
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-      return sendError(res, 'El archivo supera el límite de 10 MB', 413);
+      // Corrección: el mensaje decía siempre 10 MB aunque MAX_UPLOAD_BYTES fuera otro valor.
+      return sendError(res, `El archivo supera el límite de ${Math.max(1, Math.floor(MAX_UPLOAD_BYTES / (1024 * 1024)))} MB`, 413);
     }
     if(error instanceof multer.MulterError)return sendError(res,'Formulario de archivo inválido o demasiado grande',400);
     if(error.message?.startsWith('Tipo de archivo no permitido'))return sendError(res,error.message,400);
