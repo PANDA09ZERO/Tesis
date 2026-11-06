@@ -16,7 +16,7 @@ Prompt original de esta tarea: [PROMPT-despliegue-oracle.md](PROMPT-despliegue-o
 ```
  Navegador (profesores, administración, alumnos, apoderados)
       │  HTTPS
-      ├──────────────► Vercel ─ frontend estático (React)  https://NOMBRE.vercel.app
+      ├──────────────► Vercel ─ frontend estático (React)  https://cienciaseingeniaria.vercel.app
       │  HTTPS (llamadas a /api con token JWT)
       ▼
  Oracle Cloud ─ VM Ubuntu 24.04 Arm (Always Free)            https://API_DOMINIO
@@ -65,7 +65,7 @@ Usa el `mysqldump` de MySQL 8.0, no el de XAMPP. El cliente MariaDB de XAMPP no 
 | `DB_NAME` | `gestion_educativa` | Base de datos |
 | `DB_USER` / `DB_PASSWORD` | `gestion_app` / contraseña nueva | Usuario limitado. Prohibido `root` |
 | `DB_SSL` | `false` | El tráfico no sale de la VM (MySQL escucha solo en 127.0.0.1) |
-| `CORS_ORIGINS` | `https://NOMBRE.vercel.app` | Origen exacto del frontend, sin barra final |
+| `CORS_ORIGINS` | `https://cienciaseingeniaria.vercel.app` | Origen exacto del frontend, sin barra final |
 | `TRUST_PROXY` | `loopback` | Solo se confía en Nginx (misma VM) para conocer la IP real |
 | `UPLOAD_DIRECTORY` | `/srv/gestion/uploads` | Documentos subidos (ruta absoluta) |
 | `OPERATIONS_DIRECTORY` | `/srv/gestion/operations` | Panel de superadministración |
@@ -108,7 +108,7 @@ El repositorio `PANDA09ZERO/Tesis` es **público**, y un `.env` antiguo sigue en
 2. Crea la llave SSH en tu PC (PowerShell):
 
    ```powershell
-   ssh-keygen -t rsa -b 4096 -f $HOME\.ssh\oracle_gestion -C "gestion-tesis"
+   ssh-keygen -t rsa -b 4096 -f $HOME\.ssh\oracle_gestion -C "cienciaseingeniaria"
    ```
 
 3. **Red (VCN).** Menú → *Networking* → *Virtual Cloud Networks* → **Start VCN Wizard** → *Create VCN with Internet Connectivity*.
@@ -132,7 +132,7 @@ El repositorio `PANDA09ZERO/Tesis` es **público**, y un `.env` antiguo sigue en
    - Boot volume: 50 GB (el cupo gratuito total es 200 GB).
    - Si aparece **"Out of capacity for shape VM.Standard.A1.Flex"**, prueba otro *Availability Domain* o vuelve a intentarlo más tarde. Es habitual en las regiones con mucha demanda.
 6. **IP pública.** En el detalle de la instancia copia la *Public IPv4 address*. Para conservarla aunque la instancia se recree, conviértela en *Reserved Public IP*: *Attached VNICs* → *IPv4 Addresses* → editar → **Reserved public IP**.
-7. **Dominio gratuito.** En <https://www.duckdns.org> inicia sesión, crea un subdominio (p. ej. `gestion-tesis`) y escribe la IP pública en *current ip*. Tu `API_DOMINIO` será `gestion-tesis.duckdns.org`. Si la institución tiene dominio propio, crea un registro `A` (p. ej. `api.colegio.edu.pe` → IP) y úsalo en su lugar.
+7. **Dominio gratuito.** En <https://www.duckdns.org> inicia sesión, crea un subdominio (p. ej. `cienciaseingeniaria`) y escribe la IP pública en *current ip*. Tu `API_DOMINIO` será `cienciaseingeniaria.duckdns.org`. Si la institución tiene dominio propio, crea un registro `A` (p. ej. `api.colegio.edu.pe` → IP) y úsalo en su lugar.
 
 > **Recuperación de instancias inactivas:** Oracle puede detener las instancias Always Free con uso de CPU muy bajo durante 7 días en cuentas *Free Tier*. Pasar la cuenta a *Pay As You Go* (sigue sin costo si no se excede el cupo gratuito) evita esa recuperación. Revisa las condiciones vigentes antes de decidir.
 
@@ -248,7 +248,7 @@ openssl rand -hex 48                                  # copia el resultado para 
 sudo nano /etc/gestion-educativa/backend.env
 ```
 
-Completa `JWT_SECRET`, `DB_PASSWORD` (la de `gestion_app`) y `CORS_ORIGINS` (`https://NOMBRE.vercel.app`; si aún no la tienes, deja el nombre previsto y corrígelo en el paso 5.3).
+Completa `JWT_SECRET`, `DB_PASSWORD` (la de `gestion_app`) y `CORS_ORIGINS` (`https://cienciaseingeniaria.vercel.app`; si aún no la tienes, deja el nombre previsto y corrígelo en el paso 5.3).
 
 ### 4.4 Importar la base
 
@@ -293,6 +293,14 @@ unset DB_PASSWORD DB_USER
 
 ### 4.6 Levantar con PM2
 
+Primero inicializa el diario del panel de superadministración (`suspension.jsonl`). En producción, con `OPERATIONS_DIRECTORY` configurado, el login responde **500** si ese archivo falta. `npm run superadmin:bootstrap` solo lo crea al crear la supercuenta, y tu base importada ya tiene una. El comando usa la función del propio backend y no sobrescribe un estado existente:
+
+```bash
+cd ~/Tesis/backend
+OPERATIONS_DIRECTORY=/srv/gestion/operations node -e "require('./dist/utils/operations').initializeOperations().then(()=>console.log('diario de operaciones listo'))"
+cat /srv/gestion/operations/suspension.jsonl        # {"suspended":false,...}
+```
+
 ```bash
 cd ~/Tesis
 pm2 start deploy/oracle/ecosystem.config.cjs
@@ -312,35 +320,35 @@ Si no responde: `pm2 logs gestion-backend --lines 50`. Un error de configuració
 
 ```bash
 sudo cp ~/Tesis/deploy/oracle/nginx-gestion.conf /etc/nginx/sites-available/gestion
-sudo sed -i 's/API_DOMINIO/gestion-tesis.duckdns.org/' /etc/nginx/sites-available/gestion
+sudo sed -i 's/API_DOMINIO/cienciaseingeniaria.duckdns.org/' /etc/nginx/sites-available/gestion
 sudo cp /etc/nginx/sites-available/gestion /etc/nginx/sites-available/gestion.bak   # copia para el rollback
 sudo ln -s /etc/nginx/sites-available/gestion /etc/nginx/sites-enabled/gestion
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
-curl -s http://gestion-tesis.duckdns.org/api/health   # desde tu PC: {"status":"ok",...}
+curl -s http://cienciaseingeniaria.duckdns.org/api/health   # desde tu PC: {"status":"ok",...}
 ```
 
 ### 5.2 Certificado SSL (Let's Encrypt, gratuito)
 
 ```bash
-sudo certbot --nginx -d gestion-tesis.duckdns.org --redirect -m TU_CORREO --agree-tos --no-eff-email
+sudo certbot --nginx -d cienciaseingeniaria.duckdns.org --redirect -m TU_CORREO --agree-tos --no-eff-email
 sudo certbot renew --dry-run                          # la renovación automática queda programada
 ```
 
-Desde tu PC: `curl.exe https://gestion-tesis.duckdns.org/api/ready` → `{"status":"ready"}`.
+Desde tu PC: `curl.exe https://cienciaseingeniaria.duckdns.org/api/ready` → `{"status":"ready"}`.
 
 ### 5.3 Frontend en Vercel
 
 1. En <https://vercel.com> → **Add New → Project** → importa `PANDA09ZERO/Tesis`.
-2. **Root Directory:** `frontend`. Framework: Vite. `frontend/vercel.json` ya define la instalación, el build, la salida `dist` y las rutas de la SPA.
-3. *Settings → General → Node.js Version:* **24.x**.
-4. *Environment Variables* (entorno **Production**): `VITE_API_BASE_URL` = `https://gestion-tesis.duckdns.org/api`.
-5. **Deploy.** Anota la URL final (p. ej. `https://gestion-tesis.vercel.app`).
-6. Si la URL difiere de la que pusiste en `CORS_ORIGINS`, corrígela en la VM y reinicia:
+2. **Project Name:** `cienciaseingeniaria`. Vercel propone el nombre del repositorio (`tesis`): cámbialo antes de desplegar. Solo admite minúsculas, así que "CienciaseIngeniaria" se escribe `cienciaseingeniaria`, y la URL será `https://cienciaseingeniaria.vercel.app` si está libre. Si Vercel asigna otra, usa esa en `CORS_ORIGINS` (paso 6).
+3. **Root Directory:** `frontend`. Framework: Vite. `frontend/vercel.json` ya define la instalación, el build, la salida `dist` y las rutas de la SPA.
+4. *Settings → General → Node.js Version:* **24.x**.
+5. *Environment Variables* (entorno **Production**): `VITE_API_BASE_URL` = `https://cienciaseingeniaria.duckdns.org/api`.
+6. **Deploy.** Anota la URL final (`https://cienciaseingeniaria.vercel.app`). Si difiere de la que pusiste en `CORS_ORIGINS`, corrígela en la VM y reinicia:
 
    ```bash
-   sudo nano /etc/gestion-educativa/backend.env       # CORS_ORIGINS=https://gestion-tesis.vercel.app
-   pm2 restart deploy/oracle/ecosystem.config.cjs --update-env && pm2 save
+   sudo nano /etc/gestion-educativa/backend.env       # CORS_ORIGINS=https://cienciaseingeniaria.vercel.app
+   cd ~/Tesis && pm2 restart deploy/oracle/ecosystem.config.cjs --update-env && pm2 save
    ```
 
 La URL de la API se incorpora al compilar: si la cambias en Vercel, hay que volver a desplegar. Los *Preview deployments* no están en `CORS_ORIGINS` y no podrán hablar con la API de producción, a propósito.
@@ -406,6 +414,7 @@ crontab -e
 - [ ] MySQL escucha solo en `127.0.0.1`; usuarios `gestion_app`, `gestion_admin` y `gestion_respaldo` creados
 - [ ] Base importada (33 tablas); `production:check` → `"ready": true`
 - [ ] `/etc/gestion-educativa/backend.env` con permisos `640 root:ubuntu`; secretos nuevos
+- [ ] Diario de operaciones creado (`/srv/gestion/operations/suspension.jsonl`) y login correcto (no 500)
 - [ ] `pm2 status` → online; `pm2 startup` y `pm2 save` hechos (sobrevive a `sudo reboot`)
 - [ ] `https://API_DOMINIO/api/ready` → 200 desde Internet; `http://IP_PUBLICA:3000` **no** responde
 - [ ] Certificado válido y `certbot renew --dry-run` correcto
@@ -459,3 +468,25 @@ Si la versión nueva trae una migración SQL, aplícala antes del `pm2 restart` 
 - **Arquitectura de tres capas:** presentación en una CDN (Vercel), lógica de negocio en Node.js/Express detrás de un proxy inverso con TLS, y datos en MySQL 8 sin exposición a Internet.
 - **Seguridad en profundidad:** firewall de la nube (Security List) más firewall del sistema (iptables), HTTPS, CORS exacto, usuarios de base de datos con privilegio mínimo, secretos fuera del código y límites de intentos de login.
 - **Continuidad:** respaldos diarios automáticos con verificación y copia externa, procedimiento de restauración probado y rollback documentado para cada capa.
+
+---
+
+## 11. Ensayo de esta guía en Docker (06/11/2026)
+
+Los pasos 3.2 a 6 se ejecutaron tal cual, como usuario `ubuntu` con `sudo`, en un contenedor Ubuntu 24.04.5 que imita la VM. Se usaron datos ficticios: el esquema limpio del repositorio y un administrador de prueba, nunca la base real.
+
+| Comprobación | Resultado |
+|---|---|
+| Node 24.22, MySQL 8.0.46, Nginx 1.24, certbot 2.9 y PM2 7.1 instalados con los comandos de la guía | OK |
+| MySQL escucha solo en `127.0.0.1`; tres usuarios con sus permisos | OK |
+| `db:install` → `admin:bootstrap` → `db:check` → `migrate:production` → `production:check` | OK, sin bloqueos |
+| PM2 con `deploy/oracle/ecosystem.config.cjs` → `/api/ready` | 200 |
+| Login sin `suspension.jsonl` | **500 → corregido** con la inicialización del paso 4.6; después 200 |
+| `nginx -t` y `/api/ready` a través de Nginx | OK / 200 |
+| CORS: origen de Vercel aceptado; origen ajeno sin cabecera | OK |
+| Cuerpo de 13 MB | 413 (rechazado por Nginx) |
+| 22 logins fallidos, cada uno con una IP falsa distinta en `X-Forwarded-For` | Bloqueado (429) desde el intento 20: la IP falsa no evita el límite |
+| Cambio de `CORS_ORIGINS` + `pm2 restart … --update-env` | Toma el valor nuevo |
+| `respaldo-bd.sh`: base y documentos, `sha256sum -c` y restauración en otra base | OK (33 tablas, mismos conteos) |
+
+No se pudo ensayar: la consola y la red de Oracle (Security List, `iptables`), el procesador Arm (el contenedor es x86_64; los paquetes son los mismos), `pm2 startup` y el reinicio con systemd, el dominio DuckDNS, el certificado de Let's Encrypt, Vercel e importar la base real. En el contenedor, el instalador de `mysql-server` falla al detener su servidor temporal porque no hay systemd. Es un problema conocido de Docker que no ocurre en una VM.
