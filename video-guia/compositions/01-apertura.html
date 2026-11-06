@@ -1,0 +1,56 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:1320px;top:124px;width:408px;}
+#root .chap{font-size:30px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:56px;height:4px;background:#8C2F2B;border-radius:2px;margin-top:18px;}
+#root .step{position:absolute;left:1320px;top:250px;width:408px;}
+#root .step .n{font-size:28px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:44px;font-weight:700;line-height:1.15;color:#1A1F29;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:111px;top:83px;width:1154px;height:762px;background:#fff;border:1px solid #E1E5EC;border-radius:14px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:40px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:8px;padding:0 16px;}
+#root .dot{width:11px;height:11px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:26px;padding:0 14px;border-radius:13px;background:#F4F6F9;font-size:28px;line-height:26px;color:#5B6475;transform-origin:left center;}
+#root .url span{display:inline-block;font-size:17px;}
+#root .screen{position:absolute;left:0;top:40px;width:1440px;height:900px;transform:scale(0.8);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:506.4px;top:66px;width:363.2px;height:762.72px;background:#1A1F29;border-radius:40px;}
+#root .phone .screen{left:10px;top:10px;width:390px;height:844px;transform:scale(0.88);border-radius:38px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;}
+#root .cursor{position:absolute;left:0;top:0;width:34px;height:34px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:4px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1920px;height:1080px;}
+#root .card .kicker{position:absolute;left:192px;top:236px;font-size:30px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:192px;top:290px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:192px;font-size:44px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;}
+#root .card .idea b{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;border:3px solid #23408E;color:#23408E;font-size:32px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="apertura" data-width="1920" data-height="1080" data-duration="11.22">
+<div class="bg"></div>
+<div id="apertura-stage" class="stage">
+<div id="apertura-hero" class="clip" data-start="0" data-duration="11.22" style="position:absolute;inset:0">
+  <img id="apertura-logo" src="assets/logo.png" alt="" style="position:absolute;left:840px;top:250px;width:240px;height:240px;object-fit:contain">
+  <div id="apertura-title" style="position:absolute;left:0;right:0;top:540px;text-align:center;font-size:72px;font-weight:700;color:#23408E">Ciencias e Ingeniería · Guía de uso</div>
+  <div id="apertura-rule" style="position:absolute;left:932px;top:650px;width:56px;height:4px;border-radius:2px;background:#8C2F2B"></div>
+  <div id="apertura-tag" style="position:absolute;left:0;right:0;top:684px;text-align:center;font-size:40px;font-weight:400;color:#1A1F29">Notas, asistencia y horarios del año escolar en un solo lugar.</div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#apertura-logo", {"opacity":1,"scale":0.94}, {"opacity":1,"scale":1,"duration":1.1,"ease":"power3.out"}, 0);
+tl.fromTo("#apertura-title", {"opacity":0,"y":24}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 0.9);
+tl.fromTo("#apertura-rule", {"scaleX":0}, {"scaleX":1,"duration":0.5,"ease":"power2.out"}, 1.3);
+tl.fromTo("#apertura-tag", {"opacity":0,"y":16}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 4.35);
+tl.fromTo("#apertura-logo", {"scale":1}, {"scale":1.04,"duration":10.020000000000001,"ease":"none","immediateRender":false}, 1.1);
+tl.fromTo("#apertura-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in"}, 10.77);
+window.__timelines = window.__timelines || {};
+window.__timelines["apertura"] = tl;
+</script>
+</template>

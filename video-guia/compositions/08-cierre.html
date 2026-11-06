@@ -1,0 +1,85 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:1320px;top:124px;width:408px;}
+#root .chap{font-size:30px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:56px;height:4px;background:#8C2F2B;border-radius:2px;margin-top:18px;}
+#root .step{position:absolute;left:1320px;top:250px;width:408px;}
+#root .step .n{font-size:28px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:44px;font-weight:700;line-height:1.15;color:#1A1F29;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:111px;top:83px;width:1154px;height:762px;background:#fff;border:1px solid #E1E5EC;border-radius:14px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:40px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:8px;padding:0 16px;}
+#root .dot{width:11px;height:11px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:26px;padding:0 14px;border-radius:13px;background:#F4F6F9;font-size:28px;line-height:26px;color:#5B6475;transform-origin:left center;}
+#root .url span{display:inline-block;font-size:17px;}
+#root .screen{position:absolute;left:0;top:40px;width:1440px;height:900px;transform:scale(0.8);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:506.4px;top:66px;width:363.2px;height:762.72px;background:#1A1F29;border-radius:40px;}
+#root .phone .screen{left:10px;top:10px;width:390px;height:844px;transform:scale(0.88);border-radius:38px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;}
+#root .cursor{position:absolute;left:0;top:0;width:34px;height:34px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:4px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1920px;height:1080px;}
+#root .card .kicker{position:absolute;left:192px;top:236px;font-size:30px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:192px;top:290px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:192px;font-size:44px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;}
+#root .card .idea b{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;border:3px solid #23408E;color:#23408E;font-size:32px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="cierre" data-width="1920" data-height="1080" data-duration="25.07">
+<div class="bg"></div>
+<div id="cierre-stage" class="stage">
+<div id="cierre-panel" class="panel clip" data-start="0.8" data-duration="10.37"><div class="chap">Buenas prácticas</div><div class="chap-rule"></div></div>
+<div id="cierre-step1" class="step clip" data-start="0.95" data-duration="9.82"><div class="n">Paso 1</div><div class="t">Cierra sesión al terminar</div></div>
+<div id="cierre-shot1" class="shot clip" data-start="0.8" data-duration="10.37">
+  <div id="cierre-shot1-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="cierre-shot1-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="cierre-shot1-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-dashboard-desktop.png" alt="">
+        <div id="cierre-shot1-hl0" class="hl" style="left:4px;top:836px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="cierre-shot1-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="cierre-note" class="clip" data-start="10.27" data-duration="7.69" style="position:absolute;inset:0">
+  <div id="cierre-note-a" style="position:absolute;left:192px;top:330px;font-size:40px;font-weight:600;color:#8C2F2B">¿Dudas o algún dato incorrecto?</div>
+  <div id="cierre-note-b" style="position:absolute;left:192px;top:400px;width:1300px;font-size:84px;font-weight:700;color:#23408E;line-height:1.1">Comunícate con la administración.</div>
+</div>
+<div id="cierre-end" class="clip" data-start="17.36" data-duration="7.71" style="position:absolute;inset:0">
+  <img id="cierre-end-logo" src="assets/logo.png" alt="" style="position:absolute;left:860px;top:300px;width:200px;height:200px;object-fit:contain">
+  <div id="cierre-end-t" style="position:absolute;left:0;right:0;top:540px;text-align:center;font-size:76px;font-weight:700;color:#23408E">Listo para usar el sistema</div>
+  <div id="cierre-end-s" style="position:absolute;left:0;right:0;top:648px;text-align:center;font-size:32px;font-weight:400;color:#5B6475">Ciencias e Ingeniería · Gestión académica</div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#cierre-panel", {"opacity":0,"x":-12}, {"opacity":1,"x":0,"duration":0.5,"ease":"power2.out"}, 0.85);
+tl.fromTo("#cierre-panel", {"opacity":1}, {"opacity":0,"duration":0.4,"immediateRender":false}, 10.77);
+tl.fromTo("#cierre-step1 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 1);
+tl.fromTo("#cierre-step1 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 1.05);
+tl.fromTo("#cierre-shot1-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 0.8);
+tl.fromTo("#cierre-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":-990,"duration":0.8,"ease":"power2.inOut"}, 5.97);
+tl.fromTo("#cierre-shot1-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 6.67);
+tl.fromTo("#cierre-shot1-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 5.97);
+tl.fromTo("#cierre-shot1-cur", {"x":1010.5600000000001,"y":700}, {"x":349.08,"y":784.88,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 5.97);
+tl.fromTo("#cierre-shot1-cam", {"scale":2.1,"x":0,"y":-990}, {"scale":2.17,"x":-50.4,"y":-1021.5,"duration":3.95,"ease":"none","immediateRender":false}, 6.82);
+tl.fromTo("#cierre-shot1-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 10.77);
+tl.fromTo("#cierre-note-a", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.6,"ease":"power3.out"}, 10.37);
+tl.fromTo("#cierre-note-a", {"scale":1}, {"scale":1.02,"duration":7.19,"ease":"none","immediateRender":false}, 10.77);
+tl.fromTo("#cierre-note-b", {"opacity":0,"y":22}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 12.94);
+tl.fromTo("#cierre-end-logo", {"opacity":0,"scale":0.94}, {"opacity":1,"scale":1,"duration":0.8,"ease":"power3.out"}, 17.46);
+tl.fromTo("#cierre-end-t", {"opacity":0,"y":20}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 17.86);
+tl.fromTo("#cierre-end-s", {"opacity":0}, {"opacity":1,"duration":0.6}, 18.46);
+tl.fromTo("#cierre-end-t", {"scale":1}, {"scale":1.025,"duration":5.91,"ease":"none","immediateRender":false}, 18.66);
+tl.fromTo("#cierre-stage", {"opacity":0}, {"opacity":1,"duration":0.45,"ease":"power1.out"}, 0);
+tl.fromTo("#cierre-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in","immediateRender":false}, 24.62);
+window.__timelines = window.__timelines || {};
+window.__timelines["cierre"] = tl;
+</script>
+</template>

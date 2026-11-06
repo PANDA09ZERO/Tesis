@@ -1,0 +1,193 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:1320px;top:124px;width:408px;}
+#root .chap{font-size:30px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:56px;height:4px;background:#8C2F2B;border-radius:2px;margin-top:18px;}
+#root .step{position:absolute;left:1320px;top:250px;width:408px;}
+#root .step .n{font-size:28px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:44px;font-weight:700;line-height:1.15;color:#1A1F29;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:111px;top:83px;width:1154px;height:762px;background:#fff;border:1px solid #E1E5EC;border-radius:14px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:40px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:8px;padding:0 16px;}
+#root .dot{width:11px;height:11px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:26px;padding:0 14px;border-radius:13px;background:#F4F6F9;font-size:28px;line-height:26px;color:#5B6475;transform-origin:left center;}
+#root .url span{display:inline-block;font-size:17px;}
+#root .screen{position:absolute;left:0;top:40px;width:1440px;height:900px;transform:scale(0.8);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:506.4px;top:66px;width:363.2px;height:762.72px;background:#1A1F29;border-radius:40px;}
+#root .phone .screen{left:10px;top:10px;width:390px;height:844px;transform:scale(0.88);border-radius:38px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;}
+#root .cursor{position:absolute;left:0;top:0;width:34px;height:34px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:4px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1920px;height:1080px;}
+#root .card .kicker{position:absolute;left:192px;top:236px;font-size:30px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:192px;top:290px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:192px;font-size:44px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;}
+#root .card .idea b{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;border:3px solid #23408E;color:#23408E;font-size:32px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="pantalla" data-width="1920" data-height="1080" data-duration="51.26">
+<div class="bg"></div>
+<div id="pantalla-stage" class="stage">
+<div id="pantalla-panel" class="panel clip" data-start="0.8" data-duration="50.46"><div class="chap">2 · Conocer la pantalla</div><div class="chap-rule"></div></div>
+<div id="pantalla-step1" class="step clip" data-start="0.95" data-duration="9.53"><div class="n">Paso 1</div><div class="t">Menú lateral</div></div>
+<div id="pantalla-shot1" class="shot clip" data-start="0.8" data-duration="10.08">
+  <div id="pantalla-shot1-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot1-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="pantalla-shot1-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-dashboard-desktop.png" alt="">
+        <div id="pantalla-shot1-hl0" class="hl" style="left:-8px;top:-8px;width:304px;height:916px;border-width:5px;border-radius:12.5px"></div>
+        <div id="pantalla-shot1-hl1" class="hl" style="left:4px;top:148px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot1-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="pantalla-step2" class="step clip" data-start="10.13" data-duration="15.27"><div class="n">Paso 2</div><div class="t">Cabecera y año escolar</div></div>
+<div id="pantalla-shot2" class="shot clip" data-start="10.13" data-duration="15.67">
+  <div id="pantalla-shot2-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot2-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="pantalla-shot2-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-dashboard-desktop.png" alt="">
+        <div id="pantalla-shot2-hl0" class="hl" style="left:1020px;top:2px;width:60px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="pantalla-shot2-hl1" class="hl" style="left:1072px;top:2px;width:60px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="pantalla-shot2-hl2" class="hl" style="left:1124px;top:2px;width:60px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="pantalla-shot2-hl3" class="hl" style="left:1184px;top:2px;width:233px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot2-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="pantalla-step3" class="step clip" data-start="25.05" data-duration="11.99"><div class="n">Paso 3</div><div class="t">En el celular: barra inferior</div></div>
+<div id="pantalla-shot3" class="shot clip" data-start="25.05" data-duration="7.05">
+  <div id="pantalla-shot3-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot3-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-inicio-mobile.png" alt="">
+        <div id="pantalla-shot3-hl0" class="hl" style="left:-6px;top:769px;width:402px;height:81px;border-width:4.55px;border-radius:11.36px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot3-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-shot4" class="shot clip" data-start="31.7" data-duration="5.74">
+  <div id="pantalla-shot4-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot4-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-modulos-mobile.png" alt="">
+        <div id="pantalla-shot4-hl0" class="hl" style="left:2px;top:384px;width:386px;height:162px;border-width:4.55px;border-radius:11.36px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot4-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-step4" class="step clip" data-start="36.69" data-duration="8.81"><div class="n">Paso 4</div><div class="t">Listas: toca la tarjeta</div></div>
+<div id="pantalla-shot5" class="shot clip" data-start="36.69" data-duration="9.21">
+  <div id="pantalla-shot5-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot5-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-alumnos-mobile.png" alt="">
+        <div id="pantalla-shot5-hl0" class="hl" style="left:27px;top:547px;width:336px;height:32px;border-width:4.55px;border-radius:11.36px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot5-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-step5" class="step clip" data-start="45.15" data-duration="6.11"><div class="n">Paso 5</div><div class="t">Mi perfil</div></div>
+<div id="pantalla-shot6" class="shot clip" data-start="45.15" data-duration="6.11">
+  <div id="pantalla-shot6-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot6-url" class="url" data-layout-ignore><span>/perfil</span></div></div><div class="screen">
+      <div id="pantalla-shot6-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/perfil-desktop.png" alt="">
+        <div id="pantalla-shot6-hl0" class="hl" style="left:333px;top:321px;width:693px;height:41px;border-width:4.1px;border-radius:10.25px"></div>
+        <div id="pantalla-shot6-hl1" class="hl" style="left:1058px;top:304px;width:352px;height:456px;border-width:4.39px;border-radius:10.96px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot6-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#pantalla-panel", {"opacity":0,"x":-12}, {"opacity":1,"x":0,"duration":0.5,"ease":"power2.out"}, 0.85);
+tl.fromTo("#pantalla-step1 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 1);
+tl.fromTo("#pantalla-step1 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 1.05);
+tl.fromTo("#pantalla-shot1-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 0.8);
+tl.fromTo("#pantalla-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 2.38);
+tl.fromTo("#pantalla-shot1-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 3.08);
+tl.fromTo("#pantalla-shot1-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 2.38);
+tl.fromTo("#pantalla-shot1-cur", {"x":1010.5600000000001,"y":700}, {"x":223.2,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 2.38);
+tl.fromTo("#pantalla-shot1-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 4.75);
+tl.fromTo("#pantalla-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 4.75);
+tl.fromTo("#pantalla-shot1-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 5.45);
+tl.fromTo("#pantalla-shot1-cur", {"x":223.2,"y":482}, {"x":349.08,"y":421.04,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 4.75);
+tl.fromTo("#pantalla-shot1-cam", {"scale":2.1,"x":0,"y":0}, {"scale":2.17,"x":-50.4,"y":-31.5,"duration":4.88,"ease":"none","immediateRender":false}, 5.6);
+tl.fromTo("#pantalla-shot1-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 10.48);
+tl.fromTo("#pantalla-step2 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 10.18);
+tl.fromTo("#pantalla-step2 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 10.23);
+tl.fromTo("#pantalla-shot2-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 10.13);
+tl.fromTo("#pantalla-shot2-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":-1485,"y":0,"duration":0.8,"ease":"power2.inOut"}, 11.11);
+tl.fromTo("#pantalla-shot2-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 11.81);
+tl.fromTo("#pantalla-shot2-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 11.11);
+tl.fromTo("#pantalla-shot2-cur", {"x":1010.5600000000001,"y":700}, {"x":684,"y":175.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 11.11);
+tl.fromTo("#pantalla-shot2-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 12.66);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.1,"x":-1485,"y":0}, {"scale":2.1,"x":-1584,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.66);
+tl.fromTo("#pantalla-shot2-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 13.36);
+tl.fromTo("#pantalla-shot2-cur", {"x":684,"y":175.76}, {"x":692.16,"y":175.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.66);
+tl.fromTo("#pantalla-shot2-hl1", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 13.76);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.1,"x":-1584,"y":0}, {"scale":2.1,"x":-1584,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 13.76);
+tl.fromTo("#pantalla-shot2-hl2", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 14.46);
+tl.fromTo("#pantalla-shot2-cur", {"x":692.16,"y":175.76}, {"x":779.52,"y":175.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 13.76);
+tl.fromTo("#pantalla-shot2-hl2", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 14.86);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.1,"x":-1584,"y":0}, {"scale":2.1,"x":-1584,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 14.86);
+tl.fromTo("#pantalla-shot2-hl3", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 15.56);
+tl.fromTo("#pantalla-shot2-cur", {"x":779.52,"y":175.76}, {"x":1025.64,"y":175.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 14.86);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.1,"x":-1584,"y":0}, {"scale":2.17,"x":-1634.4,"y":-31.5,"duration":9.69,"ease":"none","immediateRender":false}, 15.71);
+tl.fromTo("#pantalla-shot2-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 25.4);
+tl.fromTo("#pantalla-step3 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 25.1);
+tl.fromTo("#pantalla-step3 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 25.15);
+tl.fromTo("#pantalla-shot3-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 25.05);
+tl.fromTo("#pantalla-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 26.51);
+tl.fromTo("#pantalla-shot3-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 27.21);
+tl.fromTo("#pantalla-shot3-cur", {"opacity":0,"x":756.64,"y":536.4864}, {"opacity":1,"duration":0.25}, 26.51);
+tl.fromTo("#pantalla-shot3-cur", {"x":756.64,"y":536.4864}, {"x":688,"y":788.36,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 26.51);
+tl.fromTo("#pantalla-shot3-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 27.33);
+tl.fromTo("#pantalla-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":4.34,"ease":"none","immediateRender":false}, 27.36);
+tl.fromTo("#pantalla-shot3-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 31.7);
+tl.fromTo("#pantalla-shot4-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 31.7);
+tl.fromTo("#pantalla-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 32.98);
+tl.fromTo("#pantalla-shot4-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 33.68);
+tl.fromTo("#pantalla-shot4-cur", {"opacity":0,"x":756.64,"y":536.4864}, {"opacity":1,"duration":0.25}, 32.98);
+tl.fromTo("#pantalla-shot4-cur", {"x":756.64,"y":536.4864}, {"x":688,"y":485.2,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 32.98);
+tl.fromTo("#pantalla-shot4-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 33.8);
+tl.fromTo("#pantalla-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":3.21,"ease":"none","immediateRender":false}, 33.83);
+tl.fromTo("#pantalla-shot4-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 37.04);
+tl.fromTo("#pantalla-step4 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 36.74);
+tl.fromTo("#pantalla-step4 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 36.79);
+tl.fromTo("#pantalla-shot5-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 36.69);
+tl.fromTo("#pantalla-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 39.03);
+tl.fromTo("#pantalla-shot5-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 39.73);
+tl.fromTo("#pantalla-shot5-cur", {"opacity":0,"x":756.64,"y":536.4864}, {"opacity":1,"duration":0.25}, 39.03);
+tl.fromTo("#pantalla-shot5-cur", {"x":756.64,"y":536.4864}, {"x":688,"y":571.44,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 39.03);
+tl.fromTo("#pantalla-shot5-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 39.85);
+tl.fromTo("#pantalla-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":5.62,"ease":"none","immediateRender":false}, 39.88);
+tl.fromTo("#pantalla-shot5-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 45.5);
+tl.fromTo("#pantalla-step5 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 45.2);
+tl.fromTo("#pantalla-step5 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 45.25);
+tl.fromTo("#pantalla-shot6-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 45.15);
+tl.fromTo("#pantalla-shot6-cam", {"scale":1,"x":0,"y":0}, {"scale":1.22,"x":-108.05,"y":0,"duration":0.8,"ease":"power2.inOut"}, 46.3);
+tl.fromTo("#pantalla-shot6-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 47);
+tl.fromTo("#pantalla-shot6-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 46.3);
+tl.fromTo("#pantalla-shot6-cur", {"x":1010.5600000000001,"y":700}, {"x":684,"y":454.93,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 46.3);
+tl.fromTo("#pantalla-shot6-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 47.57);
+tl.fromTo("#pantalla-shot6-cam", {"scale":1.22,"x":-108.05,"y":0}, {"scale":1.14,"x":-207.46,"y":-129.66,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 47.57);
+tl.fromTo("#pantalla-shot6-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 48.27);
+tl.fromTo("#pantalla-shot6-cur", {"x":684,"y":454.93}, {"x":1071.46,"y":505.19,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 47.57);
+tl.fromTo("#pantalla-shot6-cam", {"scale":1.14,"x":-207.46,"y":-129.66}, {"scale":1.18,"x":-236.26,"y":-147.66,"duration":2.44,"ease":"none","immediateRender":false}, 48.42);
+tl.fromTo("#pantalla-shot6-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 50.86);
+tl.fromTo("#pantalla-stage", {"opacity":0}, {"opacity":1,"duration":0.45,"ease":"power1.out"}, 0);
+tl.fromTo("#pantalla-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in","immediateRender":false}, 50.81);
+window.__timelines = window.__timelines || {};
+window.__timelines["pantalla"] = tl;
+</script>
+</template>

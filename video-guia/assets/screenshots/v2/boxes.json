@@ -1,0 +1,847 @@
+{
+ "login-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "email": {
+    "x": 960,
+    "y": 409,
+    "w": 384,
+    "h": 44
+   },
+   "password": {
+    "x": 960,
+    "y": 499,
+    "w": 384,
+    "h": 44
+   },
+   "eye": {
+    "x": 1298,
+    "y": 499,
+    "w": 44,
+    "h": 44
+   },
+   "submit": {
+    "x": 960,
+    "y": 571,
+    "w": 384,
+    "h": 44
+   },
+   "form": {
+    "x": 960,
+    "y": 383,
+    "w": 384,
+    "h": 232
+   }
+  }
+ },
+ "login-lleno-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "email": {
+    "x": 960,
+    "y": 409,
+    "w": 384,
+    "h": 44
+   },
+   "password": {
+    "x": 960,
+    "y": 499,
+    "w": 384,
+    "h": 44
+   },
+   "eye": {
+    "x": 1298,
+    "y": 499,
+    "w": 44,
+    "h": 44
+   },
+   "submit": {
+    "x": 960,
+    "y": 571,
+    "w": 384,
+    "h": 44
+   }
+  }
+ },
+ "login-mostrar-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "password": {
+    "x": 960,
+    "y": 499,
+    "w": 384,
+    "h": 44
+   },
+   "eye": {
+    "x": 1298,
+    "y": 499,
+    "w": 44,
+    "h": 44
+   }
+  }
+ },
+ "login-error-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "toast": {
+    "x": 1247,
+    "y": 28,
+    "w": 157,
+    "h": 21
+   },
+   "email": {
+    "x": 960,
+    "y": 409,
+    "w": 384,
+    "h": 44
+   }
+  }
+ },
+ "cambio-clave-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "hint": {
+    "x": 485,
+    "y": 556,
+    "w": 470,
+    "h": 16
+   },
+   "form": {
+    "x": 485,
+    "y": 304,
+    "w": 470,
+    "h": 328
+   }
+  }
+ },
+ "suspendido-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "card": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 900
+   }
+  }
+ },
+ "admin-dashboard-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "sidebar": {
+    "x": 0,
+    "y": 0,
+    "w": 288,
+    "h": 900
+   },
+   "active": {
+    "x": 12,
+    "y": 156,
+    "w": 263,
+    "h": 44
+   },
+   "theme": {
+    "x": 1028,
+    "y": 10,
+    "w": 44,
+    "h": 44
+   },
+   "perfil": {
+    "x": 1080,
+    "y": 10,
+    "w": 44,
+    "h": 44
+   },
+   "calendario": {
+    "x": 1132,
+    "y": 10,
+    "w": 44,
+    "h": 44
+   },
+   "periodo": {
+    "x": 1192,
+    "y": 10,
+    "w": 217,
+    "h": 44
+   },
+   "logout": {
+    "x": 12,
+    "y": 844,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "admin-usuarios-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "nuevo": {
+    "x": 1251,
+    "y": 190,
+    "w": 157,
+    "h": 44
+   },
+   "menu": {
+    "x": 12,
+    "y": 616,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "admin-usuario-nuevo-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "aviso": {
+    "x": 409,
+    "y": 290,
+    "w": 622,
+    "h": 64
+   },
+   "crear": {
+    "x": 962,
+    "y": 727,
+    "w": 69,
+    "h": 44
+   }
+  }
+ },
+ "admin-credenciales-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "usuario": {
+    "x": 489,
+    "y": 409,
+    "w": 462,
+    "h": 44
+   },
+   "clave": {
+    "x": 489,
+    "y": 493,
+    "w": 462,
+    "h": 44
+   },
+   "dialog": {
+    "x": 464,
+    "y": 205,
+    "w": 512,
+    "h": 490
+   }
+  }
+ },
+ "admin-apoderados-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "card": {
+    "x": 341,
+    "y": 417,
+    "w": 341,
+    "h": 153
+   },
+   "grupo": {
+    "x": 56,
+    "y": 259,
+    "w": 191,
+    "h": 23
+   }
+  }
+ },
+ "admin-apoderado-detalle-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "grupo": {
+    "x": 56,
+    "y": 259,
+    "w": 191,
+    "h": 23
+   },
+   "acargo": {
+    "x": 358,
+    "y": 483,
+    "w": 116,
+    "h": 18
+   },
+   "btnAlumnos": {
+    "x": 455,
+    "y": 767,
+    "w": 94,
+    "h": 44
+   },
+   "apoderados": {
+    "x": 41,
+    "y": 386,
+    "w": 234,
+    "h": 44
+   }
+  }
+ },
+ "admin-estructura-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "grado": {
+    "x": 369,
+    "y": 343,
+    "w": 70,
+    "h": 25
+   },
+   "docente": {
+    "x": 794,
+    "y": 398,
+    "w": 148,
+    "h": 24
+   },
+   "grupo": {
+    "x": 56,
+    "y": 305,
+    "w": 191,
+    "h": 23
+   }
+  }
+ },
+ "profesor-dashboard-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "cursos": {
+    "x": 12,
+    "y": 432,
+    "w": 263,
+    "h": 44
+   },
+   "alumnos": {
+    "x": 12,
+    "y": 248,
+    "w": 263,
+    "h": 44
+   },
+   "horarios": {
+    "x": 12,
+    "y": 294,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "profesor-notas-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "nueva": {
+    "x": 1208,
+    "y": 359,
+    "w": 179,
+    "h": 44
+   },
+   "nota": {
+    "x": 821,
+    "y": 575,
+    "w": 112,
+    "h": 44
+   },
+   "guardar": {
+    "x": 1234,
+    "y": 461,
+    "w": 153,
+    "h": 44
+   }
+  }
+ },
+ "profesor-asistencia-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "fecha": {
+    "x": 337,
+    "y": 346,
+    "w": 145,
+    "h": 44
+   },
+   "estado": {
+    "x": 598,
+    "y": 407,
+    "w": 286,
+    "h": 45
+   },
+   "estados": {
+    "x": 614,
+    "y": 464,
+    "w": 160,
+    "h": 44
+   }
+  }
+ },
+ "profesor-historico-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "periodo": {
+    "x": 1190,
+    "y": 10,
+    "w": 218,
+    "h": 44
+   },
+   "badge": {
+    "x": 341,
+    "y": 153,
+    "w": 1046,
+    "h": 20
+   }
+  }
+ },
+ "profesor-evaluacion-nueva-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "dialog": {
+    "x": 464,
+    "y": 134,
+    "w": 512,
+    "h": 632
+   },
+   "nombre": {
+    "x": 489,
+    "y": 336,
+    "w": 462,
+    "h": 44
+   },
+   "crear": {
+    "x": 804,
+    "y": 701,
+    "w": 147,
+    "h": 44
+   }
+  }
+ },
+ "profesor-inicio-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "nav": {
+    "x": 0,
+    "y": 775,
+    "w": 390,
+    "h": 69
+   },
+   "modulos": {
+    "x": 80,
+    "y": 776,
+    "w": 76,
+    "h": 64
+   },
+   "notas": {
+    "x": 233,
+    "y": 776,
+    "w": 76,
+    "h": 64
+   }
+  }
+ },
+ "profesor-modulos-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "modulos": null,
+   "nav": {
+    "x": 0,
+    "y": 775,
+    "w": 390,
+    "h": 69
+   }
+  }
+ },
+ "admin-alumnos-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "hint": {
+    "x": 33,
+    "y": 553,
+    "w": 324,
+    "h": 20
+   },
+   "card": {
+    "x": 33,
+    "y": 553,
+    "w": 324,
+    "h": 20
+   }
+  }
+ },
+ "perfil-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "clave": {
+    "x": 1080,
+    "y": 329,
+    "w": 307,
+    "h": 25
+   },
+   "datos": {
+    "x": 341,
+    "y": 329,
+    "w": 677,
+    "h": 25
+   }
+  }
+ },
+ "admin-matriculas-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 662,
+    "w": 263,
+    "h": 44
+   },
+   "nueva": {
+    "x": 1240,
+    "y": 216,
+    "w": 168,
+    "h": 44
+   }
+  }
+ },
+ "admin-pagos-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 708,
+    "w": 263,
+    "h": 44
+   },
+   "tabs": {
+    "x": 453,
+    "y": 211,
+    "w": 138,
+    "h": 44
+   },
+   "tab1": {
+    "x": 341,
+    "y": 211,
+    "w": 104,
+    "h": 44
+   },
+   "tab3": {
+    "x": 599,
+    "y": 211,
+    "w": 175,
+    "h": 44
+   }
+  }
+ },
+ "admin-documentos-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 478,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "admin-reportes-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 570,
+    "w": 263,
+    "h": 44
+   },
+   "alertas": {
+    "x": 12,
+    "y": 524,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "admin-calendario-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 386,
+    "w": 263,
+    "h": 44
+   },
+   "nuevo": {
+    "x": 1233,
+    "y": 109,
+    "w": 150,
+    "h": 44
+   }
+  }
+ },
+ "profesor-alertas-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 662,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "profesor-apoderados-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 386,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "profesor-notificaciones-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 340,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "alumno-panel-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "nav": {
+    "x": 0,
+    "y": 775,
+    "w": 390,
+    "h": 69
+   },
+   "notas": {
+    "x": 233,
+    "y": 776,
+    "w": 76,
+    "h": 64
+   },
+   "horarios": {
+    "x": 157,
+    "y": 776,
+    "w": 76,
+    "h": 64
+   }
+  }
+ },
+ "alumno-notas-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "titulo": {
+    "x": 33,
+    "y": 101,
+    "w": 172,
+    "h": 28
+   }
+  }
+ },
+ "alumno-pagos-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 478,
+    "w": 263,
+    "h": 44
+   },
+   "calendario": {
+    "x": 12,
+    "y": 432,
+    "w": 263,
+    "h": 44
+   },
+   "alertas": {
+    "x": 12,
+    "y": 524,
+    "w": 263,
+    "h": 44
+   },
+   "notif": {
+    "x": 12,
+    "y": 570,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "alumno-notificaciones-desktop": {
+  "vp": {
+   "width": 1440,
+   "height": 900
+  },
+  "boxes": {
+   "menu": {
+    "x": 12,
+    "y": 570,
+    "w": 263,
+    "h": 44
+   }
+  }
+ },
+ "apoderado-estudiantes-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "card": {
+    "x": 33,
+    "y": 276,
+    "w": 222,
+    "h": 28
+   },
+   "links": {
+    "x": 33,
+    "y": 653,
+    "w": 324,
+    "h": 104
+   }
+  }
+ },
+ "apoderado-resumen-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "tabs": {
+    "x": 16,
+    "y": 465,
+    "w": 358,
+    "h": 53
+   }
+  }
+ },
+ "apoderado-detalle-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "tabs": {
+    "x": 16,
+    "y": 465,
+    "w": 358,
+    "h": 53
+   }
+  }
+ },
+ "apoderado-seguridad-mobile": {
+  "vp": {
+   "width": 390,
+   "height": 844
+  },
+  "boxes": {
+   "tab": {
+    "x": 197,
+    "y": 293,
+    "w": 172,
+    "h": 44
+   },
+   "card": {
+    "x": 33,
+    "y": 379,
+    "w": 324,
+    "h": 25
+   }
+  }
+ }
+}

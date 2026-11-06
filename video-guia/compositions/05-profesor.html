@@ -1,0 +1,242 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:1320px;top:124px;width:408px;}
+#root .chap{font-size:30px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:56px;height:4px;background:#8C2F2B;border-radius:2px;margin-top:18px;}
+#root .step{position:absolute;left:1320px;top:250px;width:408px;}
+#root .step .n{font-size:28px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:44px;font-weight:700;line-height:1.15;color:#1A1F29;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:111px;top:83px;width:1154px;height:762px;background:#fff;border:1px solid #E1E5EC;border-radius:14px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:40px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:8px;padding:0 16px;}
+#root .dot{width:11px;height:11px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:26px;padding:0 14px;border-radius:13px;background:#F4F6F9;font-size:28px;line-height:26px;color:#5B6475;transform-origin:left center;}
+#root .url span{display:inline-block;font-size:17px;}
+#root .screen{position:absolute;left:0;top:40px;width:1440px;height:900px;transform:scale(0.8);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:506.4px;top:66px;width:363.2px;height:762.72px;background:#1A1F29;border-radius:40px;}
+#root .phone .screen{left:10px;top:10px;width:390px;height:844px;transform:scale(0.88);border-radius:38px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;}
+#root .cursor{position:absolute;left:0;top:0;width:34px;height:34px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:4px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1920px;height:1080px;}
+#root .card .kicker{position:absolute;left:192px;top:236px;font-size:30px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:192px;top:290px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:192px;font-size:44px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;}
+#root .card .idea b{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;border:3px solid #23408E;color:#23408E;font-size:32px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="profesor" data-width="1920" data-height="1080" data-duration="58.21">
+<div class="bg"></div>
+<div id="profesor-stage" class="stage">
+<div id="profesor-panel" class="panel clip" data-start="9.12" data-duration="49.09"><div class="chap">4 · Profesor</div><div class="chap-rule"></div></div>
+<div id="profesor-card" class="card clip" data-start="0" data-duration="9.62">
+  <div id="profesor-card-in" style="position:absolute;inset:0;transform-origin:192px 400px">
+  <div class="kicker">4 · Profesor</div>
+  <h1 id="profesor-card-h">Si eres profesor…</h1>
+  <div id="profesor-idea0" class="idea" style="top:470px"><b>1</b><span>Ves solo tus cursos y alumnos</span></div>
+  <div id="profesor-idea1" class="idea" style="top:580px"><b>2</b><span>Registras notas y asistencia</span></div>
+  <div id="profesor-idea2" class="idea" style="top:690px"><b>3</b><span>Haces seguimiento con alertas</span></div>
+  </div>
+</div>
+<div id="profesor-step1" class="step clip" data-start="9.27" data-duration="7.06"><div class="n">Paso 1</div><div class="t">Tus cursos, alumnos y horarios</div></div>
+<div id="profesor-shot1" class="shot clip" data-start="9.12" data-duration="7.61">
+  <div id="profesor-shot1-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot1-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="profesor-shot1-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-dashboard-desktop.png" alt="">
+        <div id="profesor-shot1-hl0" class="hl" style="left:4px;top:424px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="profesor-shot1-hl1" class="hl" style="left:4px;top:240px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="profesor-shot1-hl2" class="hl" style="left:4px;top:286px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot1-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-step2" class="step clip" data-start="15.98" data-duration="7.06"><div class="n">Paso 2</div><div class="t">Crea una evaluación</div></div>
+<div id="profesor-shot2" class="shot clip" data-start="15.98" data-duration="7.46">
+  <div id="profesor-shot2-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot2-url" class="url" data-layout-ignore><span>/calificaciones</span></div></div><div class="screen">
+      <div id="profesor-shot2-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-evaluacion-nueva-desktop.png" alt="">
+        <div id="profesor-shot2-hl0" class="hl" style="left:456px;top:126px;width:528px;height:648px;border-width:5px;border-radius:12.5px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot2-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-step3" class="step clip" data-start="22.69" data-duration="8.41"><div class="n">Paso 3</div><div class="t">Registra notas de 0 a 20</div></div>
+<div id="profesor-shot3" class="shot clip" data-start="22.69" data-duration="8.81">
+  <div id="profesor-shot3-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot3-url" class="url" data-layout-ignore><span>/calificaciones</span></div></div><div class="screen">
+      <div id="profesor-shot3-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-notas-desktop.png" alt="">
+        <div id="profesor-shot3-hl0" class="hl" style="left:804px;top:558px;width:146px;height:246px;border-width:2.43px;border-radius:6.07px"></div>
+        <div id="profesor-shot3-hl1" class="hl" style="left:1226px;top:453px;width:169px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot3-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-step4" class="step clip" data-start="30.75" data-duration="10.06"><div class="n">Paso 4</div><div class="t">Marca la asistencia</div></div>
+<div id="profesor-shot4" class="shot clip" data-start="30.75" data-duration="10.46">
+  <div id="profesor-shot4-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot4-url" class="url" data-layout-ignore><span>/asistencias</span></div></div><div class="screen">
+      <div id="profesor-shot4-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-asistencia-desktop.png" alt="">
+        <div id="profesor-shot4-hl0" class="hl" style="left:329px;top:338px;width:161px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="profesor-shot4-hl1" class="hl" style="left:598px;top:448px;width:192px;height:326px;border-width:3.16px;border-radius:7.91px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot4-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-step5" class="step clip" data-start="40.46" data-duration="8.82"><div class="n">Paso 5</div><div class="t">Histórico: solo consulta</div></div>
+<div id="profesor-shot5" class="shot clip" data-start="40.46" data-duration="9.22">
+  <div id="profesor-shot5-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot5-url" class="url" data-layout-ignore><span>/calificaciones</span></div></div><div class="screen">
+      <div id="profesor-shot5-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-historico-desktop.png" alt="">
+        <div id="profesor-shot5-hl0" class="hl" style="left:1182px;top:2px;width:234px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+        <div id="profesor-shot5-hl1" class="hl" style="left:333px;top:145px;width:1062px;height:36px;border-width:5px;border-radius:12.5px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot5-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-step6" class="step clip" data-start="48.93" data-duration="9.28"><div class="n">Paso 6</div><div class="t">Alertas y avisos</div></div>
+<div id="profesor-shot6" class="shot clip" data-start="48.93" data-duration="2.89">
+  <div id="profesor-shot6-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot6-url" class="url" data-layout-ignore><span>/alertas</span></div></div><div class="screen">
+      <div id="profesor-shot6-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-alertas-desktop.png" alt="">
+        <div id="profesor-shot6-hl0" class="hl" style="left:4px;top:654px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot6-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-shot7" class="shot clip" data-start="51.42" data-duration="3.21">
+  <div id="profesor-shot7-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot7-url" class="url" data-layout-ignore><span>/profesor/apoderados</span></div></div><div class="screen">
+      <div id="profesor-shot7-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-apoderados-desktop.png" alt="">
+        <div id="profesor-shot7-hl0" class="hl" style="left:4px;top:378px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot7-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="profesor-shot8" class="shot clip" data-start="54.23" data-duration="3.98">
+  <div id="profesor-shot8-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="profesor-shot8-url" class="url" data-layout-ignore><span>/profesor/notificaciones</span></div></div><div class="screen">
+      <div id="profesor-shot8-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-notificaciones-desktop.png" alt="">
+        <div id="profesor-shot8-hl0" class="hl" style="left:4px;top:332px;width:279px;height:60px;border-width:2.38px;border-radius:5.95px"></div>
+      </div>
+    </div></div>
+    <div id="profesor-shot8-cur" class="cursor"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#profesor-panel", {"opacity":0,"x":-12}, {"opacity":1,"x":0,"duration":0.5,"ease":"power2.out"}, 9.17);
+tl.fromTo("#profesor-card-in", {"scale":1}, {"scale":1.03,"duration":9.22,"ease":"none"}, 0);
+tl.fromTo("#profesor-card .kicker", {"opacity":0}, {"opacity":1,"duration":0.5}, 0.15);
+tl.fromTo("#profesor-card-h", {"opacity":0,"y":26}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 0.25);
+tl.fromTo("#profesor-idea0", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 1.5);
+tl.fromTo("#profesor-idea1", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 2.94);
+tl.fromTo("#profesor-idea2", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 4.38);
+tl.fromTo("#profesor-card-in", {"opacity":1}, {"opacity":0,"duration":0.4,"immediateRender":false}, 9.22);
+tl.fromTo("#profesor-step1 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 9.32);
+tl.fromTo("#profesor-step1 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 9.37);
+tl.fromTo("#profesor-shot1-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 9.12);
+tl.fromTo("#profesor-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":-503.4,"duration":0.8,"ease":"power2.inOut"}, 10.43);
+tl.fromTo("#profesor-shot1-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 11.13);
+tl.fromTo("#profesor-shot1-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 10.43);
+tl.fromTo("#profesor-shot1-cur", {"x":1010.5600000000001,"y":700}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 10.43);
+tl.fromTo("#profesor-shot1-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 11.53);
+tl.fromTo("#profesor-shot1-cam", {"scale":2.1,"x":0,"y":-503.4}, {"scale":2.1,"x":0,"y":-117,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 11.53);
+tl.fromTo("#profesor-shot1-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 12.23);
+tl.fromTo("#profesor-shot1-cur", {"x":349.08,"y":482}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 11.53);
+tl.fromTo("#profesor-shot1-hl1", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 12.63);
+tl.fromTo("#profesor-shot1-cam", {"scale":2.1,"x":0,"y":-117}, {"scale":2.1,"x":0,"y":-213.6,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.63);
+tl.fromTo("#profesor-shot1-hl2", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 13.33);
+tl.fromTo("#profesor-shot1-cur", {"x":349.08,"y":482}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.63);
+tl.fromTo("#profesor-shot1-cam", {"scale":2.1,"x":0,"y":-213.6}, {"scale":2.17,"x":-50.4,"y":-245.1,"duration":2.85,"ease":"none","immediateRender":false}, 13.48);
+tl.fromTo("#profesor-shot1-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 16.33);
+tl.fromTo("#profesor-step2 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 16.03);
+tl.fromTo("#profesor-step2 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 16.08);
+tl.fromTo("#profesor-shot2-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 15.98);
+tl.fromTo("#profesor-shot2-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 19.03);
+tl.fromTo("#profesor-shot2-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 19.73);
+tl.fromTo("#profesor-shot2-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 19.03);
+tl.fromTo("#profesor-shot2-cur", {"x":1010.5600000000001,"y":700}, {"x":684,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 19.03);
+tl.fromTo("#profesor-shot2-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-21.6,"y":-13.5,"duration":3.16,"ease":"none","immediateRender":false}, 19.88);
+tl.fromTo("#profesor-shot2-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 23.04);
+tl.fromTo("#profesor-step3 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 22.74);
+tl.fromTo("#profesor-step3 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 22.79);
+tl.fromTo("#profesor-shot3-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 22.69);
+tl.fromTo("#profesor-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":2.06,"x":-1087.56,"y":-953.59,"duration":0.8,"ease":"power2.inOut"}, 23.74);
+tl.fromTo("#profesor-shot3-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 24.44);
+tl.fromTo("#profesor-shot3-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 23.74);
+tl.fromTo("#profesor-shot3-cur", {"x":1010.5600000000001,"y":700}, {"x":684,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 23.74);
+tl.fromTo("#profesor-shot3-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 26.72);
+tl.fromTo("#profesor-shot3-cam", {"scale":2.06,"x":-1087.56,"y":-953.59}, {"scale":2.1,"x":-1584,"y":-564.3,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 26.72);
+tl.fromTo("#profesor-shot3-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 27.42);
+tl.fromTo("#profesor-shot3-cur", {"x":684,"y":482}, {"x":1042.44,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 26.72);
+tl.fromTo("#profesor-shot3-cam", {"scale":2.1,"x":-1584,"y":-564.3}, {"scale":2.17,"x":-1634.4,"y":-595.8,"duration":3.53,"ease":"none","immediateRender":false}, 27.57);
+tl.fromTo("#profesor-shot3-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 31.1);
+tl.fromTo("#profesor-step4 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 30.8);
+tl.fromTo("#profesor-step4 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 30.85);
+tl.fromTo("#profesor-shot4-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 30.75);
+tl.fromTo("#profesor-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":-139.95,"y":-322.8,"duration":0.8,"ease":"power2.inOut"}, 32.38);
+tl.fromTo("#profesor-shot4-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 33.08);
+tl.fromTo("#profesor-shot4-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 32.38);
+tl.fromTo("#profesor-shot4-cur", {"x":1010.5600000000001,"y":700}, {"x":684,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 32.38);
+tl.fromTo("#profesor-shot4-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 34.38);
+tl.fromTo("#profesor-shot4-cam", {"scale":2.1,"x":-139.95,"y":-322.8}, {"scale":1.58,"x":-375.79,"y":-514.74,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 34.38);
+tl.fromTo("#profesor-shot4-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 35.08);
+tl.fromTo("#profesor-shot4-cur", {"x":684,"y":482}, {"x":684,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 34.38);
+tl.fromTo("#profesor-shot4-cam", {"scale":1.58,"x":-375.79,"y":-514.74}, {"scale":1.64,"x":-418.99,"y":-541.74,"duration":5.58,"ease":"none","immediateRender":false}, 35.23);
+tl.fromTo("#profesor-shot4-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 40.81);
+tl.fromTo("#profesor-step5 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 40.51);
+tl.fromTo("#profesor-step5 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 40.56);
+tl.fromTo("#profesor-shot5-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 40.46);
+tl.fromTo("#profesor-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":-1584,"y":0,"duration":0.8,"ease":"power2.inOut"}, 41.73);
+tl.fromTo("#profesor-shot5-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 42.43);
+tl.fromTo("#profesor-shot5-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 41.73);
+tl.fromTo("#profesor-shot5-cur", {"x":1010.5600000000001,"y":700}, {"x":1023.1199999999999,"y":175.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 41.73);
+tl.fromTo("#profesor-shot5-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 43.23);
+tl.fromTo("#profesor-shot5-cam", {"scale":2.1,"x":-1584,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 43.23);
+tl.fromTo("#profesor-shot5-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 43.93);
+tl.fromTo("#profesor-shot5-cur", {"x":1023.1199999999999,"y":175.76}, {"x":799.2,"y":252.4,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 43.23);
+tl.fromTo("#profesor-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-21.6,"y":-13.5,"duration":5.2,"ease":"none","immediateRender":false}, 44.08);
+tl.fromTo("#profesor-shot5-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 49.28);
+tl.fromTo("#profesor-step6 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 48.98);
+tl.fromTo("#profesor-step6 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 49.03);
+tl.fromTo("#profesor-shot6-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 48.93);
+tl.fromTo("#profesor-shot6-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":-986.4,"duration":0.8,"ease":"power2.inOut"}, 49.74);
+tl.fromTo("#profesor-shot6-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 50.44);
+tl.fromTo("#profesor-shot6-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 49.74);
+tl.fromTo("#profesor-shot6-cur", {"x":1010.5600000000001,"y":700}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 49.74);
+tl.fromTo("#profesor-shot6-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 51.42);
+tl.fromTo("#profesor-shot7-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 51.42);
+tl.fromTo("#profesor-shot7-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":-406.8,"duration":0.8,"ease":"power2.inOut"}, 51.92);
+tl.fromTo("#profesor-shot7-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 52.62);
+tl.fromTo("#profesor-shot7-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 51.92);
+tl.fromTo("#profesor-shot7-cur", {"x":1010.5600000000001,"y":700}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 51.92);
+tl.fromTo("#profesor-shot7-cam", {"scale":2.1,"x":0,"y":-406.8}, {"scale":2.17,"x":-50.4,"y":-438.3,"duration":1.46,"ease":"none","immediateRender":false}, 52.77);
+tl.fromTo("#profesor-shot7-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 54.23);
+tl.fromTo("#profesor-shot8-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 54.23);
+tl.fromTo("#profesor-shot8-cam", {"scale":1,"x":0,"y":0}, {"scale":2.1,"x":0,"y":-310.2,"duration":0.8,"ease":"power2.inOut"}, 54.73);
+tl.fromTo("#profesor-shot8-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 55.43);
+tl.fromTo("#profesor-shot8-cur", {"opacity":0,"x":1010.5600000000001,"y":700}, {"opacity":1,"duration":0.25}, 54.73);
+tl.fromTo("#profesor-shot8-cur", {"x":1010.5600000000001,"y":700}, {"x":349.08,"y":482,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 54.73);
+tl.fromTo("#profesor-shot8-cam", {"scale":2.1,"x":0,"y":-310.2}, {"scale":2.17,"x":-50.4,"y":-341.7,"duration":2.23,"ease":"none","immediateRender":false}, 55.58);
+tl.fromTo("#profesor-shot8-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 57.81);
+tl.fromTo("#profesor-stage", {"opacity":0}, {"opacity":1,"duration":0.45,"ease":"power1.out"}, 0);
+tl.fromTo("#profesor-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in","immediateRender":false}, 57.76);
+window.__timelines = window.__timelines || {};
+window.__timelines["profesor"] = tl;
+</script>
+</template>

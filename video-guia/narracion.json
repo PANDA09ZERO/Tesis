@@ -1,0 +1,44 @@
+[
+  {"id": "a1", "scene": "apertura", "text": "Bienvenido a Ciencias e Ingeniería. Notas, asistencia y horarios del año escolar, en un solo lugar."},
+
+  {"id": "i1", "scene": "ingreso", "text": "Para empezar, abre el navegador en tu computadora o en tu celular, y entra a la página de ingreso del sistema."},
+  {"id": "i2", "scene": "ingreso", "text": "Escribe tu usuario institucional. Tiene la forma nombre, punto, apellido, arroba, ciencias e ingeniería, punto edu. Luego escribe tu contraseña."},
+  {"id": "i3", "scene": "ingreso", "text": "Si quieres revisar lo que escribiste, pulsa el ícono del ojo: Mostrar contraseña."},
+  {"id": "i4", "scene": "ingreso", "text": "La primera vez entrarás con una contraseña temporal que te entrega la administración. El sistema te pedirá crear una nueva, de al menos doce caracteres. Al cambiarla, se cierran tus otras sesiones abiertas."},
+  {"id": "i5", "scene": "ingreso", "text": "Si ves el mensaje: Credenciales inválidas, revisa tu usuario y tu contraseña."},
+
+  {"id": "p1", "scene": "pantalla", "text": "En la computadora, el menú está a la izquierda. La marca roja te indica en qué sección estás."},
+  {"id": "p2", "scene": "pantalla", "text": "Arriba tienes el tema claro u oscuro, tu perfil, el calendario y el año escolar. Vigente es el año en curso; Histórico es un año anterior. Pulsa Cambiar para elegir otro."},
+  {"id": "p3", "scene": "pantalla", "text": "En el celular, usa la barra de abajo: Inicio, Módulos, Horarios, Notas y Perfil. En Módulos están todos los accesos."},
+  {"id": "p4", "scene": "pantalla", "text": "En las listas, cada registro es una tarjeta. Tócala para ver los detalles."},
+  {"id": "p5", "scene": "pantalla", "text": "En Mi perfil ves tus datos y puedes cambiar tu contraseña."},
+
+  {"id": "ad0", "scene": "admin", "text": "Si eres administrador, gestionas las cuentas, la institución y el año académico."},
+  {"id": "ad1", "scene": "admin", "text": "En Usuarios, pulsa Nuevo usuario para crear una cuenta. El sistema genera el usuario institucional y una contraseña temporal."},
+  {"id": "ad2", "scene": "admin", "text": "Entrégala de forma segura: en persona o por un canal privado."},
+  {"id": "ad3", "scene": "admin", "text": "En Institución están Alumnos, Profesores y Apoderados. En Apoderados ves los alumnos a cargo de cada uno, y con el botón Alumnos los vinculas."},
+  {"id": "ad4", "scene": "admin", "text": "En Académico organizas el año: Periodos, y Estructura académica, donde defines los grados de cada periodo, los cursos de cada grado y sus docentes. Además, Cursos y Horarios."},
+  {"id": "ad5", "scene": "admin", "text": "También registras Matrículas y Pagos: mensualidades, matrícula y sueldos."},
+  {"id": "ad6", "scene": "admin", "text": "Y manejas Documentos y formularios, revisas Alertas y Reportes, y publicas eventos en el Calendario."},
+
+  {"id": "pr0", "scene": "profesor", "text": "Si eres profesor, solo ves tus cursos y tus alumnos asignados."},
+  {"id": "pr1", "scene": "profesor", "text": "En el menú encuentras Mis cursos, Mis alumnos y Mis horarios."},
+  {"id": "pr2", "scene": "profesor", "text": "En Calificaciones, elige un curso y crea una evaluación."},
+  {"id": "pr3", "scene": "profesor", "text": "Luego registra la nota de cada alumno, de cero a veinte, y pulsa Guardar notas."},
+  {"id": "pr4", "scene": "profesor", "text": "En Asistencia, elige la fecha y marca a cada alumno: presente, tardanza, ausente o justificado."},
+  {"id": "pr5", "scene": "profesor", "text": "Si el año elegido es Histórico, solo puedes consultar. No se puede editar."},
+  {"id": "pr6", "scene": "profesor", "text": "También ves las alertas de tus alumnos, los apoderados de tus alumnos, el calendario y tus notificaciones."},
+
+  {"id": "al0", "scene": "alumno", "text": "Si eres alumno, consultas tu propia información."},
+  {"id": "al1", "scene": "alumno", "text": "Desde Mi panel entras a Mis cursos, Mis calificaciones, Mi asistencia y Mis horarios."},
+  {"id": "al2", "scene": "alumno", "text": "También tienes el Calendario, Mis pagos, Mis alertas y Mis notificaciones."},
+
+  {"id": "ap0", "scene": "apoderado", "text": "Si eres padre de familia o apoderado, consultas la información de tus hijos."},
+  {"id": "ap1", "scene": "apoderado", "text": "Entra a Estudiantes a mi cargo y elige al estudiante."},
+  {"id": "ap2", "scene": "apoderado", "text": "Verás su Resumen, Cursos y horarios, Calificaciones y Asistencia."},
+  {"id": "ap3", "scene": "apoderado", "text": "Desde Mi perfil, en Seguridad, puedes cambiar tu contraseña."},
+
+  {"id": "c1", "scene": "cierre", "text": "No compartas tu contraseña. Si usas una computadora compartida, pulsa Cerrar sesión al terminar."},
+  {"id": "c2", "scene": "cierre", "text": "Si tienes dudas o ves un dato incorrecto, comunícate con la administración."},
+  {"id": "c3", "scene": "cierre", "text": "Listo. Ya puedes usar el sistema."}
+]

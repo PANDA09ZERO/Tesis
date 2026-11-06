@@ -1,0 +1,2682 @@
+{
+ "a1": [
+  {
+   "text": "Bienvenido",
+   "start": 0.098,
+   "end": 0.679
+  },
+  {
+   "text": "a",
+   "start": 0.691,
+   "end": 0.739
+  },
+  {
+   "text": "Ciencias",
+   "start": 0.751,
+   "end": 1.319
+  },
+  {
+   "text": "e",
+   "start": 1.331,
+   "end": 1.368
+  },
+  {
+   "text": "Ingeniería",
+   "start": 1.38,
+   "end": 2.117
+  },
+  {
+   "text": "Notas",
+   "start": 2.95,
+   "end": 3.494
+  },
+  {
+   "text": "asistencia",
+   "start": 3.675,
+   "end": 4.388
+  },
+  {
+   "text": "y",
+   "start": 4.4,
+   "end": 4.497
+  },
+  {
+   "text": "horarios",
+   "start": 4.509,
+   "end": 4.896
+  },
+  {
+   "text": "del",
+   "start": 4.908,
+   "end": 5.065
+  },
+  {
+   "text": "año",
+   "start": 5.077,
+   "end": 5.235
+  },
+  {
+   "text": "escolar",
+   "start": 5.247,
+   "end": 5.646
+  },
+  {
+   "text": "en",
+   "start": 5.936,
+   "end": 6.057
+  },
+  {
+   "text": "un",
+   "start": 6.069,
+   "end": 6.214
+  },
+  {
+   "text": "solo",
+   "start": 6.226,
+   "end": 6.54
+  },
+  {
+   "text": "lugar",
+   "start": 6.552,
+   "end": 6.963
+  }
+ ],
+ "i1": [
+  {
+   "text": "Para",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "empezar",
+   "start": 0.231,
+   "end": 0.642
+  },
+  {
+   "text": "abre",
+   "start": 0.957,
+   "end": 1.198
+  },
+  {
+   "text": "el",
+   "start": 1.211,
+   "end": 1.319
+  },
+  {
+   "text": "navegador",
+   "start": 1.331,
+   "end": 1.815
+  },
+  {
+   "text": "en",
+   "start": 1.827,
+   "end": 1.924
+  },
+  {
+   "text": "tu",
+   "start": 1.936,
+   "end": 2.021
+  },
+  {
+   "text": "computadora",
+   "start": 2.033,
+   "end": 2.794
+  },
+  {
+   "text": "o",
+   "start": 2.806,
+   "end": 2.915
+  },
+  {
+   "text": "en",
+   "start": 2.927,
+   "end": 3.036
+  },
+  {
+   "text": "tu",
+   "start": 3.048,
+   "end": 3.121
+  },
+  {
+   "text": "celular",
+   "start": 3.133,
+   "end": 3.58
+  },
+  {
+   "text": "y",
+   "start": 3.858,
+   "end": 3.918
+  },
+  {
+   "text": "entra",
+   "start": 3.931,
+   "end": 4.184
+  },
+  {
+   "text": "a",
+   "start": 4.197,
+   "end": 4.221
+  },
+  {
+   "text": "la",
+   "start": 4.233,
+   "end": 4.354
+  },
+  {
+   "text": "página",
+   "start": 4.366,
+   "end": 4.777
+  },
+  {
+   "text": "de",
+   "start": 4.789,
+   "end": 4.861
+  },
+  {
+   "text": "ingreso",
+   "start": 4.873,
+   "end": 5.297
+  },
+  {
+   "text": "del",
+   "start": 5.309,
+   "end": 5.466
+  },
+  {
+   "text": "sistema",
+   "start": 5.478,
+   "end": 5.974
+  }
+ ],
+ "i2": [
+  {
+   "text": "Escribe",
+   "start": 0.098,
+   "end": 0.582
+  },
+  {
+   "text": "tu",
+   "start": 0.594,
+   "end": 0.703
+  },
+  {
+   "text": "usuario",
+   "start": 0.715,
+   "end": 1.162
+  },
+  {
+   "text": "institucional",
+   "start": 1.174,
+   "end": 2.008
+  },
+  {
+   "text": "Tiene",
+   "start": 2.841,
+   "end": 3.095
+  },
+  {
+   "text": "la",
+   "start": 3.107,
+   "end": 3.216
+  },
+  {
+   "text": "forma",
+   "start": 3.228,
+   "end": 3.53
+  },
+  {
+   "text": "nombre",
+   "start": 3.542,
+   "end": 3.893
+  },
+  {
+   "text": "punto",
+   "start": 4.146,
+   "end": 4.497
+  },
+  {
+   "text": "apellido",
+   "start": 4.727,
+   "end": 5.343
+  },
+  {
+   "text": "arroba",
+   "start": 5.549,
+   "end": 5.972
+  },
+  {
+   "text": "ciencias",
+   "start": 6.359,
+   "end": 6.903
+  },
+  {
+   "text": "e",
+   "start": 6.915,
+   "end": 6.951
+  },
+  {
+   "text": "ingeniería",
+   "start": 6.963,
+   "end": 7.701
+  },
+  {
+   "text": "punto",
+   "start": 7.991,
+   "end": 8.269
+  },
+  {
+   "text": "edu",
+   "start": 8.281,
+   "end": 8.523
+  },
+  {
+   "text": "Luego",
+   "start": 9.357,
+   "end": 9.707
+  },
+  {
+   "text": "escribe",
+   "start": 9.72,
+   "end": 10.155
+  },
+  {
+   "text": "tu",
+   "start": 10.167,
+   "end": 10.276
+  },
+  {
+   "text": "contraseña",
+   "start": 10.288,
+   "end": 10.977
+  }
+ ],
+ "i3": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.268
+  },
+  {
+   "text": "quieres",
+   "start": 0.28,
+   "end": 0.521
+  },
+  {
+   "text": "revisar",
+   "start": 0.534,
+   "end": 0.92
+  },
+  {
+   "text": "lo",
+   "start": 0.932,
+   "end": 1.017
+  },
+  {
+   "text": "que",
+   "start": 1.029,
+   "end": 1.102
+  },
+  {
+   "text": "escribiste",
+   "start": 1.114,
+   "end": 1.706
+  },
+  {
+   "text": "pulsa",
+   "start": 1.996,
+   "end": 2.407
+  },
+  {
+   "text": "el",
+   "start": 2.419,
+   "end": 2.528
+  },
+  {
+   "text": "ícono",
+   "start": 2.54,
+   "end": 2.855
+  },
+  {
+   "text": "del",
+   "start": 2.867,
+   "end": 3.036
+  },
+  {
+   "text": "ojo",
+   "start": 3.048,
+   "end": 3.362
+  },
+  {
+   "text": "Mostrar",
+   "start": 3.58,
+   "end": 4.027
+  },
+  {
+   "text": "contraseña",
+   "start": 4.039,
+   "end": 4.753
+  }
+ ],
+ "i4": [
+  {
+   "text": "La",
+   "start": 0.098,
+   "end": 0.207
+  },
+  {
+   "text": "primera",
+   "start": 0.219,
+   "end": 0.534
+  },
+  {
+   "text": "vez",
+   "start": 0.546,
+   "end": 0.727
+  },
+  {
+   "text": "entrarás",
+   "start": 0.739,
+   "end": 1.15
+  },
+  {
+   "text": "con",
+   "start": 1.162,
+   "end": 1.319
+  },
+  {
+   "text": "una",
+   "start": 1.331,
+   "end": 1.501
+  },
+  {
+   "text": "contraseña",
+   "start": 1.513,
+   "end": 2.081
+  },
+  {
+   "text": "temporal",
+   "start": 2.093,
+   "end": 2.577
+  },
+  {
+   "text": "que",
+   "start": 2.589,
+   "end": 2.722
+  },
+  {
+   "text": "te",
+   "start": 2.734,
+   "end": 2.794
+  },
+  {
+   "text": "entrega",
+   "start": 2.806,
+   "end": 3.181
+  },
+  {
+   "text": "la",
+   "start": 3.193,
+   "end": 3.278
+  },
+  {
+   "text": "administración",
+   "start": 3.29,
+   "end": 4.124
+  },
+  {
+   "text": "El",
+   "start": 4.957,
+   "end": 5.089
+  },
+  {
+   "text": "sistema",
+   "start": 5.102,
+   "end": 5.513
+  },
+  {
+   "text": "te",
+   "start": 5.525,
+   "end": 5.646
+  },
+  {
+   "text": "pedirá",
+   "start": 5.658,
+   "end": 6.02
+  },
+  {
+   "text": "crear",
+   "start": 6.032,
+   "end": 6.347
+  },
+  {
+   "text": "una",
+   "start": 6.359,
+   "end": 6.516
+  },
+  {
+   "text": "nueva",
+   "start": 6.528,
+   "end": 6.83
+  },
+  {
+   "text": "de",
+   "start": 7.145,
+   "end": 7.217
+  },
+  {
+   "text": "al",
+   "start": 7.229,
+   "end": 7.374
+  },
+  {
+   "text": "menos",
+   "start": 7.386,
+   "end": 7.725
+  },
+  {
+   "text": "doce",
+   "start": 7.737,
+   "end": 8.015
+  },
+  {
+   "text": "caracteres",
+   "start": 8.027,
+   "end": 8.801
+  },
+  {
+   "text": "Al",
+   "start": 9.647,
+   "end": 9.792
+  },
+  {
+   "text": "cambiarla",
+   "start": 9.804,
+   "end": 10.3
+  },
+  {
+   "text": "se",
+   "start": 10.626,
+   "end": 10.747
+  },
+  {
+   "text": "cierran",
+   "start": 10.759,
+   "end": 11.17
+  },
+  {
+   "text": "tus",
+   "start": 11.182,
+   "end": 11.376
+  },
+  {
+   "text": "otras",
+   "start": 11.388,
+   "end": 11.63
+  },
+  {
+   "text": "sesiones",
+   "start": 11.642,
+   "end": 12.089
+  },
+  {
+   "text": "abiertas",
+   "start": 12.101,
+   "end": 12.754
+  }
+ ],
+ "i5": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.268
+  },
+  {
+   "text": "ves",
+   "start": 0.28,
+   "end": 0.473
+  },
+  {
+   "text": "el",
+   "start": 0.485,
+   "end": 0.582
+  },
+  {
+   "text": "mensaje",
+   "start": 0.594,
+   "end": 1.114
+  },
+  {
+   "text": "Credenciales",
+   "start": 1.38,
+   "end": 2.069
+  },
+  {
+   "text": "inválidas",
+   "start": 2.081,
+   "end": 2.697
+  },
+  {
+   "text": "revisa",
+   "start": 2.988,
+   "end": 3.35
+  },
+  {
+   "text": "tu",
+   "start": 3.362,
+   "end": 3.471
+  },
+  {
+   "text": "usuario",
+   "start": 3.483,
+   "end": 3.991
+  },
+  {
+   "text": "y",
+   "start": 4.003,
+   "end": 4.1
+  },
+  {
+   "text": "tu",
+   "start": 4.112,
+   "end": 4.221
+  },
+  {
+   "text": "contraseña",
+   "start": 4.233,
+   "end": 4.922
+  }
+ ],
+ "p1": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.195
+  },
+  {
+   "text": "la",
+   "start": 0.207,
+   "end": 0.28
+  },
+  {
+   "text": "computadora",
+   "start": 0.292,
+   "end": 0.993
+  },
+  {
+   "text": "el",
+   "start": 1.259,
+   "end": 1.416
+  },
+  {
+   "text": "menú",
+   "start": 1.428,
+   "end": 1.706
+  },
+  {
+   "text": "está",
+   "start": 1.718,
+   "end": 2.105
+  },
+  {
+   "text": "a",
+   "start": 2.117,
+   "end": 2.141
+  },
+  {
+   "text": "la",
+   "start": 2.154,
+   "end": 2.238
+  },
+  {
+   "text": "izquierda",
+   "start": 2.25,
+   "end": 2.806
+  },
+  {
+   "text": "La",
+   "start": 3.639,
+   "end": 3.784
+  },
+  {
+   "text": "marca",
+   "start": 3.796,
+   "end": 4.098
+  },
+  {
+   "text": "roja",
+   "start": 4.11,
+   "end": 4.449
+  },
+  {
+   "text": "te",
+   "start": 4.461,
+   "end": 4.558
+  },
+  {
+   "text": "indica",
+   "start": 4.57,
+   "end": 5.005
+  },
+  {
+   "text": "en",
+   "start": 5.017,
+   "end": 5.102
+  },
+  {
+   "text": "qué",
+   "start": 5.114,
+   "end": 5.198
+  },
+  {
+   "text": "sección",
+   "start": 5.21,
+   "end": 5.609
+  },
+  {
+   "text": "estás",
+   "start": 5.621,
+   "end": 6.117
+  }
+ ],
+ "p2": [
+  {
+   "text": "Arriba",
+   "start": 0.098,
+   "end": 0.497
+  },
+  {
+   "text": "tienes",
+   "start": 0.509,
+   "end": 0.824
+  },
+  {
+   "text": "el",
+   "start": 0.836,
+   "end": 0.969
+  },
+  {
+   "text": "tema",
+   "start": 0.981,
+   "end": 1.211
+  },
+  {
+   "text": "claro",
+   "start": 1.223,
+   "end": 1.537
+  },
+  {
+   "text": "u",
+   "start": 1.549,
+   "end": 1.658
+  },
+  {
+   "text": "oscuro",
+   "start": 1.67,
+   "end": 2.117
+  },
+  {
+   "text": "tu",
+   "start": 2.419,
+   "end": 2.516
+  },
+  {
+   "text": "perfil",
+   "start": 2.528,
+   "end": 2.951
+  },
+  {
+   "text": "el",
+   "start": 3.229,
+   "end": 3.314
+  },
+  {
+   "text": "calendario",
+   "start": 3.326,
+   "end": 4.064
+  },
+  {
+   "text": "y",
+   "start": 4.076,
+   "end": 4.196
+  },
+  {
+   "text": "el",
+   "start": 4.209,
+   "end": 4.342
+  },
+  {
+   "text": "año",
+   "start": 4.354,
+   "end": 4.535
+  },
+  {
+   "text": "escolar",
+   "start": 4.547,
+   "end": 5.031
+  },
+  {
+   "text": "Vigente",
+   "start": 5.875,
+   "end": 6.359
+  },
+  {
+   "text": "es",
+   "start": 6.371,
+   "end": 6.54
+  },
+  {
+   "text": "el",
+   "start": 6.552,
+   "end": 6.673
+  },
+  {
+   "text": "año",
+   "start": 6.685,
+   "end": 6.879
+  },
+  {
+   "text": "en",
+   "start": 6.891,
+   "end": 6.987
+  },
+  {
+   "text": "curso",
+   "start": 7.0,
+   "end": 7.398
+  },
+  {
+   "text": "Histórico",
+   "start": 7.664,
+   "end": 8.281
+  },
+  {
+   "text": "es",
+   "start": 8.293,
+   "end": 8.474
+  },
+  {
+   "text": "un",
+   "start": 8.486,
+   "end": 8.619
+  },
+  {
+   "text": "año",
+   "start": 8.632,
+   "end": 8.837
+  },
+  {
+   "text": "anterior",
+   "start": 8.849,
+   "end": 9.357
+  },
+  {
+   "text": "Pulsa",
+   "start": 10.203,
+   "end": 10.505
+  },
+  {
+   "text": "Cambiar",
+   "start": 10.517,
+   "end": 10.916
+  },
+  {
+   "text": "para",
+   "start": 10.928,
+   "end": 11.122
+  },
+  {
+   "text": "elegir",
+   "start": 11.134,
+   "end": 11.557
+  },
+  {
+   "text": "otro",
+   "start": 11.569,
+   "end": 11.871
+  }
+ ],
+ "p3": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "el",
+   "start": 0.231,
+   "end": 0.34
+  },
+  {
+   "text": "celular",
+   "start": 0.352,
+   "end": 0.775
+  },
+  {
+   "text": "usa",
+   "start": 1.126,
+   "end": 1.343
+  },
+  {
+   "text": "la",
+   "start": 1.356,
+   "end": 1.452
+  },
+  {
+   "text": "barra",
+   "start": 1.464,
+   "end": 1.718
+  },
+  {
+   "text": "de",
+   "start": 1.73,
+   "end": 1.815
+  },
+  {
+   "text": "abajo",
+   "start": 1.827,
+   "end": 2.262
+  },
+  {
+   "text": "Inicio",
+   "start": 2.492,
+   "end": 3.024
+  },
+  {
+   "text": "Módulos",
+   "start": 3.266,
+   "end": 3.81
+  },
+  {
+   "text": "Horarios",
+   "start": 3.967,
+   "end": 4.535
+  },
+  {
+   "text": "Notas",
+   "start": 4.704,
+   "end": 5.127
+  },
+  {
+   "text": "y",
+   "start": 5.139,
+   "end": 5.176
+  },
+  {
+   "text": "Perfil",
+   "start": 5.188,
+   "end": 5.599
+  },
+  {
+   "text": "En",
+   "start": 6.431,
+   "end": 6.588
+  },
+  {
+   "text": "Módulos",
+   "start": 6.601,
+   "end": 7.06
+  },
+  {
+   "text": "están",
+   "start": 7.072,
+   "end": 7.435
+  },
+  {
+   "text": "todos",
+   "start": 7.447,
+   "end": 7.749
+  },
+  {
+   "text": "los",
+   "start": 7.761,
+   "end": 7.918
+  },
+  {
+   "text": "accesos",
+   "start": 7.93,
+   "end": 8.559
+  }
+ ],
+ "p4": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.207
+  },
+  {
+   "text": "las",
+   "start": 0.219,
+   "end": 0.364
+  },
+  {
+   "text": "listas",
+   "start": 0.376,
+   "end": 0.848
+  },
+  {
+   "text": "cada",
+   "start": 1.15,
+   "end": 1.356
+  },
+  {
+   "text": "registro",
+   "start": 1.368,
+   "end": 1.96
+  },
+  {
+   "text": "es",
+   "start": 1.972,
+   "end": 2.129
+  },
+  {
+   "text": "una",
+   "start": 2.141,
+   "end": 2.323
+  },
+  {
+   "text": "tarjeta",
+   "start": 2.335,
+   "end": 2.903
+  },
+  {
+   "text": "Tócala",
+   "start": 3.748,
+   "end": 4.134
+  },
+  {
+   "text": "para",
+   "start": 4.146,
+   "end": 4.34
+  },
+  {
+   "text": "ver",
+   "start": 4.352,
+   "end": 4.558
+  },
+  {
+   "text": "los",
+   "start": 4.57,
+   "end": 4.715
+  },
+  {
+   "text": "detalles",
+   "start": 4.727,
+   "end": 5.416
+  }
+ ],
+ "p5": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "Mi",
+   "start": 0.231,
+   "end": 0.328
+  },
+  {
+   "text": "perfil",
+   "start": 0.34,
+   "end": 0.727
+  },
+  {
+   "text": "ves",
+   "start": 0.739,
+   "end": 0.92
+  },
+  {
+   "text": "tus",
+   "start": 0.932,
+   "end": 1.138
+  },
+  {
+   "text": "datos",
+   "start": 1.15,
+   "end": 1.513
+  },
+  {
+   "text": "y",
+   "start": 1.525,
+   "end": 1.573
+  },
+  {
+   "text": "puedes",
+   "start": 1.585,
+   "end": 1.9
+  },
+  {
+   "text": "cambiar",
+   "start": 1.912,
+   "end": 2.299
+  },
+  {
+   "text": "tu",
+   "start": 2.311,
+   "end": 2.407
+  },
+  {
+   "text": "contraseña",
+   "start": 2.419,
+   "end": 3.096
+  }
+ ],
+ "ad0": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.316
+  },
+  {
+   "text": "eres",
+   "start": 0.328,
+   "end": 0.546
+  },
+  {
+   "text": "administrador",
+   "start": 0.558,
+   "end": 1.259
+  },
+  {
+   "text": "gestionas",
+   "start": 1.561,
+   "end": 2.057
+  },
+  {
+   "text": "las",
+   "start": 2.069,
+   "end": 2.226
+  },
+  {
+   "text": "cuentas",
+   "start": 2.238,
+   "end": 2.685
+  },
+  {
+   "text": "la",
+   "start": 2.951,
+   "end": 3.012
+  },
+  {
+   "text": "institución",
+   "start": 3.024,
+   "end": 3.725
+  },
+  {
+   "text": "y",
+   "start": 3.737,
+   "end": 3.798
+  },
+  {
+   "text": "el",
+   "start": 3.81,
+   "end": 3.955
+  },
+  {
+   "text": "año",
+   "start": 3.967,
+   "end": 4.172
+  },
+  {
+   "text": "académico",
+   "start": 4.184,
+   "end": 4.837
+  }
+ ],
+ "ad1": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.231
+  },
+  {
+   "text": "Usuarios",
+   "start": 0.243,
+   "end": 0.824
+  },
+  {
+   "text": "pulsa",
+   "start": 1.09,
+   "end": 1.392
+  },
+  {
+   "text": "Nuevo",
+   "start": 1.404,
+   "end": 1.658
+  },
+  {
+   "text": "usuario",
+   "start": 1.67,
+   "end": 2.202
+  },
+  {
+   "text": "para",
+   "start": 2.214,
+   "end": 2.395
+  },
+  {
+   "text": "crear",
+   "start": 2.407,
+   "end": 2.734
+  },
+  {
+   "text": "una",
+   "start": 2.746,
+   "end": 2.915
+  },
+  {
+   "text": "cuenta",
+   "start": 2.927,
+   "end": 3.35
+  },
+  {
+   "text": "El",
+   "start": 4.195,
+   "end": 4.34
+  },
+  {
+   "text": "sistema",
+   "start": 4.352,
+   "end": 4.751
+  },
+  {
+   "text": "genera",
+   "start": 4.763,
+   "end": 5.102
+  },
+  {
+   "text": "el",
+   "start": 5.114,
+   "end": 5.198
+  },
+  {
+   "text": "usuario",
+   "start": 5.21,
+   "end": 5.525
+  },
+  {
+   "text": "institucional",
+   "start": 5.537,
+   "end": 6.323
+  },
+  {
+   "text": "y",
+   "start": 6.335,
+   "end": 6.395
+  },
+  {
+   "text": "una",
+   "start": 6.407,
+   "end": 6.588
+  },
+  {
+   "text": "contraseña",
+   "start": 6.601,
+   "end": 7.205
+  },
+  {
+   "text": "temporal",
+   "start": 7.217,
+   "end": 7.737
+  }
+ ],
+ "ad2": [
+  {
+   "text": "Entrégala",
+   "start": 0.098,
+   "end": 0.618
+  },
+  {
+   "text": "de",
+   "start": 0.63,
+   "end": 0.739
+  },
+  {
+   "text": "forma",
+   "start": 0.751,
+   "end": 1.09
+  },
+  {
+   "text": "segura",
+   "start": 1.102,
+   "end": 1.513
+  },
+  {
+   "text": "en",
+   "start": 1.815,
+   "end": 1.948
+  },
+  {
+   "text": "persona",
+   "start": 1.96,
+   "end": 2.516
+  },
+  {
+   "text": "o",
+   "start": 2.528,
+   "end": 2.613
+  },
+  {
+   "text": "por",
+   "start": 2.625,
+   "end": 2.782
+  },
+  {
+   "text": "un",
+   "start": 2.794,
+   "end": 2.927
+  },
+  {
+   "text": "canal",
+   "start": 2.939,
+   "end": 3.278
+  },
+  {
+   "text": "privado",
+   "start": 3.29,
+   "end": 3.749
+  }
+ ],
+ "ad3": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "Institución",
+   "start": 0.231,
+   "end": 0.872
+  },
+  {
+   "text": "están",
+   "start": 0.884,
+   "end": 1.15
+  },
+  {
+   "text": "Alumnos",
+   "start": 1.162,
+   "end": 1.694
+  },
+  {
+   "text": "Profesores",
+   "start": 1.948,
+   "end": 2.625
+  },
+  {
+   "text": "y",
+   "start": 2.637,
+   "end": 2.673
+  },
+  {
+   "text": "Apoderados",
+   "start": 2.685,
+   "end": 3.459
+  },
+  {
+   "text": "En",
+   "start": 4.304,
+   "end": 4.425
+  },
+  {
+   "text": "Apoderados",
+   "start": 4.437,
+   "end": 5.029
+  },
+  {
+   "text": "ves",
+   "start": 5.041,
+   "end": 5.222
+  },
+  {
+   "text": "los",
+   "start": 5.235,
+   "end": 5.404
+  },
+  {
+   "text": "alumnos",
+   "start": 5.416,
+   "end": 5.863
+  },
+  {
+   "text": "a",
+   "start": 5.875,
+   "end": 5.924
+  },
+  {
+   "text": "cargo",
+   "start": 5.936,
+   "end": 6.25
+  },
+  {
+   "text": "de",
+   "start": 6.262,
+   "end": 6.371
+  },
+  {
+   "text": "cada",
+   "start": 6.383,
+   "end": 6.697
+  },
+  {
+   "text": "uno",
+   "start": 6.709,
+   "end": 7.024
+  },
+  {
+   "text": "y",
+   "start": 7.314,
+   "end": 7.398
+  },
+  {
+   "text": "con",
+   "start": 7.411,
+   "end": 7.556
+  },
+  {
+   "text": "el",
+   "start": 7.568,
+   "end": 7.676
+  },
+  {
+   "text": "botón",
+   "start": 7.689,
+   "end": 8.003
+  },
+  {
+   "text": "Alumnos",
+   "start": 8.015,
+   "end": 8.45
+  },
+  {
+   "text": "los",
+   "start": 8.462,
+   "end": 8.607
+  },
+  {
+   "text": "vinculas",
+   "start": 8.619,
+   "end": 9.284
+  }
+ ],
+ "ad4": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "Académico",
+   "start": 0.231,
+   "end": 0.787
+  },
+  {
+   "text": "organizas",
+   "start": 0.799,
+   "end": 1.356
+  },
+  {
+   "text": "el",
+   "start": 1.368,
+   "end": 1.489
+  },
+  {
+   "text": "año",
+   "start": 1.501,
+   "end": 1.755
+  },
+  {
+   "text": "Periodos",
+   "start": 2.021,
+   "end": 2.649
+  },
+  {
+   "text": "y",
+   "start": 2.915,
+   "end": 2.988
+  },
+  {
+   "text": "Estructura",
+   "start": 3.0,
+   "end": 3.495
+  },
+  {
+   "text": "académica",
+   "start": 3.507,
+   "end": 4.076
+  },
+  {
+   "text": "donde",
+   "start": 4.414,
+   "end": 4.62
+  },
+  {
+   "text": "defines",
+   "start": 4.632,
+   "end": 5.067
+  },
+  {
+   "text": "los",
+   "start": 5.079,
+   "end": 5.224
+  },
+  {
+   "text": "grados",
+   "start": 5.236,
+   "end": 5.599
+  },
+  {
+   "text": "de",
+   "start": 5.611,
+   "end": 5.708
+  },
+  {
+   "text": "cada",
+   "start": 5.72,
+   "end": 5.998
+  },
+  {
+   "text": "periodo",
+   "start": 6.01,
+   "end": 6.409
+  },
+  {
+   "text": "los",
+   "start": 6.711,
+   "end": 6.856
+  },
+  {
+   "text": "cursos",
+   "start": 6.868,
+   "end": 7.255
+  },
+  {
+   "text": "de",
+   "start": 7.267,
+   "end": 7.364
+  },
+  {
+   "text": "cada",
+   "start": 7.376,
+   "end": 7.654
+  },
+  {
+   "text": "grado",
+   "start": 7.666,
+   "end": 8.017
+  },
+  {
+   "text": "y",
+   "start": 8.029,
+   "end": 8.089
+  },
+  {
+   "text": "sus",
+   "start": 8.101,
+   "end": 8.307
+  },
+  {
+   "text": "docentes",
+   "start": 8.319,
+   "end": 8.972
+  },
+  {
+   "text": "Además",
+   "start": 9.816,
+   "end": 10.433
+  },
+  {
+   "text": "Cursos",
+   "start": 10.699,
+   "end": 11.207
+  },
+  {
+   "text": "y",
+   "start": 11.219,
+   "end": 11.267
+  },
+  {
+   "text": "Horarios",
+   "start": 11.279,
+   "end": 11.896
+  }
+ ],
+ "ad5": [
+  {
+   "text": "También",
+   "start": 0.098,
+   "end": 0.413
+  },
+  {
+   "text": "registras",
+   "start": 0.425,
+   "end": 0.908
+  },
+  {
+   "text": "Matrículas",
+   "start": 0.92,
+   "end": 1.525
+  },
+  {
+   "text": "y",
+   "start": 1.537,
+   "end": 1.573
+  },
+  {
+   "text": "Pagos",
+   "start": 1.585,
+   "end": 2.081
+  },
+  {
+   "text": "mensualidades",
+   "start": 2.347,
+   "end": 3.205
+  },
+  {
+   "text": "matrícula",
+   "start": 3.387,
+   "end": 3.967
+  },
+  {
+   "text": "y",
+   "start": 3.979,
+   "end": 4.039
+  },
+  {
+   "text": "sueldos",
+   "start": 4.051,
+   "end": 4.644
+  }
+ ],
+ "ad6": [
+  {
+   "text": "Y",
+   "start": 0.098,
+   "end": 0.183
+  },
+  {
+   "text": "manejas",
+   "start": 0.195,
+   "end": 0.582
+  },
+  {
+   "text": "Documentos",
+   "start": 0.594,
+   "end": 1.15
+  },
+  {
+   "text": "y",
+   "start": 1.162,
+   "end": 1.198
+  },
+  {
+   "text": "formularios",
+   "start": 1.211,
+   "end": 1.924
+  },
+  {
+   "text": "revisas",
+   "start": 2.226,
+   "end": 2.625
+  },
+  {
+   "text": "Alertas",
+   "start": 2.637,
+   "end": 3.108
+  },
+  {
+   "text": "y",
+   "start": 3.121,
+   "end": 3.205
+  },
+  {
+   "text": "Reportes",
+   "start": 3.217,
+   "end": 3.822
+  },
+  {
+   "text": "y",
+   "start": 4.076,
+   "end": 4.148
+  },
+  {
+   "text": "publicas",
+   "start": 4.16,
+   "end": 4.656
+  },
+  {
+   "text": "eventos",
+   "start": 4.668,
+   "end": 5.079
+  },
+  {
+   "text": "en",
+   "start": 5.091,
+   "end": 5.176
+  },
+  {
+   "text": "el",
+   "start": 5.188,
+   "end": 5.297
+  },
+  {
+   "text": "Calendario",
+   "start": 5.309,
+   "end": 5.949
+  }
+ ],
+ "pr0": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.316
+  },
+  {
+   "text": "eres",
+   "start": 0.328,
+   "end": 0.546
+  },
+  {
+   "text": "profesor",
+   "start": 0.558,
+   "end": 1.029
+  },
+  {
+   "text": "solo",
+   "start": 1.356,
+   "end": 1.622
+  },
+  {
+   "text": "ves",
+   "start": 1.634,
+   "end": 1.803
+  },
+  {
+   "text": "tus",
+   "start": 1.815,
+   "end": 1.984
+  },
+  {
+   "text": "cursos",
+   "start": 1.996,
+   "end": 2.456
+  },
+  {
+   "text": "y",
+   "start": 2.468,
+   "end": 2.552
+  },
+  {
+   "text": "tus",
+   "start": 2.564,
+   "end": 2.77
+  },
+  {
+   "text": "alumnos",
+   "start": 2.782,
+   "end": 3.242
+  },
+  {
+   "text": "asignados",
+   "start": 3.254,
+   "end": 4.051
+  }
+ ],
+ "pr1": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.231
+  },
+  {
+   "text": "el",
+   "start": 0.243,
+   "end": 0.364
+  },
+  {
+   "text": "menú",
+   "start": 0.376,
+   "end": 0.618
+  },
+  {
+   "text": "encuentras",
+   "start": 0.63,
+   "end": 1.15
+  },
+  {
+   "text": "Mis",
+   "start": 1.162,
+   "end": 1.331
+  },
+  {
+   "text": "cursos",
+   "start": 1.343,
+   "end": 1.863
+  },
+  {
+   "text": "Mis",
+   "start": 2.045,
+   "end": 2.226
+  },
+  {
+   "text": "alumnos",
+   "start": 2.238,
+   "end": 2.782
+  },
+  {
+   "text": "y",
+   "start": 2.794,
+   "end": 2.83
+  },
+  {
+   "text": "Mis",
+   "start": 2.843,
+   "end": 3.06
+  },
+  {
+   "text": "horarios",
+   "start": 3.072,
+   "end": 3.665
+  }
+ ],
+ "pr2": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.207
+  },
+  {
+   "text": "Calificaciones",
+   "start": 0.219,
+   "end": 1.102
+  },
+  {
+   "text": "elige",
+   "start": 1.392,
+   "end": 1.755
+  },
+  {
+   "text": "un",
+   "start": 1.767,
+   "end": 1.9
+  },
+  {
+   "text": "curso",
+   "start": 1.912,
+   "end": 2.323
+  },
+  {
+   "text": "y",
+   "start": 2.335,
+   "end": 2.456
+  },
+  {
+   "text": "crea",
+   "start": 2.468,
+   "end": 2.794
+  },
+  {
+   "text": "una",
+   "start": 2.806,
+   "end": 3.036
+  },
+  {
+   "text": "evaluación",
+   "start": 3.048,
+   "end": 3.665
+  }
+ ],
+ "pr3": [
+  {
+   "text": "Luego",
+   "start": 0.098,
+   "end": 0.413
+  },
+  {
+   "text": "registra",
+   "start": 0.425,
+   "end": 0.92
+  },
+  {
+   "text": "la",
+   "start": 0.932,
+   "end": 1.041
+  },
+  {
+   "text": "nota",
+   "start": 1.053,
+   "end": 1.343
+  },
+  {
+   "text": "de",
+   "start": 1.356,
+   "end": 1.477
+  },
+  {
+   "text": "cada",
+   "start": 1.489,
+   "end": 1.815
+  },
+  {
+   "text": "alumno",
+   "start": 1.827,
+   "end": 2.19
+  },
+  {
+   "text": "de",
+   "start": 2.504,
+   "end": 2.601
+  },
+  {
+   "text": "cero",
+   "start": 2.613,
+   "end": 2.867
+  },
+  {
+   "text": "a",
+   "start": 2.879,
+   "end": 2.903
+  },
+  {
+   "text": "veinte",
+   "start": 2.915,
+   "end": 3.302
+  },
+  {
+   "text": "y",
+   "start": 3.556,
+   "end": 3.628
+  },
+  {
+   "text": "pulsa",
+   "start": 3.64,
+   "end": 4.015
+  },
+  {
+   "text": "Guardar",
+   "start": 4.027,
+   "end": 4.438
+  },
+  {
+   "text": "notas",
+   "start": 4.45,
+   "end": 5.006
+  }
+ ],
+ "pr4": [
+  {
+   "text": "En",
+   "start": 0.098,
+   "end": 0.219
+  },
+  {
+   "text": "Asistencia",
+   "start": 0.231,
+   "end": 0.872
+  },
+  {
+   "text": "elige",
+   "start": 1.174,
+   "end": 1.501
+  },
+  {
+   "text": "la",
+   "start": 1.513,
+   "end": 1.622
+  },
+  {
+   "text": "fecha",
+   "start": 1.634,
+   "end": 2.02
+  },
+  {
+   "text": "y",
+   "start": 2.033,
+   "end": 2.093
+  },
+  {
+   "text": "marca",
+   "start": 2.105,
+   "end": 2.54
+  },
+  {
+   "text": "a",
+   "start": 2.552,
+   "end": 2.601
+  },
+  {
+   "text": "cada",
+   "start": 2.613,
+   "end": 2.915
+  },
+  {
+   "text": "alumno",
+   "start": 2.927,
+   "end": 3.29
+  },
+  {
+   "text": "presente",
+   "start": 3.628,
+   "end": 4.136
+  },
+  {
+   "text": "tardanza",
+   "start": 4.402,
+   "end": 4.934
+  },
+  {
+   "text": "ausente",
+   "start": 5.188,
+   "end": 5.744
+  },
+  {
+   "text": "o",
+   "start": 5.756,
+   "end": 5.841
+  },
+  {
+   "text": "justificado",
+   "start": 5.853,
+   "end": 6.663
+  }
+ ],
+ "pr5": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.292
+  },
+  {
+   "text": "el",
+   "start": 0.304,
+   "end": 0.437
+  },
+  {
+   "text": "año",
+   "start": 0.449,
+   "end": 0.654
+  },
+  {
+   "text": "elegido",
+   "start": 0.667,
+   "end": 1.102
+  },
+  {
+   "text": "es",
+   "start": 1.114,
+   "end": 1.259
+  },
+  {
+   "text": "Histórico",
+   "start": 1.271,
+   "end": 1.815
+  },
+  {
+   "text": "solo",
+   "start": 2.105,
+   "end": 2.407
+  },
+  {
+   "text": "puedes",
+   "start": 2.419,
+   "end": 2.758
+  },
+  {
+   "text": "consultar",
+   "start": 2.77,
+   "end": 3.411
+  },
+  {
+   "text": "No",
+   "start": 4.243,
+   "end": 4.461
+  },
+  {
+   "text": "se",
+   "start": 4.473,
+   "end": 4.618
+  },
+  {
+   "text": "puede",
+   "start": 4.63,
+   "end": 4.92
+  },
+  {
+   "text": "editar",
+   "start": 4.932,
+   "end": 5.428
+  }
+ ],
+ "pr6": [
+  {
+   "text": "También",
+   "start": 0.098,
+   "end": 0.437
+  },
+  {
+   "text": "ves",
+   "start": 0.449,
+   "end": 0.618
+  },
+  {
+   "text": "las",
+   "start": 0.63,
+   "end": 0.799
+  },
+  {
+   "text": "alertas",
+   "start": 0.812,
+   "end": 1.223
+  },
+  {
+   "text": "de",
+   "start": 1.235,
+   "end": 1.331
+  },
+  {
+   "text": "tus",
+   "start": 1.343,
+   "end": 1.525
+  },
+  {
+   "text": "alumnos",
+   "start": 1.537,
+   "end": 1.984
+  },
+  {
+   "text": "los",
+   "start": 2.299,
+   "end": 2.431
+  },
+  {
+   "text": "apoderados",
+   "start": 2.444,
+   "end": 3.036
+  },
+  {
+   "text": "de",
+   "start": 3.048,
+   "end": 3.145
+  },
+  {
+   "text": "tus",
+   "start": 3.157,
+   "end": 3.338
+  },
+  {
+   "text": "alumnos",
+   "start": 3.35,
+   "end": 3.882
+  },
+  {
+   "text": "el",
+   "start": 4.136,
+   "end": 4.281
+  },
+  {
+   "text": "calendario",
+   "start": 4.293,
+   "end": 4.958
+  },
+  {
+   "text": "y",
+   "start": 4.97,
+   "end": 5.067
+  },
+  {
+   "text": "tus",
+   "start": 5.079,
+   "end": 5.236
+  },
+  {
+   "text": "notificaciones",
+   "start": 5.248,
+   "end": 6.276
+  }
+ ],
+ "al0": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.34
+  },
+  {
+   "text": "eres",
+   "start": 0.352,
+   "end": 0.606
+  },
+  {
+   "text": "alumno",
+   "start": 0.618,
+   "end": 1.017
+  },
+  {
+   "text": "consultas",
+   "start": 1.295,
+   "end": 1.936
+  },
+  {
+   "text": "tu",
+   "start": 1.948,
+   "end": 2.069
+  },
+  {
+   "text": "propia",
+   "start": 2.081,
+   "end": 2.395
+  },
+  {
+   "text": "información",
+   "start": 2.407,
+   "end": 3.096
+  }
+ ],
+ "al1": [
+  {
+   "text": "Desde",
+   "start": 0.098,
+   "end": 0.352
+  },
+  {
+   "text": "Mi",
+   "start": 0.364,
+   "end": 0.473
+  },
+  {
+   "text": "panel",
+   "start": 0.485,
+   "end": 0.848
+  },
+  {
+   "text": "entras",
+   "start": 0.86,
+   "end": 1.162
+  },
+  {
+   "text": "a",
+   "start": 1.174,
+   "end": 1.211
+  },
+  {
+   "text": "Mis",
+   "start": 1.223,
+   "end": 1.404
+  },
+  {
+   "text": "cursos",
+   "start": 1.416,
+   "end": 1.924
+  },
+  {
+   "text": "Mis",
+   "start": 2.129,
+   "end": 2.286
+  },
+  {
+   "text": "calificaciones",
+   "start": 2.299,
+   "end": 3.229
+  },
+  {
+   "text": "Mi",
+   "start": 3.471,
+   "end": 3.556
+  },
+  {
+   "text": "asistencia",
+   "start": 3.568,
+   "end": 4.305
+  },
+  {
+   "text": "y",
+   "start": 4.317,
+   "end": 4.39
+  },
+  {
+   "text": "Mis",
+   "start": 4.402,
+   "end": 4.62
+  },
+  {
+   "text": "horarios",
+   "start": 4.632,
+   "end": 5.224
+  }
+ ],
+ "al2": [
+  {
+   "text": "También",
+   "start": 0.098,
+   "end": 0.485
+  },
+  {
+   "text": "tienes",
+   "start": 0.497,
+   "end": 0.775
+  },
+  {
+   "text": "el",
+   "start": 0.787,
+   "end": 0.884
+  },
+  {
+   "text": "Calendario",
+   "start": 0.896,
+   "end": 1.501
+  },
+  {
+   "text": "Mis",
+   "start": 1.718,
+   "end": 1.9
+  },
+  {
+   "text": "pagos",
+   "start": 1.912,
+   "end": 2.383
+  },
+  {
+   "text": "Mis",
+   "start": 2.589,
+   "end": 2.77
+  },
+  {
+   "text": "alertas",
+   "start": 2.782,
+   "end": 3.338
+  },
+  {
+   "text": "y",
+   "start": 3.35,
+   "end": 3.387
+  },
+  {
+   "text": "Mis",
+   "start": 3.399,
+   "end": 3.592
+  },
+  {
+   "text": "notificaciones",
+   "start": 3.604,
+   "end": 4.644
+  }
+ ],
+ "ap0": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.304
+  },
+  {
+   "text": "eres",
+   "start": 0.316,
+   "end": 0.558
+  },
+  {
+   "text": "padre",
+   "start": 0.57,
+   "end": 0.836
+  },
+  {
+   "text": "de",
+   "start": 0.848,
+   "end": 0.945
+  },
+  {
+   "text": "familia",
+   "start": 0.957,
+   "end": 1.428
+  },
+  {
+   "text": "o",
+   "start": 1.44,
+   "end": 1.537
+  },
+  {
+   "text": "apoderado",
+   "start": 1.549,
+   "end": 2.129
+  },
+  {
+   "text": "consultas",
+   "start": 2.419,
+   "end": 2.976
+  },
+  {
+   "text": "la",
+   "start": 2.988,
+   "end": 3.06
+  },
+  {
+   "text": "información",
+   "start": 3.072,
+   "end": 3.677
+  },
+  {
+   "text": "de",
+   "start": 3.689,
+   "end": 3.773
+  },
+  {
+   "text": "tus",
+   "start": 3.785,
+   "end": 3.991
+  },
+  {
+   "text": "hijos",
+   "start": 4.003,
+   "end": 4.475
+  }
+ ],
+ "ap1": [
+  {
+   "text": "Entra",
+   "start": 0.098,
+   "end": 0.328
+  },
+  {
+   "text": "a",
+   "start": 0.34,
+   "end": 0.364
+  },
+  {
+   "text": "Estudiantes",
+   "start": 0.376,
+   "end": 0.993
+  },
+  {
+   "text": "a",
+   "start": 1.005,
+   "end": 1.041
+  },
+  {
+   "text": "mi",
+   "start": 1.053,
+   "end": 1.174
+  },
+  {
+   "text": "cargo",
+   "start": 1.186,
+   "end": 1.549
+  },
+  {
+   "text": "y",
+   "start": 1.561,
+   "end": 1.682
+  },
+  {
+   "text": "elige",
+   "start": 1.694,
+   "end": 2.045
+  },
+  {
+   "text": "al",
+   "start": 2.057,
+   "end": 2.153
+  },
+  {
+   "text": "estudiante",
+   "start": 2.166,
+   "end": 2.806
+  }
+ ],
+ "ap2": [
+  {
+   "text": "Verás",
+   "start": 0.098,
+   "end": 0.389
+  },
+  {
+   "text": "su",
+   "start": 0.401,
+   "end": 0.497
+  },
+  {
+   "text": "Resumen",
+   "start": 0.509,
+   "end": 0.993
+  },
+  {
+   "text": "Cursos",
+   "start": 1.307,
+   "end": 1.767
+  },
+  {
+   "text": "y",
+   "start": 1.779,
+   "end": 1.815
+  },
+  {
+   "text": "horarios",
+   "start": 1.827,
+   "end": 2.335
+  },
+  {
+   "text": "Calificaciones",
+   "start": 2.564,
+   "end": 3.459
+  },
+  {
+   "text": "y",
+   "start": 3.471,
+   "end": 3.52
+  },
+  {
+   "text": "Asistencia",
+   "start": 3.532,
+   "end": 4.184
+  }
+ ],
+ "ap3": [
+  {
+   "text": "Desde",
+   "start": 0.098,
+   "end": 0.376
+  },
+  {
+   "text": "Mi",
+   "start": 0.389,
+   "end": 0.497
+  },
+  {
+   "text": "perfil",
+   "start": 0.509,
+   "end": 0.896
+  },
+  {
+   "text": "en",
+   "start": 1.114,
+   "end": 1.198
+  },
+  {
+   "text": "Seguridad",
+   "start": 1.211,
+   "end": 1.863
+  },
+  {
+   "text": "puedes",
+   "start": 2.141,
+   "end": 2.468
+  },
+  {
+   "text": "cambiar",
+   "start": 2.48,
+   "end": 2.891
+  },
+  {
+   "text": "tu",
+   "start": 2.903,
+   "end": 3.0
+  },
+  {
+   "text": "contraseña",
+   "start": 3.012,
+   "end": 3.713
+  }
+ ],
+ "c1": [
+  {
+   "text": "No",
+   "start": 0.098,
+   "end": 0.28
+  },
+  {
+   "text": "compartas",
+   "start": 0.292,
+   "end": 0.884
+  },
+  {
+   "text": "tu",
+   "start": 0.896,
+   "end": 0.993
+  },
+  {
+   "text": "contraseña",
+   "start": 1.005,
+   "end": 1.706
+  },
+  {
+   "text": "Si",
+   "start": 2.539,
+   "end": 2.732
+  },
+  {
+   "text": "usas",
+   "start": 2.744,
+   "end": 3.022
+  },
+  {
+   "text": "una",
+   "start": 3.034,
+   "end": 3.179
+  },
+  {
+   "text": "computadora",
+   "start": 3.192,
+   "end": 3.772
+  },
+  {
+   "text": "compartida",
+   "start": 3.784,
+   "end": 4.425
+  },
+  {
+   "text": "pulsa",
+   "start": 4.691,
+   "end": 5.005
+  },
+  {
+   "text": "Cerrar",
+   "start": 5.017,
+   "end": 5.355
+  },
+  {
+   "text": "sesión",
+   "start": 5.367,
+   "end": 5.754
+  },
+  {
+   "text": "al",
+   "start": 5.766,
+   "end": 5.887
+  },
+  {
+   "text": "terminar",
+   "start": 5.899,
+   "end": 6.431
+  }
+ ],
+ "c2": [
+  {
+   "text": "Si",
+   "start": 0.098,
+   "end": 0.292
+  },
+  {
+   "text": "tienes",
+   "start": 0.304,
+   "end": 0.594
+  },
+  {
+   "text": "dudas",
+   "start": 0.606,
+   "end": 0.969
+  },
+  {
+   "text": "o",
+   "start": 0.981,
+   "end": 1.029
+  },
+  {
+   "text": "ves",
+   "start": 1.041,
+   "end": 1.247
+  },
+  {
+   "text": "un",
+   "start": 1.259,
+   "end": 1.392
+  },
+  {
+   "text": "dato",
+   "start": 1.404,
+   "end": 1.609
+  },
+  {
+   "text": "incorrecto",
+   "start": 1.622,
+   "end": 2.178
+  },
+  {
+   "text": "comunícate",
+   "start": 2.468,
+   "end": 3.084
+  },
+  {
+   "text": "con",
+   "start": 3.096,
+   "end": 3.229
+  },
+  {
+   "text": "la",
+   "start": 3.241,
+   "end": 3.29
+  },
+  {
+   "text": "administración",
+   "start": 3.302,
+   "end": 4.136
+  }
+ ],
+ "c3": [
+  {
+   "text": "Listo",
+   "start": 0.098,
+   "end": 0.727
+  },
+  {
+   "text": "Ya",
+   "start": 1.559,
+   "end": 1.765
+  },
+  {
+   "text": "puedes",
+   "start": 1.777,
+   "end": 2.14
+  },
+  {
+   "text": "usar",
+   "start": 2.152,
+   "end": 2.43
+  },
+  {
+   "text": "el",
+   "start": 2.442,
+   "end": 2.527
+  },
+  {
+   "text": "sistema",
+   "start": 2.539,
+   "end": 3.071
+  }
+ ]
+}

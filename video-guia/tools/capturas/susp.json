@@ -1,0 +1,1 @@
+[{"name":"suspendido-desktop","role":"alumno","path":"/dashboard","mock":[{"url":"/api/estudiante","status":503,"body":{"success":false,"code":"SYSTEM_SUSPENDED","message":"Servicio suspendido temporalmente"}}],"steps":[{"wait":1500}],"boxes":{"card":"[role=alert]"}}]
