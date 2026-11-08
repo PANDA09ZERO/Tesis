@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { GraduationCap, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import toast from 'react-hot-toast';
+import InstallAppCard from '../../components/ui/InstallAppCard';
 
 export default function LoginPage() {
   const {theme,toggleTheme}=useTheme();
@@ -108,6 +109,7 @@ export default function LoginPage() {
               ) : 'Iniciar Sesión'}
             </button>
           </form>
+          <div className="mt-6"><InstallAppCard compacto permitirOcultar={false} /></div>
         </div>
       </div>
       </main>

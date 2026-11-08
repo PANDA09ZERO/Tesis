@@ -6,6 +6,9 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { PeriodoProvider } from './context/PeriodoContext';
 import './index.css';
+import { captureInstallPrompt } from './hooks/useInstallApp';
+
+captureInstallPrompt();
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {

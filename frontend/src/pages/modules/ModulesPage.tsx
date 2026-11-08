@@ -4,6 +4,7 @@ import { LayoutGrid, Search, X, ArrowUpRight, CalendarDays } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext';
 import { usePeriodo } from '../../context/PeriodoContext';
 import PeriodoSelector from '../../components/layout/PeriodoSelector';
+import InstallAppCard from '../../components/ui/InstallAppCard';
 import { getNavigationMenu, type NavigationLink } from '../../components/layout/navigation';
 
 const descriptions: Record<string, string> = {
@@ -106,6 +107,7 @@ export default function ModulesPage() {
         </div>
       </section>
     )}
+    <InstallAppCard />
     <section className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 sm:p-5">
       <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-gray-100"><LayoutGrid className="h-6 w-6" aria-hidden="true"/></span><div className="min-w-0"><h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Módulos</h1><p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Elige el espacio al que quieres entrar.</p></div></div>
       <div className="relative mt-4"><label htmlFor="module-search" className="sr-only">Buscar módulo</label><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true"/><input id="module-search" type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar módulo…" className="input-field pl-10 pr-12 [&::-webkit-search-cancel-button]:appearance-none"/>{search && <button type="button" onClick={() => setSearch('')} aria-label="Limpiar búsqueda de módulos" className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"><X className="h-4 w-4" aria-hidden="true"/></button>}</div>
