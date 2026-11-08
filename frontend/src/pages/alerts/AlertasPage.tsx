@@ -1,7 +1,7 @@
 import PageHeading from '../../components/ui/PageHeading';
 import { useAuth } from '../../context/AuthContext';
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, CheckCircle, Clock, Filter } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Info, RefreshCw } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import SearchInput from '../../components/ui/SearchInput';
 import { alertasApi } from '../../api/endpoints';
@@ -13,6 +13,21 @@ import toast from 'react-hot-toast';
 export default function AlertasPage() {
   const {user}=useAuth();
   const canManage=user?.rol==='administrador'||user?.rol==='profesor';
+  const esAdmin=user?.rol==='administrador';
+  const [evaluando,setEvaluando]=useState(false);
+  const [criterios,setCriterios]=useState<any>(null);
+  useEffect(()=>{ if(canManage) alertasApi.getCriterios().then(r=>setCriterios(r.data.data)).catch(()=>setCriterios(null)); },[canManage]);
+  const evaluarAhora=async()=>{
+    setEvaluando(true);
+    try{const r=(await alertasApi.evaluar()).data.data;
+      if(!r?.periodo) toast('No hay un periodo vigente para revisar');
+      else toast.success(`Revisados ${r.evaluados} alumnos: ${r.creadas} nuevas, ${r.actualizadas} actualizadas, ${r.superadas} superadas`);
+      loadAlertas(); loadStats();
+    }catch(error:any){toast.error(error.response?.data?.message||'No se pudieron revisar las alertas');}finally{setEvaluando(false);}
+  };
+  const items=(a:Alerta)=>{try{const v=typeof a.indicadores==='string'?JSON.parse(a.indicadores):a.indicadores;return Array.isArray(v?.items)?v.items:[];}catch{return [];}};
+  const etiqueta:Record<string,string>={faltas:'Faltas',tardanzas:'Tardanzas',notas:'Notas',conducta:'Conducta'};
+  const estadoTexto:Record<string,string>={activa:'Activa',atendida:'Atendida',resuelta:'Resuelta',expirada:'Superada'};
   const [loadError,setLoadError]=useState('');
   const [statsError,setStatsError]=useState('');
   const [updating,setUpdating]=useState<number|null>(null);
@@ -56,7 +71,14 @@ export default function AlertasPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeading title="Alertas" description="Revisa las alertas académicas disponibles para tu cuenta."/>
+      <PageHeading title="Alertas" description="Alertas generadas automáticamente según faltas, tardanzas, notas e incidencias de conducta."/>
+      {canManage && <div className="card flex flex-wrap items-start justify-between gap-3 text-sm">
+        <div className="flex min-w-0 flex-1 gap-2 text-gray-600 dark:text-gray-300"><Info className="mt-0.5 h-4 w-4 shrink-0 text-primary-600"/>
+          {criterios ? <p>El sistema revisa cada 6 horas a los alumnos del periodo vigente (últimos {criterios.ventanaDias} días): <b>faltas</b> sin justificar desde {criterios.faltas.medio} días (alto desde {criterios.faltas.alto}), <b>tardanzas</b> desde {criterios.tardanzas.bajo} días, <b>cursos</b> con promedio menor a {criterios.notaAprobatoria} y <b>incidencias</b> de conducta (una grave es riesgo alto). Si la situación mejora, la alerta pasa a "Superada".</p>
+            : <p>El sistema revisa periódicamente faltas, tardanzas, notas e incidencias del periodo vigente.</p>}
+        </div>
+        {esAdmin && <button className="btn-primary flex items-center gap-2" disabled={evaluando} onClick={evaluarAhora}><RefreshCw className={`h-4 w-4 ${evaluando?'animate-spin':''}`}/>{evaluando?'Revisando…':'Revisar ahora'}</button>}
+      </div>}
       {(loadError||statsError) && <div role="alert" className="card text-red-700">{loadError||statsError} <button className="btn-secondary" onClick={()=>{loadAlertas();loadStats();}}>Reintentar</button></div>}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -84,6 +106,7 @@ export default function AlertasPage() {
           <option value="activa">Activas</option>
           <option value="atendida">Atendidas</option>
           <option value="resuelta">Resueltas</option>
+          <option value="expirada">Superadas</option>
           <option value="">Todas</option>
         </select>
         <select value={filtroRiesgo} onChange={e => setFiltroRiesgo(e.target.value)} className="input-field w-44">
@@ -111,10 +134,11 @@ export default function AlertasPage() {
                     <Badge variant={alerta.tipo_riesgo === 'alto' ? 'danger' : alerta.tipo_riesgo === 'medio' ? 'warning' : 'success'}>
                       Riesgo {alerta.tipo_riesgo?.toUpperCase()}
                     </Badge>
-                    <Badge variant="default">{alerta.estado}</Badge>
+                    <Badge variant="default">{estadoTexto[alerta.estado]||alerta.estado}</Badge>
                   </div>
                   <h4 className="font-semibold text-gray-900">{alerta.alumno_nombre} {alerta.alumno_apellido}</h4>
                   <p className="text-sm text-gray-500">{alerta.codigo_alumno} - {alerta.grado}</p>
+                  {items(alerta).length ? <ul className="mt-2 flex flex-wrap gap-2">{items(alerta).map((i:any)=><li key={i.tipo}><Badge variant={i.riesgo==='alto'?'danger':i.riesgo==='medio'?'warning':'info'}>{etiqueta[i.tipo]||i.tipo}: {i.valor}</Badge></li>)}</ul> : null}
                   <p className="text-sm text-gray-600 mt-1">{alerta.descripcion}</p>
                   {alerta.recomendacion && (
                     <p className="text-sm text-blue-600 mt-1 italic">Recomendación: {alerta.recomendacion}</p>

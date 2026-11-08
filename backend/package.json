@@ -35,7 +35,10 @@
     "test:asignaciones": "npm run build && node tests/asignaciones.integration.test.cjs",
     "academic:diagnose": "npm run build && node scripts/diagnose-academic-assignments.cjs",
     "migrate:libretas": "npm run build && node scripts/migrate-report-rules.cjs",
-    "test:libretas": "npm run build && node --test tests/libreta-rules.test.cjs"
+    "test:libretas": "npm run build && node --test tests/libreta-rules.test.cjs",
+    "migrate:incidencias": "npm run build && node scripts/migrate-incidencias.cjs",
+    "test:incidencias": "npm run build && node --test tests/incidencias.test.cjs",
+    "test:alertas": "npm run build && node --test tests/alertas-reglas.test.cjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

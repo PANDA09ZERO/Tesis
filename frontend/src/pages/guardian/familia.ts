@@ -1,5 +1,5 @@
-export type VistaFamilia='resumen'|'cursos'|'calificaciones'|'asistencia';
-export const vistasFamilia:Record<VistaFamilia,string>={resumen:'Resumen',cursos:'Cursos y horarios',calificaciones:'Calificaciones',asistencia:'Asistencia'};
+export type VistaFamilia='resumen'|'cursos'|'calificaciones'|'asistencia'|'incidencias';
+export const vistasFamilia:Record<VistaFamilia,string>={resumen:'Resumen',cursos:'Cursos y horarios',calificaciones:'Calificaciones',asistencia:'Asistencia',incidencias:'Conducta'};
 export interface AsistenciaFamilia{id:number;curso:string|null;fecha:string;estado:string;minutos_tardanza:number}
 export interface ResumenFamilia {
  alumno:{id:number;nombre:string;apellido:string;codigo_alumno:string;parentesco:string|null;estado:string};

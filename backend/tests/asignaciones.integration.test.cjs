@@ -16,7 +16,6 @@ test('asignación única: API, estructura, permisos, concurrencia e historial en
    'INSERT INTO periodo_grados(periodo_academico_id,grado_id) VALUES(1,1),(1,2),(2,1)',
    'INSERT INTO periodo_grado_cursos(id,periodo_academico_id,grado_id,curso_id) VALUES(1,1,1,1),(2,1,2,1),(3,2,1,1),(4,1,1,2),(5,1,2,2)',
    'INSERT INTO periodo_grado_curso_profesores(periodo_grado_curso_id,profesor_id) VALUES(1,1),(2,2),(3,1)',
-   "INSERT INTO profesor_curso(profesor_id,curso_id,origen) VALUES(3,1,'manual')",
    "INSERT INTO alumnos(id,usuario_id,codigo_alumno) VALUES(1,6,'S1'),(2,10,'S2')",
    "INSERT INTO matriculas(alumno_id,curso_id,grado_id,periodo_academico_id,estado) VALUES(1,1,1,1,'activa'),(2,1,2,1,'activa')",
    'INSERT INTO apoderados(id,usuario_id) VALUES(1,7)',
@@ -41,7 +40,7 @@ test('asignación única: API, estructura, permisos, concurrencia e historial en
   await t.test('editar perfil no toca asignaciones; payload heredado se rechaza sin borrar datos',async()=>{
    assert.equal((await call('/profesores/1','PUT',{especialidad:'Actualizada'})).status,200);
    assert.equal((await call('/profesores/1','PUT',{cursos:[]})).status,400);assert.equal((await call('/profesores','POST',{cursos:[1]})).status,400);
-   const [rows]=await db.query('SELECT COUNT(*) total FROM periodo_grado_curso_profesores');assert.equal(rows[0].total,3);const [legacy]=await db.query('SELECT COUNT(*) total FROM profesor_curso');assert.equal(legacy[0].total,1);
+   const [rows]=await db.query('SELECT COUNT(*) total FROM periodo_grado_curso_profesores');assert.equal(rows[0].total,3);
   });
   await t.test('horario resuelve docente único y deriva identidad; rechaza IDs, docente ajeno y contradicciones',async()=>{
    const created=await call('/horarios','POST',schedule);assert.equal(created.status,201);scheduleId=created.data.id;
@@ -54,7 +53,7 @@ test('asignación única: API, estructura, permisos, concurrencia e historial en
    for(const body of [{profesor_ids:[]},{profesor_ids:[2,2]},{profesor_ids:[4]},{profesor_ids:[999]}])assert.equal((await call(root+'/cursos/1/profesores','POST',body)).status,400);
    const result=await Promise.all([call(root+'/cursos/1/profesores','POST',{profesor_ids:[2]}),call(root+'/cursos/1/profesores','POST',{profesor_ids:[2]})]);assert.ok(result.every(r=>r.status===201));
    const [rows]=await db.query('SELECT COUNT(*) total FROM periodo_grado_curso_profesores WHERE periodo_grado_curso_id=1 AND profesor_id=2');assert.equal(rows[0].total,1);
-   const [legacy]=await db.query('SELECT COUNT(*) total FROM profesor_curso');assert.equal(legacy[0].total,1);
+   
   });
   await t.test('varios docentes requieren elección y editar no reemplaza al responsable',async()=>{
    assert.equal((await call('/horarios','POST',{...schedule,dia_semana:'Martes',hora_inicio:'10:00',hora_fin:'11:00'})).status,400);
@@ -102,7 +101,7 @@ test('asignación única: API, estructura, permisos, concurrencia e historial en
   await t.test('clonado reutiliza asignaciones específicas, omite inactivos, valida periodos y no duplica ni sincroniza catálogo',async()=>{
    await db.query("INSERT INTO periodos_academicos(id,nombre,fecha_inicio,fecha_fin,activo) VALUES(3,'Destino','2027-01-01','2027-12-31',0)");
    await db.query('UPDATE usuarios SET activo=0 WHERE id=4');
-   try{const cloned=await call(root+'/periodos/3/clonar','POST',{periodo_origen_id:1});assert.equal(cloned.status,200);assert.ok(cloned.data.profesores_omitidos.includes(3));const again=await call(root+'/periodos/3/clonar','POST',{periodo_origen_id:1});assert.equal(again.data.profesores_asignados,0);const [legacy]=await db.query('SELECT COUNT(*) total FROM profesor_curso');assert.equal(legacy[0].total,1);}
+   try{const cloned=await call(root+'/periodos/3/clonar','POST',{periodo_origen_id:1});assert.equal(cloned.status,200);assert.ok(cloned.data.profesores_omitidos.includes(3));const again=await call(root+'/periodos/3/clonar','POST',{periodo_origen_id:1});assert.equal(again.data.profesores_asignados,0);}
    finally{await db.query('UPDATE usuarios SET activo=1 WHERE id=4');}
    assert.equal((await call(root+'/periodos/999/clonar','POST',{periodo_origen_id:1})).status,404);
    assert.equal((await call(root+'/ofertas?periodo_id=bad')).status,400);

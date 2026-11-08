@@ -3,6 +3,7 @@ import {Link,useParams,useSearchParams} from 'react-router-dom';
 import {familiaApi} from '../../api/endpoints';
 import DataTable from '../../components/ui/DataTable';
 import Badge from '../../components/ui/Badge';
+import IncidenciasAlumno from '../incidencias/IncidenciasAlumno';
 import {DetalleFamilia,VistaFamilia,vistasFamilia,fechaFamilia} from './familia';
 
 export default function FamilyStudentDetailPage(){
@@ -29,6 +30,7 @@ export default function FamilyStudentDetailPage(){
   {tab==='cursos'&&<><section className="card"><h2 className="mb-3 font-semibold">Cursos de la matrícula</h2>{!data.matriculas.length?<p>Sin matrícula registrada en este periodo.</p>:data.matriculas.map(m=><div key={m.id} className="mb-4 space-y-2"><h3 className="font-medium">{m.grado||'Sin grado registrado'}</h3>{m.inscripciones.map(c=><div key={c.id} className="flex flex-wrap justify-between gap-2 rounded-lg bg-gray-50 p-3"><span>{c.curso||'Matrícula sin curso asignado'}{c.codigo?' · '+c.codigo:''}</span><Badge variant={c.estado==='activa'?'success':'info'}>{c.estado}</Badge></div>)}</div>)}</section><section className="space-y-3"><h2 className="font-semibold">Horarios del periodo</h2><DataTable data={data.horarios} columns={[{key:'curso',label:'Curso'},{key:'grado',label:'Grado'},{key:'profesor',label:'Profesor'},{key:'dia_semana',label:'Día'},{key:'hora_inicio',label:'Inicio'},{key:'hora_fin',label:'Fin'},{key:'aula',label:'Aula'}]} emptyMessage="Sin horarios registrados para sus cursos matriculados en este periodo"/></section></>}
   {tab==='calificaciones'&&<section className="space-y-3"><h2 className="font-semibold">Calificaciones del periodo</h2><p className="text-sm text-gray-500">Se conserva la nota y su escala original. No se asigna aprobación ni promedio a registros sin escala.</p><DataTable data={data.calificaciones} columns={[{key:'curso',label:'Curso'},{key:'fecha',label:'Fecha',render:r=>fechaFamilia(r.fecha)},{key:'nota',label:'Nota'},{key:'escala_maxima',label:'Escala máxima',render:r=>r.escala_maxima??'Histórica sin escala'}]} emptyMessage="Sin calificaciones registradas en este periodo"/></section>}
   {tab==='asistencia'&&<section className="space-y-3"><h2 className="font-semibold">Asistencia del periodo</h2><p className="text-sm text-gray-500">{data.resumen.registros_asistencia} registros de clase · {data.resumen.dias_asistencia} días con registro. Una fecha puede tener registros de varios cursos.</p><DataTable data={data.asistencias} columns={[{key:'fecha',label:'Fecha',render:r=>fechaFamilia(r.fecha)},{key:'curso',label:'Curso',render:r=>r.curso||'Sin curso registrado'},{key:'estado',label:'Estado'},{key:'minutos_tardanza',label:'Minutos de tardanza'}]} emptyMessage="Sin asistencia registrada en este periodo"/></section>}
+ {tab==='incidencias'&&<IncidenciasAlumno alumnoId={Number(id)} vistaFamilia/>}
  </>}
  </div>;
 }

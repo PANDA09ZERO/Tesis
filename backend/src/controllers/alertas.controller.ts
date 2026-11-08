@@ -6,6 +6,7 @@ import { AuthRequest } from '../types';
 import { profesorTieneAccesoAlumno, profesorAlumnoScope } from '../utils/profesorAlcance';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { positiveId } from '../utils/academicValidation';
+import { CRITERIOS, evaluarAlertas } from '../utils/alertasReglas';
 
 const ESTADOS_ALERTA = ['activa', 'atendida', 'resuelta', 'expirada'];
 const RIESGOS = ['bajo', 'medio', 'alto'];
@@ -140,4 +141,20 @@ export async function getAlertasEstadisticas(req: AuthRequest, res: Response) {
   } catch (error) {
     return sendError(res, 'Error al obtener estadísticas de alertas');
   }
+}
+
+
+/** Ejecuta ahora la revisión por reglas (faltas, tardanzas, notas e incidencias). */
+export async function evaluarAlertasAhora(req: AuthRequest, res: Response) {
+  try {
+    const resultado = await evaluarAlertas(pool);
+    try { await pool.query("INSERT INTO registro_actividades (usuario_id, accion, entidad, detalles, ip_address) VALUES (?, 'evaluar_alertas', 'alertas', ?, ?)", [req.user!.userId, JSON.stringify(resultado), req.ip || null]); } catch { /* auditoría opcional */ }
+    return sendSuccess(res, resultado, resultado.periodo ? 'Alertas evaluadas' : 'No hay un periodo vigente para evaluar');
+  } catch (error: any) {
+    return sendError(res, error?.status === 409 ? error.message : 'No se pudieron evaluar las alertas', error?.status === 409 ? 409 : 500);
+  }
+}
+
+export function getCriteriosAlertas(_req: Request, res: Response) {
+  return sendSuccess(res, CRITERIOS);
 }

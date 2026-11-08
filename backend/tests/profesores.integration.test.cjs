@@ -17,7 +17,7 @@ test('perspectiva de profesores: HTTP con esquema MySQL real aislado',async t=>{
   await admin.query('CREATE DATABASE `'+name+'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
   db=mysql.createPool({...settings,database:name});
   // LIKE conserva columnas, índices y CHECK reales; las filas reales nunca se copian.
-  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','profesor_curso','alumnos','matriculas','evaluaciones','horarios','calificaciones','asistencias','apoderados','apoderado_alumno','alertas_academicas','documentos','documentos_historial','documento_categorias','notificaciones','registro_actividades','pagos_matricula','eventos_calendario']) {
+  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','horarios','calificaciones','asistencias','apoderados','apoderado_alumno','alertas_academicas','documentos','documentos_historial','documento_categorias','notificaciones','registro_actividades','pagos_matricula','eventos_calendario']) {
    await db.query('CREATE TABLE `'+table+'` LIKE `'+sourceName+'`.`'+table+'`');
   }
   for(const sql of [
@@ -30,7 +30,6 @@ test('perspectiva de profesores: HTTP con esquema MySQL real aislado',async t=>{
    "INSERT INTO periodo_grados(periodo_academico_id,grado_id) VALUES(1,1),(1,2),(2,1),(2,2)",
    "INSERT INTO periodo_grado_cursos(id,periodo_academico_id,grado_id,curso_id) VALUES(1,1,1,1),(2,1,2,1),(3,2,1,1),(4,2,2,1),(5,1,1,2)",
    "INSERT INTO periodo_grado_curso_profesores(periodo_grado_curso_id,profesor_id) VALUES(1,1),(2,2),(3,2),(4,1)",
-   "INSERT INTO profesor_curso(profesor_id,curso_id,origen) VALUES(1,2,'manual'),(1,1,'configuracion'),(2,1,'configuracion')",
    "INSERT INTO evaluaciones(id,periodo_grado_curso_id,nombre,fecha_evaluacion,nota_maxima,estado) VALUES(1,1,'Escala diez','2026-10-07',10,'activa'),(2,1,'Cerrada','2026-10-01',20,'cerrada'),(3,2,'Otra asignación','2026-10-07',20,'activa'),(4,4,'Histórico','2025-10-07',20,'activa')",
    "INSERT INTO apoderados(id,usuario_id) VALUES(1,21),(2,22)",
    "INSERT INTO documentos(id,titulo,tipo_archivo,usuario_subio,profesor_id) VALUES(1,'Propio','pdf',2,1),(2,'Ajeno','pdf',3,2),(3,'Común','pdf',1,NULL)",

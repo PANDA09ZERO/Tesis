@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "tuspa-demo",
+      "runtimeExecutable": "C:/Program Files/Git/bin/bash.exe",
+      "runtimeArgs": ["C:/xampp/htdocs/TuSpa/video/guia-essence/supabase-local/run-demo.sh"],
+      "port": 3100
     }
   ]
 }

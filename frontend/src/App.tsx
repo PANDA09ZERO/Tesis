@@ -28,6 +28,7 @@ import PeriodosPage from './pages/academics/PeriodosPage';
 import ConfiguracionAcademicaPage from './pages/academics/ConfiguracionAcademicaPage';
 import DocumentosPage from './pages/documents/DocumentosPage';
 import AlertasPage from './pages/alerts/AlertasPage';
+import IncidenciasPage from './pages/incidencias/IncidenciasPage';
 import ReportesPage from './pages/reports/ReportesPage';
 import PagosPage from './pages/admin/PagosPage';
 import UsuariosPage from './pages/admin/UsuariosPage';
@@ -140,6 +141,8 @@ function ApplicationRoutes() {
       <Route path="/documentos" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Gestión Documental"><DocumentosPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="/alertas" element={<ProtectedRoute><AppLayout title="Alertas Académicas"><AlertasPage /></AppLayout></ProtectedRoute>} />
+
+      <Route path="/incidencias" element={<ProtectedRoute><RoleRoute allowed={['administrador', 'profesor']}><AppLayout title="Incidencias de conducta"><IncidenciasPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="/reportes" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Reportes y Estadísticas"><ReportesPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 

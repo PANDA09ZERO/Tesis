@@ -2,7 +2,7 @@ import type { CalculatedResponse, IssuedReport, RulesResponse, LibretaPolicy } f
 import type { StudentRecord } from '../pages/documents/academic-record';
 import type {ResumenFamilia,DetalleFamilia} from '../pages/guardian/familia';
 import client from './client';
-import type { ApiResponse, CreatedAccount, PaginatedResponse, User, Alumno, Profesor, Curso, Calificacion, Asistencia, Documento, DocumentoCategoria, FormularioDocumental, FormularioCampo, FormularioEnvio, Horario, HorarioPayload, CalendarEvent, PeriodoAcademico, DetallePeriodo, Alerta, DashboardStats, OfertaAcademica, EvaluacionAcademica, AlumnoLibro } from '../types';
+import type { ApiResponse, CreatedAccount, PaginatedResponse, User, Alumno, Profesor, Curso, Calificacion, Asistencia, Documento, DocumentoCategoria, FormularioDocumental, FormularioCampo, FormularioEnvio, Horario, HorarioPayload, CalendarEvent, PeriodoAcademico, DetallePeriodo, Alerta, Incidencia, IncidenciasEstadisticas, DashboardStats, OfertaAcademica, EvaluacionAcademica, AlumnoLibro } from '../types';
 
 // Auth
 export const authApi = {
@@ -259,7 +259,19 @@ export const alertasApi = {
     client.put<ApiResponse>(`/alertas/${id}/estado`, { estado }),
   asignar: (id: number, asignada_a: number) =>
     client.put<ApiResponse>(`/alertas/${id}/asignar`, { asignada_a }),
-  getEstadisticas: () => client.get<ApiResponse<any>>('/alertas/estadisticas')
+  getEstadisticas: () => client.get<ApiResponse<any>>('/alertas/estadisticas'),
+  getCriterios: () => client.get<ApiResponse<any>>('/alertas/criterios'),
+  evaluar: () => client.post<ApiResponse<{ periodo: string | null; evaluados: number; creadas: number; actualizadas: number; superadas: number; omitidas: number }>>('/alertas/evaluar')
+};
+
+// Incidencias de conducta
+export const incidenciasApi = {
+  getAll: (params?: any) => client.get<PaginatedResponse<Incidencia>>('/incidencias', { params }),
+  getEstadisticas: () => client.get<ApiResponse<IncidenciasEstadisticas>>('/incidencias/estadisticas'),
+  getByAlumno: (alumnoId: number) => client.get<ApiResponse<Incidencia[]>>(`/incidencias/alumno/${alumnoId}`),
+  create: (data: any) => client.post<ApiResponse<{ id: number }>>('/incidencias', data),
+  update: (id: number, data: any) => client.put<ApiResponse>(`/incidencias/${id}`, data),
+  updateEstado: (id: number, estado: string, resolucion?: string) => client.put<ApiResponse>(`/incidencias/${id}/estado`, { estado, resolucion })
 };
 
 // Dashboard

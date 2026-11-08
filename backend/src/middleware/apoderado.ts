@@ -14,6 +14,7 @@ export function limitarApoderado(req:AuthRequest,res:Response,next:NextFunction)
       /^\/alumnos\/\d+(?:\/horario)?$/,
       /^\/calificaciones\/alumno\/\d+$/,
       /^\/asistencias\/alumno\/\d+$/,
+      /^\/incidencias\/alumno\/\d+$/,
       /^\/documentos(?:\/.*)?$/
     ];
 

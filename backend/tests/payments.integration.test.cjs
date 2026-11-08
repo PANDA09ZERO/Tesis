@@ -25,7 +25,6 @@ test('pagos HTTP y persistencia en MySQL aislado',async t=>{
     'CREATE TABLE grados (id INT PRIMARY KEY,nombre VARCHAR(50),nivel VARCHAR(20))',
    'CREATE TABLE matriculas (id INT AUTO_INCREMENT PRIMARY KEY,alumno_id INT,curso_id INT NULL,grado_id INT NULL,periodo_academico_id INT,estado VARCHAR(20),fecha_matricula DATE,observaciones TEXT,UNIQUE KEY unique_matricula(alumno_id,curso_id,periodo_academico_id))',
    'CREATE TABLE periodo_grado_cursos (id INT AUTO_INCREMENT PRIMARY KEY,periodo_academico_id INT,grado_id INT,curso_id INT)',
-   'CREATE TABLE profesor_curso (profesor_id INT,curso_id INT,origen VARCHAR(20))',
    'CREATE TABLE periodo_grado_curso_profesores (periodo_grado_curso_id INT,profesor_id INT)',
    'CREATE TABLE evaluaciones (id INT PRIMARY KEY,nota_maxima DECIMAL(4,2))',
    'CREATE TABLE calificaciones (id INT PRIMARY KEY,alumno_id INT,curso_id INT,periodo_academico_id INT,fecha_evaluacion DATE,nota DECIMAL(4,2),evaluacion_id INT)',
@@ -40,7 +39,6 @@ test('pagos HTTP y persistencia en MySQL aislado',async t=>{
    "INSERT INTO cursos VALUES(1,'Matemática','MAT',1),(2,'Historia','HIS',1),(3,'Ciencias','CIE',2)",
    "INSERT INTO matriculas(alumno_id,curso_id,grado_id,periodo_academico_id,estado,fecha_matricula) VALUES(1,1,1,1,'activa','2026-03-01'),(1,2,1,1,'activa','2026-03-01'),(1,3,2,2,'activa','2027-03-01')",
    "INSERT INTO periodo_grado_cursos(periodo_academico_id,grado_id,curso_id) VALUES(1,1,1),(1,1,2)"
-   ,"INSERT INTO profesor_curso VALUES(1,1,'manual')"
    ,"INSERT INTO periodo_grado_curso_profesores VALUES(1,1)"
   ]) await db.query(sql);
   await migratePayments(db);await migratePayments(db);

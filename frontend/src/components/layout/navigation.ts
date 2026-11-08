@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, ClipboardCheck,
   FileText, AlertTriangle, BarChart3, Calendar,
-  School, DollarSign, Layers
+  School, DollarSign, Layers, ShieldAlert
 } from 'lucide-react';
 
 import type { LucideIcon } from 'lucide-react';
@@ -35,6 +35,7 @@ const adminMenu: NavigationItem[] = [
   { to: '/asistencias', icon: ClipboardCheck, label: 'Asistencia' },
   { to: '/documentos', icon: FileText, label: 'Documentos' },
   { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
+  { to: '/incidencias', icon: ShieldAlert, label: 'Incidencias' },
   { to: '/reportes', icon: BarChart3, label: 'Reportes' },
   { to: '/admin/usuarios', icon: Users, label: 'Usuarios' },
   { to: '/admin/matriculas', icon: FileText, label: 'Matrículas' },
@@ -54,6 +55,7 @@ const profesorMenu: NavigationLink[] = [
   { to: '/calendario', icon: Calendar, label: 'Calendario' },
   { to: '/asistencias', icon: ClipboardCheck, label: 'Asistencia' },
   { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
+  { to: '/incidencias', icon: ShieldAlert, label: 'Incidencias' },
 ];
 
 const alumnoMenu: NavigationLink[] = [

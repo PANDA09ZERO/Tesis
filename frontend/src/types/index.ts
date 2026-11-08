@@ -305,7 +305,7 @@ export interface Alerta {
   alumno_id: number;
   tipo_riesgo: 'bajo' | 'medio' | 'alto';
   nivel_riesgo: number;
-  indicadores: string;
+  indicadores: string | { periodo_id?: number; ventana?: { desde: string; hasta: string }; items?: { tipo: string; riesgo: string; valor: number; detalle: string }[] } | null;
   descripcion?: string;
   recomendacion?: string;
   estado: string;
@@ -346,3 +346,33 @@ export interface DetallePeriodo {
   periodo: PeriodoAcademico;
   resumen: { grados: number; cursos: number; ofertas: number; profesores: number; alumnos_activos: number; inscripciones: number; horarios: number };
 }
+
+export type TipoIncidencia = 'derivacion_direccion' | 'conducta' | 'citacion_apoderado' | 'agresion' | 'otro';
+export type GravedadIncidencia = 'leve' | 'moderada' | 'grave';
+export type EstadoIncidencia = 'abierta' | 'en_seguimiento' | 'cerrada';
+export interface Incidencia {
+  id: number;
+  alumno_id: number;
+  fecha: string;
+  hora?: string | null;
+  tipo: TipoIncidencia;
+  gravedad: GravedadIncidencia;
+  lugar?: string | null;
+  descripcion: string;
+  medida_tomada?: string | null;
+  apoderado_notificado: number | boolean;
+  estado: EstadoIncidencia;
+  resolucion?: string | null;
+  cerrada_en?: string | null;
+  created_at: string;
+  periodo?: string | null;
+  reportado_por?: number;
+  alumno_nombre: string;
+  alumno_apellido: string;
+  codigo_alumno: string;
+  reportado_nombre?: string;
+  reportado_apellido?: string;
+  cerrada_nombre?: string | null;
+  cerrada_apellido?: string | null;
+}
+export interface IncidenciasEstadisticas { total: number; abiertas: number; derivaciones: number; graves_abiertas: number; ultimos_30_dias: number }

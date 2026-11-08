@@ -140,7 +140,7 @@ export async function getCursoById(req: AuthRequest, res: Response) {
 export async function deleteCurso(req:Request,res:Response){
  if(!positiveId(req.params.id))return sendError(res,'Curso inválido',400);let db:PoolConnection|undefined,committed=false;
  try{db=await pool.getConnection();await db.beginTransaction();const [rows]=await db.query<RowDataPacket[]>('SELECT id FROM cursos WHERE id=? FOR UPDATE',[req.params.id]);if(!rows.length)return sendError(res,'Curso no encontrado',404);
- const [refs]=await db.query<RowDataPacket[]>(`SELECT EXISTS(SELECT 1 FROM periodo_grado_cursos WHERE curso_id=?) OR EXISTS(SELECT 1 FROM matriculas WHERE curso_id=?) OR EXISTS(SELECT 1 FROM horarios WHERE curso_id=?) OR EXISTS(SELECT 1 FROM calificaciones WHERE curso_id=?) OR EXISTS(SELECT 1 FROM asistencias WHERE curso_id=?) OR EXISTS(SELECT 1 FROM profesor_curso WHERE curso_id=?) linked`,Array(6).fill(req.params.id));
+ const [refs]=await db.query<RowDataPacket[]>(`SELECT EXISTS(SELECT 1 FROM periodo_grado_cursos WHERE curso_id=?) OR EXISTS(SELECT 1 FROM matriculas WHERE curso_id=?) OR EXISTS(SELECT 1 FROM horarios WHERE curso_id=?) OR EXISTS(SELECT 1 FROM calificaciones WHERE curso_id=?) OR EXISTS(SELECT 1 FROM asistencias WHERE curso_id=?) linked`,Array(5).fill(req.params.id));
  if(refs[0].linked)return sendError(res,'El curso tiene ofertas, matrículas, horarios o historial. Conserva el catálogo y gestiona sus ofertas desde Estructura',409);
  await db.query('DELETE FROM cursos WHERE id=?',[req.params.id]);await db.commit();committed=true;return sendSuccess(res,null,'Curso eliminado');
  }catch(error){logError('Error al eliminar curso',error);return sendError(res,'No se pudo eliminar el curso');}finally{await finishTransaction(db,committed);}

@@ -7,6 +7,7 @@ import Badge from '../../components/ui/Badge';
 import { alumnosApi } from '../../api/endpoints';
 import DataTable from '../../components/ui/DataTable';
 import { useAuth } from '../../context/AuthContext';
+import IncidenciasAlumno from '../incidencias/IncidenciasAlumno';
 
 function AcademicAlumnoDetailPage() {
   const { id } = useParams();
@@ -142,6 +143,7 @@ function AcademicAlumnoDetailPage() {
         </section>
       </div>
 
+      <IncidenciasAlumno alumnoId={Number(id)} registrarHref={`/incidencias?registrar=${alumno.id}&nombre=${encodeURIComponent(`${alumno.nombre} ${alumno.apellido} · ${alumno.codigo_alumno}`)}`} />
     </div>
   );
 }

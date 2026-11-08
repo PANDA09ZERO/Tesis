@@ -4,7 +4,7 @@ const path=require('node:path');
 const {createHash}=require('node:crypto');
 const mysql=require('mysql2/promise');
 const {databaseSettings}=require('../dist/config/environment');
-const version='20261028_credentials';
+const version='20261108_incidencias';
 const schemaPath=path.resolve(__dirname,'../../database/schema.sql');
 const identifier=value=>{if(!/^[a-zA-Z0-9_]+$/.test(value||''))throw new Error('Identificador de base inválido');return '`'+value+'`';};
 async function schema(){const source=(await fs.readFile(schemaPath,'utf8')).replace(/\r\n/g,'\n');return {source,sql:source.replace(/^CREATE DATABASE[^;]+;\s*/,'').replace(/^USE[^;]+;\s*/,''),checksum:createHash('sha256').update(source).digest('hex')};}
