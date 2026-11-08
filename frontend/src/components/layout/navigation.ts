@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, ClipboardCheck,
   FileText, AlertTriangle, BarChart3, Calendar,
-  School, DollarSign, Layers, ShieldAlert
+  School, DollarSign, Layers, ShieldAlert, Bell
 } from 'lucide-react';
 
 import type { LucideIcon } from 'lucide-react';
@@ -37,6 +37,7 @@ const adminMenu: NavigationItem[] = [
   { to: '/alertas', icon: AlertTriangle, label: 'Alertas' },
   { to: '/incidencias', icon: ShieldAlert, label: 'Incidencias' },
   { to: '/reportes', icon: BarChart3, label: 'Reportes' },
+  { to: '/admin/notificaciones', icon: Bell, label: 'Notificaciones' },
   { to: '/admin/usuarios', icon: Users, label: 'Usuarios' },
   { to: '/admin/matriculas', icon: FileText, label: 'Matrículas' },
   { to: '/admin/pagos', icon: DollarSign, label: 'Pagos' },

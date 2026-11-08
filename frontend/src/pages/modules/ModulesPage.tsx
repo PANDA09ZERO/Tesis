@@ -23,6 +23,8 @@ const descriptions: Record<string, string> = {
   '/documentos': 'Archivos, expedientes y libretas de notas.',
   '/alertas': 'Consulta y seguimiento de alertas.',
   '/reportes': 'Consulta de reportes institucionales.',
+  '/admin/notificaciones': 'Envía avisos masivos por rol.',
+  '/incidencias': 'Registro y seguimiento de incidencias de conducta.',
   '/admin/usuarios': 'Cuentas y datos de acceso.',
   '/admin/matriculas': 'Inscripción de alumnos por periodo.',
   '/admin/pagos': 'Matrícula, mensualidades y sueldos.',

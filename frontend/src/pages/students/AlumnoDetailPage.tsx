@@ -79,7 +79,7 @@ function AcademicAlumnoDetailPage() {
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
               {alumno.email && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><Mail className="h-4 w-4 shrink-0" /> {alumno.email}</div>}
               {alumno.telefono && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><Phone className="h-4 w-4 shrink-0" /> {alumno.telefono}</div>}
-              {alumno.fecha_nacimiento && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><Calendar className="h-4 w-4 shrink-0" /> {alumno.fecha_nacimiento}</div>}
+              {alumno.fecha_nacimiento && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><Calendar className="h-4 w-4 shrink-0" /> {String(alumno.fecha_nacimiento).slice(0, 10)}</div>}
               {gradoContexto && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><BookOpen className="h-4 w-4 shrink-0" /> {gradoContexto}</div>}
             </div>
           </div>

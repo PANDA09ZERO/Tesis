@@ -1,0 +1,207 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:64px;top:96px;width:952px;}
+#root .chap{font-size:36px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:64px;height:5px;background:#8C2F2B;border-radius:3px;margin-top:16px;}
+#root .step{position:absolute;left:64px;top:208px;width:952px;}
+#root .step .n{font-size:32px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:62px;font-weight:700;line-height:1.12;color:#1A1F29;}
+#root .next{position:absolute;left:64px;top:1248.5px;width:952px;}
+#root .next .h{font-size:28px;font-weight:600;color:#5B6475;letter-spacing:.02em;text-transform:uppercase;}
+#root .next .i{margin-top:18px;display:flex;align-items:center;gap:20px;font-size:38px;font-weight:600;color:#1A1F29;}
+#root .next .i b{flex:none;display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:3px solid #C9CFDA;color:#5B6475;font-size:26px;font-weight:700;}
+#root .prog{position:absolute;left:64px;top:1812px;width:952px;height:10px;border-radius:5px;background:#E1E5EC;overflow:hidden;}
+#root .prog i{position:absolute;left:0;top:0;bottom:0;background:#23408E;border-radius:5px;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:17px;top:473px;width:1046px;height:700.5px;background:#fff;border:1px solid #E1E5EC;border-radius:16px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:46px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:9px;padding:0 18px;}
+#root .dot{width:12px;height:12px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:30px;padding:0 16px;border-radius:15px;background:#F4F6F9;line-height:30px;color:#5B6475;}
+#root .url span{display:inline-block;font-size:20px;}
+#root .screen{position:absolute;left:0;top:46px;width:1440px;height:900px;transform:scale(0.725);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:262.79999999999995px;top:488px;width:554.4000000000001px;height:1171.8400000000001px;background:#1A1F29;border-radius:56px;}
+#root .phone .screen{left:12px;top:12px;width:390px;height:844px;transform:scale(1.36);border-radius:34px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;object-fit:cover;}
+#root .cursor{position:absolute;left:0;top:0;width:44px;height:44px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;border:5px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1080px;height:1920px;}
+#root .card .kicker{position:absolute;left:80px;top:560px;font-size:38px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:80px;top:624px;width:920px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:80px;width:920px;font-size:46px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;line-height:1.15;}
+#root .card .idea b{flex:none;display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;border:4px solid #23408E;color:#23408E;font-size:34px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="pantalla" data-width="1080" data-height="1920" data-duration="42.36">
+<div class="bg"></div>
+<div id="pantalla-stage" class="stage">
+<div id="pantalla-panel" class="panel clip" data-start="0.6" data-duration="41.76"><div class="chap">Conocer la pantalla</div><div class="chap-rule"></div></div>
+<div id="pantalla-step1" class="step clip" data-start="0.75" data-duration="7.85"><div class="n">Paso 1 de 5</div><div class="t">Menú lateral</div></div>
+<div id="pantalla-prog1" class="prog clip" data-start="0.75" data-duration="7.85"><i id="pantalla-prog1-i" style="width:0%"></i></div>
+<div id="pantalla-next1" class="next clip" data-start="0.75" data-duration="7.85"><div class="h">A continuación</div><div class="i"><b>2</b><span>Cabecera y año escolar</span></div><div class="i"><b>3</b><span>En el celular: barra inferior</span></div><div class="i"><b>4</b><span>Listas: toca la tarjeta</span></div></div>
+<div id="pantalla-shot1" class="shot clip" data-start="0.6" data-duration="8.4">
+  <div id="pantalla-shot1-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot1-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="pantalla-shot1-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-dashboard-desktop.png" alt="">
+        <div id="pantalla-shot1-hl0" class="hl" style="left:-8px;top:-8px;width:304px;height:916px;border-width:5.52px;border-radius:13.24px"></div>
+        <div id="pantalla-shot1-hl1" class="hl" style="left:4px;top:148px;width:279px;height:60px;border-width:2.65px;border-radius:6.37px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot1-cur" class="cursor"><svg viewBox="0 0 24 24" width="44" height="44"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="pantalla-step2" class="step clip" data-start="8.25" data-duration="12.73"><div class="n">Paso 2 de 5</div><div class="t">Cabecera y año escolar</div></div>
+<div id="pantalla-prog2" class="prog clip" data-start="8.25" data-duration="12.73"><i id="pantalla-prog2-i" style="width:20%"></i></div>
+<div id="pantalla-next2" class="next clip" data-start="8.25" data-duration="12.73"><div class="h">A continuación</div><div class="i"><b>3</b><span>En el celular: barra inferior</span></div><div class="i"><b>4</b><span>Listas: toca la tarjeta</span></div><div class="i"><b>5</b><span>Mi perfil</span></div></div>
+<div id="pantalla-shot2" class="shot clip" data-start="8.25" data-duration="13.13">
+  <div id="pantalla-shot2-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot2-url" class="url" data-layout-ignore><span>/dashboard</span></div></div><div class="screen">
+      <div id="pantalla-shot2-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-dashboard-desktop.png" alt="">
+        <div id="pantalla-shot2-hl0" class="hl" style="left:1020px;top:2px;width:60px;height:60px;border-width:2.65px;border-radius:6.37px"></div>
+        <div id="pantalla-shot2-hl1" class="hl" style="left:1072px;top:2px;width:60px;height:60px;border-width:2.65px;border-radius:6.37px"></div>
+        <div id="pantalla-shot2-hl2" class="hl" style="left:1124px;top:2px;width:60px;height:60px;border-width:2.65px;border-radius:6.37px"></div>
+        <div id="pantalla-shot2-hl3" class="hl" style="left:1184px;top:2px;width:233px;height:60px;border-width:2.65px;border-radius:6.37px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot2-cur" class="cursor"><svg viewBox="0 0 24 24" width="44" height="44"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div id="pantalla-step3" class="step clip" data-start="20.63" data-duration="9.94"><div class="n">Paso 3 de 5</div><div class="t">En el celular: barra inferior</div></div>
+<div id="pantalla-prog3" class="prog clip" data-start="20.63" data-duration="9.94"><i id="pantalla-prog3-i" style="width:40%"></i></div>
+<div id="pantalla-shot3" class="shot clip" data-start="20.63" data-duration="6.04">
+  <div id="pantalla-shot3-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot3-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-inicio-mobile.png" alt="">
+        <div id="pantalla-shot3-hl0" class="hl" style="left:-6px;top:769px;width:402px;height:81px;border-width:3.68px;border-radius:8.82px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot3-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-shot4" class="shot clip" data-start="26.27" data-duration="4.7">
+  <div id="pantalla-shot4-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot4-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/profesor-modulos-mobile.png" alt="">
+      </div>
+    </div></div>
+    <div id="pantalla-shot4-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-step4" class="step clip" data-start="30.22" data-duration="7.28"><div class="n">Paso 4 de 5</div><div class="t">Listas: toca la tarjeta</div></div>
+<div id="pantalla-prog4" class="prog clip" data-start="30.22" data-duration="7.28"><i id="pantalla-prog4-i" style="width:60%"></i></div>
+<div id="pantalla-shot5" class="shot clip" data-start="30.22" data-duration="7.68">
+  <div id="pantalla-shot5-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="pantalla-shot5-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/admin-alumnos-mobile.png" alt="">
+        <div id="pantalla-shot5-hl0" class="hl" style="left:27px;top:547px;width:336px;height:32px;border-width:3.68px;border-radius:8.82px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot5-cur" class="touch"></div>
+  </div>
+</div>
+<div id="pantalla-step5" class="step clip" data-start="37.15" data-duration="5.21"><div class="n">Paso 5 de 5</div><div class="t">Mi perfil</div></div>
+<div id="pantalla-prog5" class="prog clip" data-start="37.15" data-duration="5.21"><i id="pantalla-prog5-i" style="width:80%"></i></div>
+<div id="pantalla-shot6" class="shot clip" data-start="37.15" data-duration="5.21">
+  <div id="pantalla-shot6-in" style="position:absolute;inset:0">
+    <div class="frame"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div id="pantalla-shot6-url" class="url" data-layout-ignore><span>/perfil</span></div></div><div class="screen">
+      <div id="pantalla-shot6-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/perfil-desktop.png" alt="">
+        <div id="pantalla-shot6-hl0" class="hl" style="left:333px;top:321px;width:693px;height:41px;border-width:5.47px;border-radius:13.14px"></div>
+        <div id="pantalla-shot6-hl1" class="hl" style="left:1072px;top:321px;width:323px;height:41px;border-width:2.65px;border-radius:6.37px"></div>
+      </div>
+    </div></div>
+    <div id="pantalla-shot6-cur" class="cursor"><svg viewBox="0 0 24 24" width="44" height="44"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.6 L12.2 14.2 L18.5 14.2 Z" fill="#1A1F29" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#pantalla-panel", {"opacity":0,"x":-12}, {"opacity":1,"x":0,"duration":0.5,"ease":"power2.out"}, 0.65);
+tl.fromTo("#pantalla-step1 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 0.8);
+tl.fromTo("#pantalla-step1 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 0.85);
+tl.fromTo("#pantalla-prog1-i", {"width":"0%"}, {"width":"20%","duration":0.6,"ease":"power2.out"}, 0.95);
+tl.fromTo("#pantalla-next1", {"opacity":0,"y":10}, {"opacity":1,"y":0,"duration":0.5,"ease":"power2.out"}, 1.15);
+tl.fromTo("#pantalla-shot1-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 0.6);
+tl.fromTo("#pantalla-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":1.25,"x":0,"y":-112.5,"duration":0.8,"ease":"power2.inOut"}, 1.97);
+tl.fromTo("#pantalla-shot1-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 2.67);
+tl.fromTo("#pantalla-shot1-cur", {"opacity":0,"x":832.32,"y":1042}, {"opacity":1,"duration":0.25}, 1.97);
+tl.fromTo("#pantalla-shot1-cur", {"x":832.32,"y":1042}, {"x":144.5,"y":844.25,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 1.97);
+tl.fromTo("#pantalla-shot1-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 3.96);
+tl.fromTo("#pantalla-shot1-cam", {"scale":1.25,"x":0,"y":-112.5}, {"scale":2.6,"x":0,"y":-12.8,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 3.96);
+tl.fromTo("#pantalla-shot1-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 4.66);
+tl.fromTo("#pantalla-shot1-cur", {"x":144.5,"y":844.25}, {"x":284.5,"y":844.25,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 3.96);
+tl.fromTo("#pantalla-shot1-cam", {"scale":2.6,"x":0,"y":-12.8}, {"scale":2.69,"x":-64.8,"y":-53.3,"duration":3.79,"ease":"none","immediateRender":false}, 4.81);
+tl.fromTo("#pantalla-shot1-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 8.6);
+tl.fromTo("#pantalla-step2 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 8.3);
+tl.fromTo("#pantalla-step2 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 8.35);
+tl.fromTo("#pantalla-prog2-i", {"width":"20%"}, {"width":"40%","duration":0.6,"ease":"power2.out"}, 8.45);
+tl.fromTo("#pantalla-next2", {"opacity":0,"y":10}, {"opacity":1,"y":0,"duration":0.5,"ease":"power2.out"}, 8.65);
+tl.fromTo("#pantalla-shot2-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 8.25);
+tl.fromTo("#pantalla-shot2-cam", {"scale":1,"x":0,"y":0}, {"scale":2.6,"x":-2010,"y":0,"duration":0.8,"ease":"power2.inOut"}, 9.09);
+tl.fromTo("#pantalla-shot2-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 9.79);
+tl.fromTo("#pantalla-shot2-cur", {"opacity":0,"x":832.32,"y":1042}, {"opacity":1,"duration":0.25}, 9.09);
+tl.fromTo("#pantalla-shot2-cur", {"x":832.32,"y":1042}, {"x":536,"y":578.32,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 9.09);
+tl.fromTo("#pantalla-shot2-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 10.4);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.6,"x":-2010,"y":0}, {"scale":2.6,"x":-2145.2,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 10.4);
+tl.fromTo("#pantalla-shot2-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 11.1);
+tl.fromTo("#pantalla-shot2-cur", {"x":536,"y":578.32}, {"x":536,"y":578.32,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 10.4);
+tl.fromTo("#pantalla-shot2-hl1", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 11.4);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.6,"x":-2145.2,"y":0}, {"scale":2.6,"x":-2280.4,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 11.4);
+tl.fromTo("#pantalla-shot2-hl2", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 12.1);
+tl.fromTo("#pantalla-shot2-cur", {"x":536,"y":578.32}, {"x":536,"y":578.32,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 11.4);
+tl.fromTo("#pantalla-shot2-hl2", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 12.4);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.6,"x":-2280.4,"y":0}, {"scale":2.6,"x":-2304,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.4);
+tl.fromTo("#pantalla-shot2-hl3", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 13.1);
+tl.fromTo("#pantalla-shot2-cur", {"x":536,"y":578.32}, {"x":795.04,"y":578.32,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.4);
+tl.fromTo("#pantalla-shot2-cam", {"scale":2.6,"x":-2304,"y":0}, {"scale":2.69,"x":-2368.8,"y":-40.5,"duration":7.73,"ease":"none","immediateRender":false}, 13.25);
+tl.fromTo("#pantalla-shot2-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 20.98);
+tl.fromTo("#pantalla-step3 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 20.68);
+tl.fromTo("#pantalla-step3 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 20.73);
+tl.fromTo("#pantalla-prog3-i", {"width":"40%"}, {"width":"60%","duration":0.6,"ease":"power2.out"}, 20.83);
+tl.fromTo("#pantalla-shot3-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 20.63);
+tl.fromTo("#pantalla-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 21.88);
+tl.fromTo("#pantalla-shot3-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 22.58);
+tl.fromTo("#pantalla-shot3-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 21.88);
+tl.fromTo("#pantalla-shot3-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":540,"y":1600.92,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 21.88);
+tl.fromTo("#pantalla-shot3-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 22.7);
+tl.fromTo("#pantalla-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":3.54,"ease":"none","immediateRender":false}, 22.73);
+tl.fromTo("#pantalla-shot3-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 26.27);
+tl.fromTo("#pantalla-shot4-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 26.27);
+tl.fromTo("#pantalla-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":4,"ease":"none"}, 26.57);
+tl.fromTo("#pantalla-shot4-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 30.57);
+tl.fromTo("#pantalla-step4 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 30.27);
+tl.fromTo("#pantalla-step4 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 30.32);
+tl.fromTo("#pantalla-prog4-i", {"width":"60%"}, {"width":"80%","duration":0.6,"ease":"power2.out"}, 30.42);
+tl.fromTo("#pantalla-shot5-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 30.22);
+tl.fromTo("#pantalla-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 32.21);
+tl.fromTo("#pantalla-shot5-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 32.91);
+tl.fromTo("#pantalla-shot5-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 32.21);
+tl.fromTo("#pantalla-shot5-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":540,"y":1265.68,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 32.21);
+tl.fromTo("#pantalla-shot5-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 33.03);
+tl.fromTo("#pantalla-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":4.44,"ease":"none","immediateRender":false}, 33.06);
+tl.fromTo("#pantalla-shot5-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 37.5);
+tl.fromTo("#pantalla-step5 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 37.2);
+tl.fromTo("#pantalla-step5 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 37.25);
+tl.fromTo("#pantalla-prog5-i", {"width":"80%"}, {"width":"100%","duration":0.6,"ease":"power2.out"}, 37.35);
+tl.fromTo("#pantalla-shot6-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 37.15);
+tl.fromTo("#pantalla-shot6-cam", {"scale":1,"x":0,"y":0}, {"scale":1.26,"x":-135.65,"y":0,"duration":0.8,"ease":"power2.inOut"}, 38.13);
+tl.fromTo("#pantalla-shot6-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 38.83);
+tl.fromTo("#pantalla-shot6-cur", {"opacity":0,"x":832.32,"y":1042}, {"opacity":1,"duration":0.25}, 38.13);
+tl.fromTo("#pantalla-shot6-cur", {"x":832.32,"y":1042}, {"x":536,"y":829.77,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 38.13);
+tl.fromTo("#pantalla-shot6-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 39.21);
+tl.fromTo("#pantalla-shot6-cam", {"scale":1.26,"x":-135.65,"y":0}, {"scale":2.6,"x":-2304,"y":-437.9,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 39.21);
+tl.fromTo("#pantalla-shot6-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 39.91);
+tl.fromTo("#pantalla-shot6-cur", {"x":536,"y":829.77}, {"x":668.75,"y":844.25,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 39.21);
+tl.fromTo("#pantalla-shot6-cam", {"scale":2.6,"x":-2304,"y":-437.9}, {"scale":2.69,"x":-2368.8,"y":-478.4,"duration":1.9,"ease":"none","immediateRender":false}, 40.06);
+tl.fromTo("#pantalla-shot6-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 41.96);
+tl.fromTo("#pantalla-stage", {"opacity":0}, {"opacity":1,"duration":0.45,"ease":"power1.out"}, 0);
+tl.fromTo("#pantalla-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in","immediateRender":false}, 41.91);
+window.__timelines = window.__timelines || {};
+window.__timelines["pantalla"] = tl;
+</script>
+</template>

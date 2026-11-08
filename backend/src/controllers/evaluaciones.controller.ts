@@ -12,7 +12,8 @@ export async function getEvaluacionesOferta(req: AuthRequest, res: Response) {
     const oferta = await getOfertaAccessible(Number(req.params.ofertaId), req.user!.userId, req.user!.rol);
     if (!oferta) return sendError(res, 'Oferta académica no encontrada', 404);
     const [evaluaciones] = await pool.query<RowDataPacket[]>(
-      `SELECT * FROM evaluaciones
+      // Fecha como texto AAAA-MM-DD: sin esto se enviaba como 2026-11-20T00:00:00.000Z
+      `SELECT *, DATE_FORMAT(fecha_evaluacion, '%Y-%m-%d') AS fecha_evaluacion FROM evaluaciones
        WHERE periodo_grado_curso_id = ?
        ORDER BY fecha_evaluacion DESC, id DESC`,
       [oferta.periodo_grado_curso_id]

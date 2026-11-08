@@ -9,7 +9,8 @@ import asyncio, json, os, subprocess, sys
 import edge_tts
 
 VOICE = "es-PE-CamilaNeural"
-RATE = "-6%"
+# Velocidad: la guía v3 (celular) va 18 % más rápida que la v2 (que usaba -6 %): 0,94 × 1,18 ≈ +11 %.
+RATE = os.environ.get("VOZ_RATE", "+11%")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VOZ = os.path.join(ROOT, "assets", "voz")
 

@@ -1,0 +1,174 @@
+<template>
+<style>
+@font-face{font-family:'Atkinson Hyperlegible Next';src:url('assets/fonts/AtkinsonHyperlegibleNext-latin.woff2') format('woff2');font-weight:200 800;font-style:normal;}
+#root{position:absolute;inset:0;font-family:'Atkinson Hyperlegible Next',sans-serif;color:#1A1F29;}
+#root .bg{position:absolute;inset:0;background:#F4F6F9;}
+#root .stage{position:absolute;inset:0;}
+#root .panel{position:absolute;left:64px;top:96px;width:952px;}
+#root .chap{font-size:36px;font-weight:700;color:#23408E;line-height:1.2;}
+#root .chap-rule{width:64px;height:5px;background:#8C2F2B;border-radius:3px;margin-top:16px;}
+#root .step{position:absolute;left:64px;top:208px;width:952px;}
+#root .step .n{font-size:32px;font-weight:600;color:#5B6475;}
+#root .step .t{margin-top:10px;font-size:62px;font-weight:700;line-height:1.12;color:#1A1F29;}
+#root .next{position:absolute;left:64px;top:1248.5px;width:952px;}
+#root .next .h{font-size:28px;font-weight:600;color:#5B6475;letter-spacing:.02em;text-transform:uppercase;}
+#root .next .i{margin-top:18px;display:flex;align-items:center;gap:20px;font-size:38px;font-weight:600;color:#1A1F29;}
+#root .next .i b{flex:none;display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:3px solid #C9CFDA;color:#5B6475;font-size:26px;font-weight:700;}
+#root .prog{position:absolute;left:64px;top:1812px;width:952px;height:10px;border-radius:5px;background:#E1E5EC;overflow:hidden;}
+#root .prog i{position:absolute;left:0;top:0;bottom:0;background:#23408E;border-radius:5px;}
+#root .shot{position:absolute;inset:0;}
+#root .frame{position:absolute;left:17px;top:473px;width:1046px;height:700.5px;background:#fff;border:1px solid #E1E5EC;border-radius:16px;overflow:hidden;}
+#root .bar{position:absolute;left:0;top:0;right:0;height:46px;background:#fff;border-bottom:1px solid #E1E5EC;display:flex;align-items:center;gap:9px;padding:0 18px;}
+#root .dot{width:12px;height:12px;border-radius:50%;background:#E1E5EC;}
+#root .url{margin-left:14px;height:30px;padding:0 16px;border-radius:15px;background:#F4F6F9;line-height:30px;color:#5B6475;}
+#root .url span{display:inline-block;font-size:20px;}
+#root .screen{position:absolute;left:0;top:46px;width:1440px;height:900px;transform:scale(0.725);transform-origin:0 0;overflow:hidden;}
+#root .phone{position:absolute;left:262.79999999999995px;top:488px;width:554.4000000000001px;height:1171.8400000000001px;background:#1A1F29;border-radius:56px;}
+#root .phone .screen{left:12px;top:12px;width:390px;height:844px;transform:scale(1.36);border-radius:34px;}
+#root .cam{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;}
+#root .cam img.shotimg{position:absolute;left:0;top:0;width:100%;height:100%;}
+#root .hl{position:absolute;border-style:solid;border-color:#8C2F2B;opacity:0;}
+#root .privacy{position:absolute;object-fit:cover;}
+#root .cursor{position:absolute;left:0;top:0;width:44px;height:44px;opacity:0;}
+#root .touch{position:absolute;left:0;top:0;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;border:5px solid #8C2F2B;background:rgba(140,47,43,.14);opacity:0;}
+#root .card{position:absolute;left:0;top:0;width:1080px;height:1920px;}
+#root .card .kicker{position:absolute;left:80px;top:560px;font-size:38px;font-weight:600;color:#8C2F2B;}
+#root .card h1{position:absolute;left:80px;top:624px;width:920px;font-size:96px;font-weight:700;color:#23408E;line-height:1.05;}
+#root .card .idea{position:absolute;left:80px;width:920px;font-size:46px;font-weight:600;color:#1A1F29;display:flex;align-items:center;gap:28px;line-height:1.15;}
+#root .card .idea b{flex:none;display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;border:4px solid #23408E;color:#23408E;font-size:34px;font-weight:700;}
+</style>
+<div id="root" data-composition-id="apoderado" data-width="1080" data-height="1920" data-duration="24.93">
+<div class="bg"></div>
+<div id="apoderado-stage" class="stage">
+<div id="apoderado-panel" class="panel clip" data-start="7.61" data-duration="17.32"><div class="chap">Apoderado</div><div class="chap-rule"></div></div>
+<div id="apoderado-card" class="card clip" data-start="0" data-duration="8.11">
+  <div id="apoderado-card-in" style="position:absolute;inset:0;transform-origin:64px 800px">
+  <div class="kicker">Apoderado</div>
+  <h1 id="apoderado-card-h">Si eres apoderado…</h1>
+  <div id="apoderado-idea0" class="idea" style="top:930px"><b>1</b><span>Eliges a tu hijo o hija</span></div>
+  <div id="apoderado-idea1" class="idea" style="top:1080px"><b>2</b><span>Revisas notas, asistencia y conducta</span></div>
+  <div id="apoderado-idea2" class="idea" style="top:1230px"><b>3</b><span>Solo consulta: no se edita nada</span></div>
+  </div>
+</div>
+<div id="apoderado-step1" class="step clip" data-start="7.76" data-duration="5.07"><div class="n">Paso 1 de 3</div><div class="t">Elige al estudiante</div></div>
+<div id="apoderado-prog1" class="prog clip" data-start="7.76" data-duration="5.07"><i id="apoderado-prog1-i" style="width:0%"></i></div>
+<div id="apoderado-shot1" class="shot clip" data-start="7.61" data-duration="5.62">
+  <div id="apoderado-shot1-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="apoderado-shot1-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/apoderado-estudiantes-mobile.png" alt="">
+        <div id="apoderado-shot1-hl0" class="hl" style="left:27px;top:270px;width:230px;height:40px;border-width:3.6px;border-radius:8.65px"></div>
+      </div>
+    </div></div>
+    <div id="apoderado-shot1-cur" class="touch"></div>
+  </div>
+</div>
+<div id="apoderado-step2" class="step clip" data-start="12.48" data-duration="7.06"><div class="n">Paso 2 de 3</div><div class="t">Notas, asistencia y conducta</div></div>
+<div id="apoderado-prog2" class="prog clip" data-start="12.48" data-duration="7.06"><i id="apoderado-prog2-i" style="width:33.33%"></i></div>
+<div id="apoderado-shot2" class="shot clip" data-start="12.48" data-duration="2.66">
+  <div id="apoderado-shot2-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="apoderado-shot2-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/apoderado-resumen-mobile.png" alt="">
+        <div id="apoderado-shot2-hl0" class="hl" style="left:10px;top:459px;width:370px;height:65px;border-width:3.68px;border-radius:8.82px"></div>
+      </div>
+    </div></div>
+    <div id="apoderado-shot2-cur" class="touch"></div>
+  </div>
+</div>
+<div id="apoderado-shot3" class="shot clip" data-start="14.74" data-duration="2.09">
+  <div id="apoderado-shot3-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="apoderado-shot3-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/apoderado-detalle-mobile.png" alt="">
+      </div>
+    </div></div>
+    <div id="apoderado-shot3-cur" class="touch"></div>
+  </div>
+</div>
+<div id="apoderado-shot4" class="shot clip" data-start="16.43" data-duration="3.51">
+  <div id="apoderado-shot4-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="apoderado-shot4-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/apoderado-conducta-mobile.png" alt="">
+        <div id="apoderado-shot4-hl0" class="hl" style="left:10px;top:527px;width:370px;height:353px;border-width:3.68px;border-radius:8.82px"></div>
+      </div>
+    </div></div>
+    <div id="apoderado-shot4-cur" class="touch"></div>
+  </div>
+</div>
+<div id="apoderado-step3" class="step clip" data-start="19.19" data-duration="5.74"><div class="n">Paso 3 de 3</div><div class="t">Cambia tu contraseña</div></div>
+<div id="apoderado-prog3" class="prog clip" data-start="19.19" data-duration="5.74"><i id="apoderado-prog3-i" style="width:66.67%"></i></div>
+<div id="apoderado-shot5" class="shot clip" data-start="19.19" data-duration="5.74">
+  <div id="apoderado-shot5-in" style="position:absolute;inset:0">
+    <div class="phone"><div class="screen">
+      <div id="apoderado-shot5-cam" class="cam"><img class="shotimg" src="assets/screenshots/v2/apoderado-seguridad-mobile.png" alt="">
+        <div id="apoderado-shot5-hl0" class="hl" style="left:191px;top:287px;width:184px;height:56px;border-width:2.92px;border-radius:7px"></div>
+        <div id="apoderado-shot5-hl1" class="hl" style="left:27px;top:373px;width:336px;height:37px;border-width:3.68px;border-radius:8.82px"></div>
+      </div>
+    </div></div>
+    <div id="apoderado-shot5-cur" class="touch"></div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#apoderado-panel", {"opacity":0,"x":-12}, {"opacity":1,"x":0,"duration":0.5,"ease":"power2.out"}, 7.66);
+tl.fromTo("#apoderado-card-in", {"scale":1}, {"scale":1.03,"duration":7.71,"ease":"none"}, 0);
+tl.fromTo("#apoderado-card .kicker", {"opacity":0}, {"opacity":1,"duration":0.5}, 0.15);
+tl.fromTo("#apoderado-card-h", {"opacity":0,"y":26}, {"opacity":1,"y":0,"duration":0.7,"ease":"power3.out"}, 0.25);
+tl.fromTo("#apoderado-idea0", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 1.4);
+tl.fromTo("#apoderado-idea1", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 2.7);
+tl.fromTo("#apoderado-idea2", {"opacity":0,"x":-20}, {"opacity":1,"x":0,"duration":0.55,"ease":"power3.out"}, 4.01);
+tl.fromTo("#apoderado-card-in", {"opacity":1}, {"opacity":0,"duration":0.4,"immediateRender":false}, 7.71);
+tl.fromTo("#apoderado-step1 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 7.81);
+tl.fromTo("#apoderado-step1 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 7.86);
+tl.fromTo("#apoderado-prog1-i", {"width":"0%"}, {"width":"33.33%","duration":0.6,"ease":"power2.out"}, 7.96);
+tl.fromTo("#apoderado-shot1-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 7.61);
+tl.fromTo("#apoderado-shot1-cam", {"scale":1,"x":0,"y":0}, {"scale":1.02,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 8.09);
+tl.fromTo("#apoderado-shot1-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 8.79);
+tl.fromTo("#apoderado-shot1-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 8.09);
+tl.fromTo("#apoderado-shot1-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":471,"y":900.7,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 8.09);
+tl.fromTo("#apoderado-shot1-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 8.91);
+tl.fromTo("#apoderado-shot1-cam", {"scale":1.02,"x":0,"y":0}, {"scale":1.06,"x":-7.8,"y":-16.88,"duration":3.89,"ease":"none","immediateRender":false}, 8.94);
+tl.fromTo("#apoderado-shot1-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 12.83);
+tl.fromTo("#apoderado-step2 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 12.53);
+tl.fromTo("#apoderado-step2 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 12.58);
+tl.fromTo("#apoderado-prog2-i", {"width":"33.33%"}, {"width":"66.67%","duration":0.6,"ease":"power2.out"}, 12.68);
+tl.fromTo("#apoderado-shot2-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 12.48);
+tl.fromTo("#apoderado-shot2-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 12.93);
+tl.fromTo("#apoderado-shot2-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 13.63);
+tl.fromTo("#apoderado-shot2-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 12.93);
+tl.fromTo("#apoderado-shot2-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":540,"y":1168.44,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 12.93);
+tl.fromTo("#apoderado-shot2-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 13.75);
+tl.fromTo("#apoderado-shot2-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 14.74);
+tl.fromTo("#apoderado-shot3-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 14.74);
+tl.fromTo("#apoderado-shot3-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":1.39,"ease":"none"}, 15.04);
+tl.fromTo("#apoderado-shot3-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 16.43);
+tl.fromTo("#apoderado-shot4-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 16.43);
+tl.fromTo("#apoderado-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut"}, 16.83);
+tl.fromTo("#apoderado-shot4-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 17.53);
+tl.fromTo("#apoderado-shot4-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 16.83);
+tl.fromTo("#apoderado-shot4-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":540,"y":1456.76,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 16.83);
+tl.fromTo("#apoderado-shot4-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 17.65);
+tl.fromTo("#apoderado-shot4-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":1.86,"ease":"none","immediateRender":false}, 17.68);
+tl.fromTo("#apoderado-shot4-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 19.54);
+tl.fromTo("#apoderado-step3 .n", {"opacity":0}, {"opacity":1,"duration":0.4}, 19.24);
+tl.fromTo("#apoderado-step3 .t", {"opacity":0,"y":14}, {"opacity":1,"y":0,"duration":0.5,"ease":"power3.out"}, 19.29);
+tl.fromTo("#apoderado-prog3-i", {"width":"66.67%"}, {"width":"100%","duration":0.6,"ease":"power2.out"}, 19.39);
+tl.fromTo("#apoderado-shot5-in", {"opacity":0}, {"opacity":1,"duration":0.4,"ease":"power1.out"}, 19.19);
+tl.fromTo("#apoderado-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1.26,"x":-101.16,"y":0,"duration":0.8,"ease":"power2.inOut"}, 20.22);
+tl.fromTo("#apoderado-shot5-hl0", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 20.92);
+tl.fromTo("#apoderado-shot5-cur", {"opacity":0,"x":646.0799999999999,"y":1211.6608}, {"opacity":1,"duration":0.25}, 20.22);
+tl.fromTo("#apoderado-shot5-cur", {"x":646.0799999999999,"y":1211.6608}, {"x":621.94,"y":1039.52,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 20.22);
+tl.fromTo("#apoderado-shot5-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 21.04);
+tl.fromTo("#apoderado-shot5-hl0", {"opacity":1}, {"opacity":0,"duration":0.25,"immediateRender":false}, 21.75);
+tl.fromTo("#apoderado-shot5-cam", {"scale":1.26,"x":-101.16,"y":0}, {"scale":1,"x":0,"y":0,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 21.75);
+tl.fromTo("#apoderado-shot5-hl1", {"opacity":0,"scale":1.08}, {"opacity":1,"scale":1,"duration":0.3,"ease":"power2.out"}, 22.45);
+tl.fromTo("#apoderado-shot5-cur", {"x":621.94,"y":1039.52}, {"x":540,"y":1032.44,"duration":0.8,"ease":"power2.inOut","immediateRender":false}, 21.75);
+tl.fromTo("#apoderado-shot5-cur", {"scale":1}, {"scale":0.8,"duration":0.15,"yoyo":true,"repeat":1,"ease":"power1.inOut","immediateRender":false}, 22.57);
+tl.fromTo("#apoderado-shot5-cam", {"scale":1,"x":0,"y":0}, {"scale":1.03,"x":-5.85,"y":-12.66,"duration":1.93,"ease":"none","immediateRender":false}, 22.6);
+tl.fromTo("#apoderado-shot5-in", {"opacity":1}, {"opacity":0,"duration":0.4,"ease":"power1.in","immediateRender":false}, 24.53);
+tl.fromTo("#apoderado-stage", {"opacity":0}, {"opacity":1,"duration":0.45,"ease":"power1.out"}, 0);
+tl.fromTo("#apoderado-stage", {"opacity":1}, {"opacity":0,"duration":0.45,"ease":"power1.in","immediateRender":false}, 24.48);
+window.__timelines = window.__timelines || {};
+window.__timelines["apoderado"] = tl;
+</script>
+</template>

@@ -1,0 +1,1488 @@
+[
+ {
+  "name": "login-desktop",
+  "path": "/login",
+  "boxes": {
+   "email": "input[type=email]",
+   "password": "input[autocomplete=current-password]",
+   "eye": "button[aria-label='Mostrar contraseña']",
+   "submit": "button[type=submit]",
+   "form": "form"
+  }
+ },
+ {
+  "name": "login-mobile",
+  "path": "/login",
+  "vp": "mobile"
+ },
+ {
+  "name": "admin-dashboard-desktop",
+  "role": "administrador",
+  "path": "/dashboard",
+  "boxes": {
+   "sidebar": "aside",
+   "active": "nav [aria-current=page]",
+   "theme": "button[aria-label*='tema' i], button[title*='tema' i]",
+   "perfil": "header button[aria-label*='perfil' i], header a[aria-label*='perfil' i]",
+   "calendario": "header button[aria-label*='alendario' i], header a[aria-label*='alendario' i]",
+   "periodo": "button[title^='Cambiar periodo']",
+   "logout": "text=Cerrar Sesión",
+   "alertasCard": "text=Alertas por Nivel de Riesgo >> visible=true",
+   "rendimiento": "text=Rendimiento por Grado >> visible=true",
+   "actividad": "text=Actividad reciente >> visible=true"
+  }
+ },
+ {
+  "name": "admin-usuarios-desktop",
+  "role": "administrador",
+  "path": "/admin/usuarios",
+  "boxes": {
+   "nuevo": "text=Nuevo Usuario",
+   "menu": "nav [aria-current=page]"
+  }
+ },
+ {
+  "name": "admin-estructura-desktop",
+  "role": "administrador",
+  "path": "/admin/configuracion-academica",
+  "boxes": {
+   "grado": "text=1er Grado",
+   "docente": "text=Valeria Ríos Campos",
+   "grupo": "text=Académico",
+   "clonar": "button:has-text('Clonar de otro periodo')",
+   "cursos": "text=Cursos asignados >> nth=0"
+  }
+ },
+ {
+  "name": "admin-horarios-desktop",
+  "role": "administrador",
+  "path": "/horarios"
+ },
+ {
+  "name": "admin-matriculas-desktop",
+  "role": "administrador",
+  "path": "/admin/matriculas",
+  "boxes": {
+   "menu": "nav >> text=Matrículas",
+   "nueva": "text=Nueva Matrícula"
+  }
+ },
+ {
+  "name": "admin-pagos-desktop",
+  "role": "administrador",
+  "path": "/admin/pagos",
+  "boxes": {
+   "menu": "nav >> text=Pagos",
+   "tabs": "button:has-text('Mensualidades')",
+   "tab1": "button:has-text('Matrículas') >> nth=-1",
+   "tab3": "button:has-text('Pagos de profesores')",
+   "nuevo": "button:has-text('Nuevo concepto')"
+  }
+ },
+ {
+  "name": "admin-documentos-desktop",
+  "role": "administrador",
+  "path": "/documentos",
+  "boxes": {
+   "menu": "nav >> text=Documentos"
+  }
+ },
+ {
+  "name": "admin-reportes-desktop",
+  "role": "administrador",
+  "path": "/reportes",
+  "boxes": {
+   "menu": "nav >> text=Reportes",
+   "alertas": "nav >> text=Alertas"
+  }
+ },
+ {
+  "name": "admin-alumnos-mobile",
+  "role": "administrador",
+  "path": "/alumnos",
+  "vp": "mobile",
+  "boxes": {
+   "hint": ".mobile-bento-hint >> nth=0",
+   "card": "text=Toca para ver detalles >> nth=0"
+  }
+ },
+ {
+  "name": "perfil-desktop",
+  "role": "administrador",
+  "path": "/perfil",
+  "boxes": {
+   "clave": "text=Cambiar contraseña >> nth=0",
+   "datos": "text=Datos personales"
+  }
+ },
+ {
+  "name": "profesor-inicio-mobile",
+  "role": "profesor",
+  "path": "/dashboard",
+  "vp": "mobile",
+  "boxes": {
+   "nav": "nav[aria-label='Navegación inferior']",
+   "modulos": "nav[aria-label='Navegación inferior'] button:has-text('Módulos')",
+   "notas": "nav[aria-label='Navegación inferior'] button:has-text('Notas')"
+  }
+ },
+ {
+  "name": "profesor-modulos-mobile",
+  "role": "profesor",
+  "path": "/modulos",
+  "vp": "mobile",
+  "boxes": {
+   "modulos": "h1:has-text('Módulos')",
+   "nav": "nav[aria-label='Navegación inferior']"
+  }
+ },
+ {
+  "name": "profesor-alertas-desktop",
+  "role": "profesor",
+  "path": "/alertas",
+  "mock": [
+   {
+    "url": "/api/alertas/criterios",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "ventanaDias": 30,
+      "notaAprobatoria": 11,
+      "faltas": {
+       "medio": 3,
+       "alto": 5
+      },
+      "tardanzas": {
+       "bajo": 3,
+       "medio": 5
+      },
+      "cursosDesaprobados": {
+       "medio": 1,
+       "alto": 2
+      },
+      "incidencias": {
+       "bajo": 1,
+       "medio": 2
+      },
+      "diasRespetoResuelta": 14
+     }
+    }
+   },
+   {
+    "url": "/api/alertas/estadisticas",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "total": 3,
+      "activas": 2,
+      "alto_riesgo": 1,
+      "medio_riesgo": 1,
+      "bajo_riesgo": 0
+     }
+    }
+   },
+   {
+    "url": "/api/alertas",
+    "method": "GET",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 901,
+       "alumno_id": 1,
+       "tipo_riesgo": "alto",
+       "nivel_riesgo": 95,
+       "estado": "activa",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Mateo",
+       "alumno_apellido": "Quispe Rojas",
+       "codigo_alumno": "ALU-2026-014",
+       "grado": "3er Grado",
+       "created_at": "2026-11-08T15:10:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "faltas",
+          "riesgo": "alto",
+          "valor": 5,
+          "detalle": ""
+         },
+         {
+          "tipo": "notas",
+          "riesgo": "medio",
+          "valor": 1,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "5 días con faltas sin justificar en los últimos 30 días. Promedio desaprobatorio en Matemáticas (9.5).",
+       "recomendacion": "Citar al apoderado a una reunión; verificar con el apoderado el motivo de las faltas o tardanzas; coordinar reforzamiento con los docentes de los cursos desaprobados."
+      },
+      {
+       "id": 902,
+       "alumno_id": 2,
+       "tipo_riesgo": "medio",
+       "nivel_riesgo": 50,
+       "estado": "activa",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "grado": "2do Grado",
+       "created_at": "2026-11-08T15:10:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "tardanzas",
+          "riesgo": "bajo",
+          "valor": 3,
+          "detalle": ""
+         },
+         {
+          "tipo": "conducta",
+          "riesgo": "medio",
+          "valor": 2,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "3 días con tardanza en los últimos 30 días. 2 incidencias de conducta en los últimos 30 días.",
+       "recomendacion": "Verificar con el apoderado el motivo de las faltas o tardanzas; revisar las incidencias registradas con tutoría."
+      },
+      {
+       "id": 903,
+       "alumno_id": 3,
+       "tipo_riesgo": "bajo",
+       "nivel_riesgo": 15,
+       "estado": "atendida",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Diego",
+       "alumno_apellido": "Huamán Paredes",
+       "codigo_alumno": "ALU-2026-021",
+       "grado": "1er Grado",
+       "created_at": "2026-11-07T09:00:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "tardanzas",
+          "riesgo": "bajo",
+          "valor": 3,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "3 días con tardanza en los últimos 30 días.",
+       "recomendacion": "Verificar con el apoderado el motivo de las faltas o tardanzas."
+      }
+     ],
+     "total": 3,
+     "page": 1,
+     "totalPages": 1
+    }
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Alertas",
+   "chips": "main ul >> nth=0",
+   "atender": "button:has-text('Atender') >> nth=0"
+  }
+ },
+ {
+  "name": "alumno-panel-mobile",
+  "role": "alumno",
+  "path": "/dashboard",
+  "vp": "mobile",
+  "boxes": {
+   "nav": "nav[aria-label='Navegación inferior']",
+   "notas": "nav[aria-label='Navegación inferior'] button:has-text('Notas')",
+   "horarios": "nav[aria-label='Navegación inferior'] button:has-text('Horarios')"
+  }
+ },
+ {
+  "name": "alumno-notas-mobile",
+  "role": "alumno",
+  "path": "/estudiante/calificaciones",
+  "vp": "mobile",
+  "boxes": {
+   "titulo": "text=Mis calificaciones >> nth=-1"
+  }
+ },
+ {
+  "name": "alumno-pagos-desktop",
+  "role": "alumno",
+  "path": "/estudiante/pagos",
+  "boxes": {
+   "menu": "nav >> text=Mis pagos",
+   "calendario": "nav >> text=Calendario",
+   "alertas": "nav >> text=Mis alertas",
+   "notif": "nav >> text=Mis notificaciones"
+  }
+ },
+ {
+  "name": "apoderado-estudiantes-mobile",
+  "role": "apoderado",
+  "path": "/familia/alumnos",
+  "vp": "mobile",
+  "boxes": {
+   "card": "text=Andrés Ibarra Montes >> nth=0",
+   "links": "nav[aria-label^='Consultar a']"
+  }
+ },
+ {
+  "name": "login-lleno-desktop",
+  "path": "/login",
+  "steps": [
+   {
+    "fill": "input[type=email]",
+    "value": "lucia.torres@cienciaseingenieria.edu"
+   },
+   {
+    "fill": "input[autocomplete=current-password]",
+    "value": "Ejemplo-2026"
+   }
+  ],
+  "boxes": {
+   "email": "input[type=email]",
+   "password": "input[autocomplete=current-password]",
+   "eye": "button[aria-label='Mostrar contraseña']",
+   "submit": "button[type=submit]"
+  }
+ },
+ {
+  "name": "login-mostrar-desktop",
+  "path": "/login",
+  "steps": [
+   {
+    "fill": "input[type=email]",
+    "value": "lucia.torres@cienciaseingenieria.edu"
+   },
+   {
+    "fill": "input[autocomplete=current-password]",
+    "value": "Ejemplo-2026"
+   },
+   {
+    "click": "button[aria-label='Mostrar contraseña']"
+   }
+  ],
+  "boxes": {
+   "password": "input[autocomplete=current-password]",
+   "eye": "button[aria-label='Ocultar contraseña']"
+  }
+ },
+ {
+  "name": "login-error-desktop",
+  "path": "/login",
+  "steps": [
+   {
+    "fill": "input[type=email]",
+    "value": "lucia.torres@cienciaseingenieria.edu"
+   },
+   {
+    "fill": "input[autocomplete=current-password]",
+    "value": "Ejemplo-2026"
+   },
+   {
+    "click": "button[type=submit]",
+    "wait": 1200
+   }
+  ],
+  "boxes": {
+   "toast": "[role=status]",
+   "email": "input[type=email]"
+  }
+ },
+ {
+  "name": "cambio-clave-desktop",
+  "role": "alumno",
+  "path": "/dashboard",
+  "mock": [
+   {
+    "url": "/api/auth/profile",
+    "patchProfile": {
+     "debe_cambiar_password": true
+    }
+   }
+  ],
+  "boxes": {
+   "hint": "text=Usa al menos 12 caracteres",
+   "form": "form"
+  }
+ },
+ {
+  "name": "admin-usuario-nuevo-desktop",
+  "role": "administrador",
+  "path": "/admin/usuarios",
+  "steps": [
+   {
+    "click": "text=Nuevo Usuario"
+   },
+   {
+    "fill": "[role=dialog] input[type=text] >> nth=0",
+    "value": "Lucía"
+   },
+   {
+    "fill": "[role=dialog] input[type=text] >> nth=1",
+    "value": "Torres"
+   },
+   {
+    "select": "[role=dialog] select >> nth=1",
+    "value": "3"
+   }
+  ],
+  "boxes": {
+   "aviso": "text=se generarán al crear la cuenta",
+   "crear": "[role=dialog] button[type=submit]",
+   "rol": "[role=dialog] select >> nth=1"
+  }
+ },
+ {
+  "name": "admin-credenciales-desktop",
+  "role": "administrador",
+  "path": "/admin/usuarios",
+  "mock": [
+   {
+    "url": "/api/users",
+    "method": "POST",
+    "status": 201,
+    "body": {
+     "success": true,
+     "data": {
+      "id": 999,
+      "credentials": {
+       "email": "lucia.torres@cienciaseingenieria.edu",
+       "temporaryPassword": "Tmp-Xq7rW2pK9vLm",
+       "mustChangePassword": true,
+       "mailboxCreated": false
+      }
+     }
+    }
+   }
+  ],
+  "steps": [
+   {
+    "click": "text=Nuevo Usuario"
+   },
+   {
+    "fill": "[role=dialog] input[type=text] >> nth=0",
+    "value": "Lucía"
+   },
+   {
+    "fill": "[role=dialog] input[type=text] >> nth=1",
+    "value": "Torres"
+   },
+   {
+    "select": "[role=dialog] select >> nth=1",
+    "value": "3"
+   },
+   {
+    "click": "[role=dialog] button[type=submit]",
+    "wait": 1200
+   }
+  ],
+  "boxes": {
+   "usuario": "text=lucia.torres@cienciaseingenieria.edu",
+   "clave": "text=Tmp-Xq7rW2pK9vLm",
+   "dialog": "[role=dialog]"
+  }
+ },
+ {
+  "name": "admin-apoderado-detalle-desktop",
+  "role": "administrador",
+  "path": "/admin/apoderados",
+  "steps": [
+   {
+    "click": "text=Toca para ver detalles",
+    "wait": 900
+   }
+  ],
+  "boxes": {
+   "acargo": "text=Alumnos a cargo >> nth=0",
+   "btnAlumnos": "button[aria-label^='Vincular alumnos']",
+   "grupo": "nav >> text=Institución",
+   "apoderados": "nav >> text=Apoderados"
+  }
+ },
+ {
+  "name": "admin-calendario-desktop",
+  "role": "administrador",
+  "path": "/calendario",
+  "boxes": {
+   "menu": "nav >> text=Calendario",
+   "nuevo": "text=Nuevo evento"
+  }
+ },
+ {
+  "name": "profesor-dashboard-desktop",
+  "role": "profesor",
+  "path": "/dashboard",
+  "boxes": {
+   "cursos": "nav >> text=Mis Cursos",
+   "alumnos": "nav >> text=Mis Alumnos",
+   "horarios": "nav >> text=Mis horarios",
+   "cursosCard": "text=Mis cursos y grupos",
+   "evals": "text=Próximas evaluaciones",
+   "avisos": "text=Mis avisos personales"
+  }
+ },
+ {
+  "name": "profesor-notas-desktop",
+  "role": "profesor",
+  "path": "/calificaciones/oferta/{oferta}",
+  "steps": [
+   {
+    "eval": "(()=>{const s=[...document.querySelectorAll('select')].find(x=>[...x.options].some(o=>o.text.includes('Examen parcial')));if(!s)return;const o=[...s.options].find(o=>o.text.includes('Examen parcial'));Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(s,o.value);s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   }
+  ],
+  "boxes": {
+   "nueva": "button:has-text('evaluaci')",
+   "guardar": "button:has-text('Guardar') >> nth=0",
+   "promedio": "text=Promedio en la misma escala >> nth=0"
+  }
+ },
+ {
+  "name": "profesor-asistencia-desktop",
+  "role": "profesor",
+  "path": "/asistencias/oferta/{oferta}",
+  "steps": [
+   {
+    "select": "select[aria-label^='Asistencia de'] >> nth=0",
+    "label": "Presente"
+   },
+   {
+    "select": "select[aria-label^='Asistencia de'] >> nth=1",
+    "label": "Tardanza"
+   },
+   {
+    "select": "select[aria-label^='Asistencia de'] >> nth=2",
+    "label": "Ausente"
+   },
+   {
+    "select": "select[aria-label^='Asistencia de'] >> nth=3",
+    "label": "Justificado"
+   },
+   {
+    "select": "select[aria-label^='Asistencia de'] >> nth=4",
+    "label": "Presente"
+   }
+  ],
+  "boxes": {
+   "fecha": "input[type=date]",
+   "estado": "select[aria-label^='Asistencia de'] >> nth=1",
+   "estados": "select[aria-label^='Asistencia de'] >> nth=0",
+   "col": "th:has-text('Estado')",
+   "todos": "button:has-text('Todos presentes')",
+   "guardar": "button:has-text('Guardar') >> nth=0"
+  }
+ },
+ {
+  "name": "profesor-historico-desktop",
+  "role": "profesor",
+  "path": "/calificaciones",
+  "ls": {
+   "periodo_global_id": "1"
+  },
+  "boxes": {
+   "periodo": "button[title^='Cambiar periodo']",
+   "badge": "text=Solo consulta >> nth=0"
+  }
+ },
+ {
+  "name": "profesor-apoderados-desktop",
+  "role": "profesor",
+  "path": "/profesor/apoderados",
+  "boxes": {
+   "menu": "nav >> text=Apoderados"
+  }
+ },
+ {
+  "name": "profesor-notificaciones-desktop",
+  "role": "profesor",
+  "path": "/profesor/notificaciones",
+  "boxes": {
+   "menu": "nav >> text=Mis notificaciones"
+  }
+ },
+ {
+  "name": "profesor-notas-mobile",
+  "role": "profesor",
+  "path": "/calificaciones/oferta/{oferta}",
+  "vp": "mobile",
+  "steps": [
+   {
+    "scroll": 450
+   },
+   {
+    "eval": "(()=>{const s=[...document.querySelectorAll('select')].find(x=>[...x.options].some(o=>o.text.includes('Examen parcial')));if(!s)return;const o=[...s.options].find(o=>o.text.includes('Examen parcial'));Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(s,o.value);s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "apoderado-detalle-mobile",
+  "role": "apoderado",
+  "path": "/familia/alumnos",
+  "vp": "mobile",
+  "steps": [
+   {
+    "click": "a:has-text('Calificaciones')",
+    "wait": 1500
+   }
+  ],
+  "boxes": {
+   "tabs": "nav[aria-label='Secciones del estudiante']"
+  }
+ },
+ {
+  "name": "apoderado-seguridad-mobile",
+  "role": "apoderado",
+  "path": "/familia/perfil",
+  "vp": "mobile",
+  "steps": [
+   {
+    "click": "text=Seguridad"
+   }
+  ],
+  "boxes": {
+   "tab": "button:has-text('Seguridad')",
+   "card": "text=Cambiar contraseña >> nth=0"
+  }
+ },
+ {
+  "name": "profesor-evaluacion-nueva-desktop",
+  "role": "profesor",
+  "path": "/calificaciones/oferta/{oferta}",
+  "steps": [
+   {
+    "click": "button:has-text('Nueva evaluación')"
+   },
+   {
+    "fill": "[role=dialog] input >> nth=0",
+    "value": "Práctica 1"
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]",
+   "nombre": "[role=dialog] input >> nth=0",
+   "crear": "text=Crear evaluación"
+  }
+ },
+ {
+  "name": "apoderado-resumen-mobile",
+  "role": "apoderado",
+  "path": "/familia/alumnos",
+  "vp": "mobile",
+  "steps": [
+   {
+    "click": "a:has-text('Resumen')",
+    "wait": 1500
+   }
+  ],
+  "boxes": {
+   "tabs": "nav[aria-label='Secciones del estudiante']"
+  }
+ },
+ {
+  "name": "login-instalar-mobile",
+  "path": "/login",
+  "vp": "mobile",
+  "login": false,
+  "steps": [
+   {
+    "eval": "(()=>{const e=new Event('beforeinstallprompt');e.prompt=()=>Promise.resolve();e.userChoice=Promise.resolve({outcome:'dismissed'});window.dispatchEvent(e);})()",
+    "wait": 800
+   }
+  ],
+  "boxes": {
+   "instalar": "button:has-text('Instalar app')",
+   "form": "form"
+  }
+ },
+ {
+  "name": "admin-periodos-desktop",
+  "role": "administrador",
+  "path": "/periodos",
+  "steps": [
+   {
+    "click": "button:has-text('Nuevo Periodo')"
+   },
+   {
+    "fill": "[role=dialog] input >> nth=0",
+    "value": "2027-I"
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Periodos",
+   "grupo": "nav >> text=Académico",
+   "dialog": "[role=dialog]",
+   "activo": "[role=dialog] >> text=Periodo activo"
+  }
+ },
+ {
+  "name": "admin-estructura-clonar-desktop",
+  "role": "administrador",
+  "path": "/admin/configuracion-academica",
+  "steps": [
+   {
+    "click": "button:has-text('Clonar de otro periodo')"
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]"
+  }
+ },
+ {
+  "name": "admin-cursos-desktop",
+  "role": "administrador",
+  "path": "/cursos",
+  "boxes": {
+   "menu": "nav >> text=Cursos",
+   "tab": "button:has-text('Catálogo de cursos')",
+   "nuevo": "button:has-text('Nuevo Curso')",
+   "gestionar": "text=Gestionar estructura >> nth=0"
+  },
+  "steps": [
+   {
+    "click": "button:has-text('Catálogo de cursos')"
+   }
+  ]
+ },
+ {
+  "name": "admin-horario-nuevo-desktop",
+  "role": "administrador",
+  "path": "/horarios",
+  "steps": [
+   {
+    "click": "button:has-text('Nuevo horario')"
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Horarios",
+   "dialog": "[role=dialog]",
+   "oferta": "[role=dialog] select >> nth=0"
+  }
+ },
+ {
+  "name": "admin-alumnos-desktop",
+  "role": "administrador",
+  "path": "/alumnos",
+  "boxes": {
+   "menu": "nav >> text=Alumnos",
+   "grupo": "nav >> text=Institución",
+   "buscar": "input[placeholder='Buscar alumno...']"
+  }
+ },
+ {
+  "name": "admin-alumno-ficha-desktop",
+  "role": "administrador",
+  "path": "/alumnos",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('token');const r=await fetch('/api/alumnos?limit=1',{headers:{Authorization:'Bearer '+t}});const j=await r.json();if(j.data&&j.data[0])location.href='/alumnos/'+j.data[0].id;})()",
+    "wait": 2500
+   },
+   {
+    "scroll": 600,
+    "wait": 800
+   }
+  ],
+  "boxes": {
+   "incidencias": "text=Incidencias de conducta",
+   "matricula": "text=Matrículas y cursos"
+  }
+ },
+ {
+  "name": "admin-profesores-desktop",
+  "role": "administrador",
+  "path": "/profesores",
+  "boxes": {
+   "menu": "nav >> text=Profesores"
+  }
+ },
+ {
+  "name": "admin-matricula-nueva-desktop",
+  "role": "administrador",
+  "path": "/admin/matriculas",
+  "steps": [
+   {
+    "click": "button:has-text('Nueva Matrícula')"
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Matrículas",
+   "dialog": "[role=dialog]",
+   "auto": "[role=dialog] >> text=Inscribir automáticamente los cursos del grado"
+  }
+ },
+ {
+  "name": "admin-pago-nuevo-desktop",
+  "role": "administrador",
+  "path": "/admin/pagos",
+  "steps": [
+   {
+    "click": "button:has-text('Mensualidades')"
+   },
+   {
+    "click": "button:has-text('Nuevo concepto')"
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]"
+  }
+ },
+ {
+  "name": "admin-calificaciones-desktop",
+  "role": "administrador",
+  "path": "/calificaciones",
+  "boxes": {
+   "menu": "nav >> text=Calificaciones"
+  }
+ },
+ {
+  "name": "admin-asistencia-desktop",
+  "role": "administrador",
+  "path": "/asistencias",
+  "boxes": {
+   "menu": "nav >> text=Asistencia"
+  }
+ },
+ {
+  "name": "admin-calendario-nuevo-desktop",
+  "role": "administrador",
+  "path": "/calendario",
+  "steps": [
+   {
+    "click": "button:has-text('Nuevo evento')"
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]"
+  }
+ },
+ {
+  "name": "admin-alertas-desktop",
+  "role": "administrador",
+  "path": "/alertas",
+  "mock": [
+   {
+    "url": "/api/alertas/criterios",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "ventanaDias": 30,
+      "notaAprobatoria": 11,
+      "faltas": {
+       "medio": 3,
+       "alto": 5
+      },
+      "tardanzas": {
+       "bajo": 3,
+       "medio": 5
+      },
+      "cursosDesaprobados": {
+       "medio": 1,
+       "alto": 2
+      },
+      "incidencias": {
+       "bajo": 1,
+       "medio": 2
+      },
+      "diasRespetoResuelta": 14
+     }
+    }
+   },
+   {
+    "url": "/api/alertas/estadisticas",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "total": 3,
+      "activas": 2,
+      "alto_riesgo": 1,
+      "medio_riesgo": 1,
+      "bajo_riesgo": 0
+     }
+    }
+   },
+   {
+    "url": "/api/alertas",
+    "method": "GET",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 901,
+       "alumno_id": 1,
+       "tipo_riesgo": "alto",
+       "nivel_riesgo": 95,
+       "estado": "activa",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Mateo",
+       "alumno_apellido": "Quispe Rojas",
+       "codigo_alumno": "ALU-2026-014",
+       "grado": "3er Grado",
+       "created_at": "2026-11-08T15:10:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "faltas",
+          "riesgo": "alto",
+          "valor": 5,
+          "detalle": ""
+         },
+         {
+          "tipo": "notas",
+          "riesgo": "medio",
+          "valor": 1,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "5 días con faltas sin justificar en los últimos 30 días. Promedio desaprobatorio en Matemáticas (9.5).",
+       "recomendacion": "Citar al apoderado a una reunión; verificar con el apoderado el motivo de las faltas o tardanzas; coordinar reforzamiento con los docentes de los cursos desaprobados."
+      },
+      {
+       "id": 902,
+       "alumno_id": 2,
+       "tipo_riesgo": "medio",
+       "nivel_riesgo": 50,
+       "estado": "activa",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "grado": "2do Grado",
+       "created_at": "2026-11-08T15:10:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "tardanzas",
+          "riesgo": "bajo",
+          "valor": 3,
+          "detalle": ""
+         },
+         {
+          "tipo": "conducta",
+          "riesgo": "medio",
+          "valor": 2,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "3 días con tardanza en los últimos 30 días. 2 incidencias de conducta en los últimos 30 días.",
+       "recomendacion": "Verificar con el apoderado el motivo de las faltas o tardanzas; revisar las incidencias registradas con tutoría."
+      },
+      {
+       "id": 903,
+       "alumno_id": 3,
+       "tipo_riesgo": "bajo",
+       "nivel_riesgo": 15,
+       "estado": "atendida",
+       "generada_por_ia": 0,
+       "alumno_nombre": "Diego",
+       "alumno_apellido": "Huamán Paredes",
+       "codigo_alumno": "ALU-2026-021",
+       "grado": "1er Grado",
+       "created_at": "2026-11-07T09:00:00",
+       "indicadores": {
+        "items": [
+         {
+          "tipo": "tardanzas",
+          "riesgo": "bajo",
+          "valor": 3,
+          "detalle": ""
+         }
+        ]
+       },
+       "descripcion": "3 días con tardanza en los últimos 30 días.",
+       "recomendacion": "Verificar con el apoderado el motivo de las faltas o tardanzas."
+      }
+     ],
+     "total": 3,
+     "page": 1,
+     "totalPages": 1
+    }
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Alertas",
+   "revisar": "button:has-text('Revisar ahora')",
+   "info": "text=El sistema revisa cada 6 horas",
+   "chips": "main ul >> nth=0",
+   "atender": "button:has-text('Atender') >> nth=0"
+  }
+ },
+ {
+  "name": "admin-incidencias-desktop",
+  "role": "administrador",
+  "path": "/incidencias",
+  "mock": [
+   {
+    "url": "/api/incidencias/estadisticas",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "total": 3,
+      "abiertas": 2,
+      "derivaciones": 1,
+      "graves_abiertas": 0,
+      "ultimos_30_dias": 3
+     }
+    }
+   },
+   {
+    "url": "/api/incidencias",
+    "method": "GET",
+    "except": "/alumno/",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 71,
+       "alumno_id": 2,
+       "fecha": "2026-11-06",
+       "hora": "10:40",
+       "tipo": "derivacion_direccion",
+       "gravedad": "moderada",
+       "lugar": "Aula 2.° B",
+       "descripcion": "Discutió con un compañero durante la clase y no siguió las indicaciones del docente. Se le derivó a dirección.",
+       "medida_tomada": "Conversación con dirección y citación al apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "abierta",
+       "resolucion": null,
+       "created_at": "2026-11-06T10:50:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 70,
+       "alumno_id": 4,
+       "fecha": "2026-11-04",
+       "hora": "08:15",
+       "tipo": "conducta",
+       "gravedad": "leve",
+       "lugar": "Patio",
+       "descripcion": "Uso del celular durante la formación.",
+       "medida_tomada": "Llamada de atención verbal.",
+       "apoderado_notificado": 0,
+       "estado": "en_seguimiento",
+       "resolucion": null,
+       "created_at": "2026-11-04T08:30:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Sebastián",
+       "alumno_apellido": "Torres Lima",
+       "codigo_alumno": "ALU-2026-030",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 69,
+       "alumno_id": 5,
+       "fecha": "2026-10-28",
+       "hora": null,
+       "tipo": "citacion_apoderado",
+       "gravedad": "leve",
+       "lugar": null,
+       "descripcion": "Incumplimiento reiterado de tareas.",
+       "medida_tomada": "Reunión con el apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "cerrada",
+       "resolucion": "El apoderado firmó un compromiso de seguimiento semanal.",
+       "created_at": "2026-10-28T12:00:00",
+       "periodo": "2026-II",
+       "reportado_por": 1,
+       "alumno_nombre": "Lucía",
+       "alumno_apellido": "Mendoza Silva",
+       "codigo_alumno": "ALU-2026-011",
+       "reportado_nombre": "Administración",
+       "reportado_apellido": "",
+       "cerrada_nombre": "Administración",
+       "cerrada_apellido": ""
+      }
+     ],
+     "total": 3,
+     "page": 1,
+     "totalPages": 1
+    }
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Incidencias",
+   "registrar": "button:has-text('Registrar incidencia')",
+   "seguimiento": "button:has-text('En seguimiento') >> nth=0",
+   "cerrar": "button:has-text('Cerrar') >> nth=0",
+   "stats": "text=Derivaciones a dirección"
+  }
+ },
+ {
+  "name": "admin-incidencia-nueva-desktop",
+  "role": "administrador",
+  "path": "/incidencias",
+  "mock": [
+   {
+    "url": "/api/incidencias/estadisticas",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "total": 3,
+      "abiertas": 2,
+      "derivaciones": 1,
+      "graves_abiertas": 0,
+      "ultimos_30_dias": 3
+     }
+    }
+   },
+   {
+    "url": "/api/incidencias",
+    "method": "GET",
+    "except": "/alumno/",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 71,
+       "alumno_id": 2,
+       "fecha": "2026-11-06",
+       "hora": "10:40",
+       "tipo": "derivacion_direccion",
+       "gravedad": "moderada",
+       "lugar": "Aula 2.° B",
+       "descripcion": "Discutió con un compañero durante la clase y no siguió las indicaciones del docente. Se le derivó a dirección.",
+       "medida_tomada": "Conversación con dirección y citación al apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "abierta",
+       "resolucion": null,
+       "created_at": "2026-11-06T10:50:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 70,
+       "alumno_id": 4,
+       "fecha": "2026-11-04",
+       "hora": "08:15",
+       "tipo": "conducta",
+       "gravedad": "leve",
+       "lugar": "Patio",
+       "descripcion": "Uso del celular durante la formación.",
+       "medida_tomada": "Llamada de atención verbal.",
+       "apoderado_notificado": 0,
+       "estado": "en_seguimiento",
+       "resolucion": null,
+       "created_at": "2026-11-04T08:30:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Sebastián",
+       "alumno_apellido": "Torres Lima",
+       "codigo_alumno": "ALU-2026-030",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 69,
+       "alumno_id": 5,
+       "fecha": "2026-10-28",
+       "hora": null,
+       "tipo": "citacion_apoderado",
+       "gravedad": "leve",
+       "lugar": null,
+       "descripcion": "Incumplimiento reiterado de tareas.",
+       "medida_tomada": "Reunión con el apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "cerrada",
+       "resolucion": "El apoderado firmó un compromiso de seguimiento semanal.",
+       "created_at": "2026-10-28T12:00:00",
+       "periodo": "2026-II",
+       "reportado_por": 1,
+       "alumno_nombre": "Lucía",
+       "alumno_apellido": "Mendoza Silva",
+       "codigo_alumno": "ALU-2026-011",
+       "reportado_nombre": "Administración",
+       "reportado_apellido": "",
+       "cerrada_nombre": "Administración",
+       "cerrada_apellido": ""
+      }
+     ],
+     "total": 3,
+     "page": 1,
+     "totalPages": 1
+    }
+   }
+  ],
+  "steps": [
+   {
+    "click": "button:has-text('Registrar incidencia')"
+   },
+   {
+    "fill": "[role=dialog] textarea >> nth=0",
+    "value": "Discutió con un compañero durante la clase y fue derivado a dirección."
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]",
+   "tipo": "[role=dialog] select >> nth=0",
+   "gravedad": "[role=dialog] select >> nth=1"
+  }
+ },
+ {
+  "name": "admin-notificaciones-desktop",
+  "role": "administrador",
+  "path": "/admin/notificaciones",
+  "steps": [
+   {
+    "click": "button:has-text('Enviar Masiva')"
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Notificaciones",
+   "dialog": "[role=dialog]"
+  }
+ },
+ {
+  "name": "profesor-curso-detalle-desktop",
+  "role": "profesor",
+  "path": "/cursos/oferta/{oferta}",
+  "boxes": {
+   "menu": "nav >> text=Mis Cursos",
+   "acciones": "text=Acciones rápidas",
+   "alumnos": "[aria-label='Alumnos de la oferta']"
+  }
+ },
+ {
+  "name": "profesor-alumnos-desktop",
+  "role": "profesor",
+  "path": "/alumnos",
+  "boxes": {
+   "menu": "nav >> text=Mis Alumnos"
+  }
+ },
+ {
+  "name": "profesor-asistencia-historial-desktop",
+  "role": "profesor",
+  "path": "/asistencias/oferta/{oferta}",
+  "steps": [
+   {
+    "click": "button:has-text('Historial')",
+    "wait": 1500
+   }
+  ],
+  "boxes": {
+   "historial": "[aria-label='Historial de asistencia'] >> visible=true",
+   "desde": "text=Desde >> visible=true"
+  }
+ },
+ {
+  "name": "profesor-horarios-desktop",
+  "role": "profesor",
+  "path": "/horarios",
+  "boxes": {
+   "menu": "nav >> text=Mis horarios"
+  }
+ },
+ {
+  "name": "profesor-incidencia-nueva-desktop",
+  "role": "profesor",
+  "path": "/incidencias",
+  "mock": [
+   {
+    "url": "/api/incidencias/estadisticas",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": {
+      "total": 3,
+      "abiertas": 2,
+      "derivaciones": 1,
+      "graves_abiertas": 0,
+      "ultimos_30_dias": 3
+     }
+    }
+   },
+   {
+    "url": "/api/incidencias",
+    "method": "GET",
+    "except": "/alumno/",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 71,
+       "alumno_id": 2,
+       "fecha": "2026-11-06",
+       "hora": "10:40",
+       "tipo": "derivacion_direccion",
+       "gravedad": "moderada",
+       "lugar": "Aula 2.° B",
+       "descripcion": "Discutió con un compañero durante la clase y no siguió las indicaciones del docente. Se le derivó a dirección.",
+       "medida_tomada": "Conversación con dirección y citación al apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "abierta",
+       "resolucion": null,
+       "created_at": "2026-11-06T10:50:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 70,
+       "alumno_id": 4,
+       "fecha": "2026-11-04",
+       "hora": "08:15",
+       "tipo": "conducta",
+       "gravedad": "leve",
+       "lugar": "Patio",
+       "descripcion": "Uso del celular durante la formación.",
+       "medida_tomada": "Llamada de atención verbal.",
+       "apoderado_notificado": 0,
+       "estado": "en_seguimiento",
+       "resolucion": null,
+       "created_at": "2026-11-04T08:30:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Sebastián",
+       "alumno_apellido": "Torres Lima",
+       "codigo_alumno": "ALU-2026-030",
+       "reportado_nombre": "Valeria",
+       "reportado_apellido": "Ríos Campos"
+      },
+      {
+       "id": 69,
+       "alumno_id": 5,
+       "fecha": "2026-10-28",
+       "hora": null,
+       "tipo": "citacion_apoderado",
+       "gravedad": "leve",
+       "lugar": null,
+       "descripcion": "Incumplimiento reiterado de tareas.",
+       "medida_tomada": "Reunión con el apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "cerrada",
+       "resolucion": "El apoderado firmó un compromiso de seguimiento semanal.",
+       "created_at": "2026-10-28T12:00:00",
+       "periodo": "2026-II",
+       "reportado_por": 1,
+       "alumno_nombre": "Lucía",
+       "alumno_apellido": "Mendoza Silva",
+       "codigo_alumno": "ALU-2026-011",
+       "reportado_nombre": "Administración",
+       "reportado_apellido": "",
+       "cerrada_nombre": "Administración",
+       "cerrada_apellido": ""
+      }
+     ],
+     "total": 3,
+     "page": 1,
+     "totalPages": 1
+    }
+   }
+  ],
+  "steps": [
+   {
+    "click": "button:has-text('Registrar incidencia')"
+   },
+   {
+    "fill": "[role=dialog] textarea >> nth=0",
+    "value": "Discutió con un compañero durante la clase y fue derivado a dirección."
+   }
+  ],
+  "boxes": {
+   "menu": "nav >> text=Incidencias",
+   "dialog": "[role=dialog]",
+   "tipo": "[role=dialog] select >> nth=0"
+  }
+ },
+ {
+  "name": "apoderado-conducta-mobile",
+  "role": "apoderado",
+  "path": "/familia/alumnos",
+  "vp": "mobile",
+  "steps": [
+   {
+    "click": "a:has-text('Conducta')"
+   }
+  ],
+  "mock": [
+   {
+    "url": "/api/incidencias/alumno/",
+    "body": {
+     "success": true,
+     "message": "Operación exitosa",
+     "data": [
+      {
+       "id": 71,
+       "alumno_id": 2,
+       "fecha": "2026-11-06",
+       "hora": "10:40",
+       "tipo": "derivacion_direccion",
+       "gravedad": "moderada",
+       "lugar": "Aula 2.° B",
+       "descripcion": "Discutió con un compañero durante la clase y no siguió las indicaciones del docente. Se le derivó a dirección.",
+       "medida_tomada": "Conversación con dirección y citación al apoderado.",
+       "apoderado_notificado": 1,
+       "estado": "abierta",
+       "resolucion": null,
+       "created_at": "2026-11-06T10:50:00",
+       "periodo": "2026-II",
+       "reportado_por": 2,
+       "alumno_nombre": "Camila",
+       "alumno_apellido": "Flores Vega",
+       "codigo_alumno": "ALU-2026-007",
+       "reportado_nombre": null,
+       "reportado_apellido": "Ríos Campos"
+      }
+     ]
+    }
+   }
+  ],
+  "boxes": {
+   "tabs": "nav[aria-label='Secciones del estudiante']",
+   "seccion": "#student-incidencias"
+  }
+ },
+ {
+  "name": "admin-curso-nuevo-desktop",
+  "role": "administrador",
+  "path": "/cursos",
+  "steps": [
+   {
+    "click": "button:has-text('Catálogo de cursos')"
+   },
+   {
+    "click": "button:has-text('Nuevo Curso')"
+   },
+   {
+    "fill": "[role=dialog] input >> nth=0",
+    "value": "Educación Física"
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]"
+  }
+ }
+]
