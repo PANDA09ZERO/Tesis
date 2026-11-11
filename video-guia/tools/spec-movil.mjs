@@ -74,6 +74,28 @@ export const scenes = [
       ] },
       { id: 'ad10', step: 'Profesores', shots: [{ img: 'admin-profesores-desktop', url: '/profesores', focus: [['Profesores', 'menu']] }] },
       { id: 'ad11', step: 'Apoderados', shots: [{ img: 'admin-apoderado-detalle-desktop', url: '/admin/apoderados', focus: [['alumnos a cargo', 'acargo'], ['botón', 'btnAlumnos']] }] },
+      { id: 'ad21', step: 'Exalumnos', shots: [
+        { img: 'admin-exalumnos-desktop', url: '/exalumnos', focus: [['Exalumnos', 'menu'], ['DNI', 'buscar']] },
+        { img: 'admin-exalumno-nuevo-desktop', url: '/exalumnos', at: 'registrar', focus: [['situación', 'situacion'], ['último grado', 'grado']] },
+      ] },
+      { id: 'ad22', step: 'Importa exalumnos desde Excel', shots: [
+        { img: 'admin-exalumnos-desktop', url: '/exalumnos', focus: [['Importar desde Excel', 'importar']] },
+        { img: 'admin-importar-desktop', url: '/exalumnos/importar', at: 'Descarga', focus: [['plantilla', 'plantilla'], ['Revisar archivo', 'revisar'], ['rojo', 'errores'], ['no importa nada', 'resumen']] },
+      ] },
+      { id: 'ad23', step: 'Registra un trámite', shots: [
+        { img: 'admin-exalumno-ficha-desktop', url: '/alumnos', focus: [['historial previo', 'historial'], ['Trámites y certificados', 'tramites'], ['Nuevo trámite', 'nuevo']] },
+        { img: 'admin-tramite-nuevo-desktop', url: '/alumnos', at: 'elige el tipo', focus: [['tipo', 'tipo'], ['quién lo pide', 'solicitante'], ['a dónde va', 'destino']] },
+      ] },
+      { id: 'ad24', step: 'Avanza el trámite', shots: [
+        { img: 'admin-exalumno-ficha-desktop', url: '/alumnos', focus: [['solicitado', 'tramite'], ['Adjuntar archivo', 'adjuntar']] },
+      ] },
+      { id: 'ad25', step: 'Imprime una constancia', shots: [
+        { img: 'admin-exalumno-ficha-desktop', url: '/alumnos', focus: [['constancia', 'constancias']] },
+        { img: 'admin-constancia-desktop', url: 'ventana nueva · constancia', at: 'ventana nueva', focus: [['revisa el texto', 'aviso'], ['imprímela', 'imprimir']] },
+      ] },
+      { id: 'ad26', step: 'Bandeja de trámites', shots: [
+        { img: 'admin-tramites-desktop', url: '/tramites', focus: [['Trámites y certificados', 'menu'], ['estado', 'filtro']] },
+      ] },
       { id: 'ad12', step: 'Matrículas', shots: [{ img: 'admin-matricula-nueva-desktop', url: '/admin/matriculas', focus: [['alumno', 'dialog'], ['Inscribir', 'auto']] }] },
       { id: 'ad13', step: 'Pagos', shots: [
         { img: 'admin-pagos-desktop', url: '/admin/pagos', focus: [['separado', 'tabs'], ['Nuevo concepto', 'nuevo']] },

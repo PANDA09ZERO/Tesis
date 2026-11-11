@@ -4,7 +4,8 @@
 - **Voz:** Edge-TTS `es-PE-CamilaNeural`, **18 % más rápida que la del video anterior** (antes −6 %, ahora +11 % en Edge-TTS).
 - **Sin subtítulos** (se quita la pista `subtitulos`).
 - **Paso a paso completo** de Administrador y Profesor, incluidos Incidencias, Alertas automáticas y la instalación como app.
-- **Duración estimada:** 9 a 10 minutos (antes 5:27).
+- **Duración:** 10:01 (v4, 11/11/2026: +6 frases de Exalumnos, Trámites y constancias).
+- **Música de fondo:** bucle original de 80 s (tools/musica-fondo.mjs, 96 BPM), bajo la voz y con atenuación automática cuando habla (sidechain).
 - **Diseño en vertical:** arriba, el capítulo y el título del paso; al centro, la captura (computadora o celular), con zoom al botón que se nombra; abajo, la lista de pasos del capítulo con el paso actual marcado.
 - Alumno, apoderado y cierre se mantienen casi iguales. Solo se agrega lo nuevo: la pestaña Conducta y la instalación de la app.
 
@@ -53,6 +54,12 @@ Tarjeta: "Si eres administrador…" · *Preparas el año escolar · Registras a 
 | ad9 | 6. Alumnos | En Institución, Alumnos, ves a los alumnos del periodo. Puedes buscarlos por nombre, editar sus datos y abrir su ficha, con su matrícula, calificaciones, asistencia e incidencias. | Alumnos · ficha |
 | ad10 | Profesores | En Profesores registras la especialidad, el título y la fecha de ingreso. Recuerda: los cursos de cada profesor se asignan en Estructura académica. | Profesores |
 | ad11 | Apoderados | En Apoderados ves los alumnos a cargo de cada uno. Pulsa el botón Alumnos para vincular a un hijo o hija e indica el parentesco. | Apoderados · botón Alumnos |
+| **ad21 (nuevo)** | Exalumnos | En Institución, Exalumnos, están los alumnos que estudiaron antes del sistema. Solo se guardan sus datos, sin cuenta de acceso. Puedes buscarlos por nombre o DNI, o registrar uno nuevo con su situación: egresado, retirado o trasladado, y el último grado que cursó. | Exalumnos · buscador · Registrar exalumno |
+| **ad22 (nuevo)** | Importa exalumnos desde Excel | Para cargar muchos a la vez, pulsa Importar desde Excel. Descarga la plantilla, pega una fila por alumno y elige el archivo. Al pulsar Revisar archivo, el sistema marca en rojo lo que falta o está mal, y no importa nada hasta que todas las filas estén bien. | Importar · plantilla · Revisar archivo · filas en rojo |
+| **ad23 (nuevo)** | Registra un trámite | En la ficha de un exalumno ves su historial previo: los años que estudió y su último grado. Más abajo está Trámites y certificados. Pulsa Nuevo trámite, elige el tipo, por ejemplo un traslado o un certificado de estudios, y escribe quién lo pide y a dónde va. | Ficha del exalumno · historial previo · Nuevo trámite |
+| **ad24 (nuevo)** | Avanza el trámite | Cada trámite avanza paso a paso: solicitado, en proceso, listo y entregado. Con Adjuntar archivo guardas el documento final, por ejemplo el certificado emitido en SIAGIE. | Tarjeta del trámite · Adjuntar archivo |
+| **ad25 (nuevo)** | Imprime una constancia | Con los botones de constancia, el sistema arma la constancia de estudios, de matrícula o de conducta. Se abre en una ventana nueva: revisa el texto, imprímela, y luego fírmala y séllala. | Botones de constancia · ventana para imprimir |
+| **ad26 (nuevo)** | Bandeja de trámites | En Trámites y certificados ves todos los pedidos pendientes del colegio. Filtra por estado, y toca uno para abrir la ficha del alumno. | Trámites y certificados · filtro por estado |
 | ad12 | 7. Matrículas | En Matrículas eliges el alumno, el periodo y el grado. Deja marcada la opción Inscribir automáticamente los cursos del grado, y quedará inscrito en todos sus cursos. | Matrículas · formulario |
 | ad13 | 8. Pagos | En Pagos tienes por separado la matrícula, las mensualidades y los sueldos de los profesores. En Mensualidades pulsa Nuevo concepto, elige al alumno, el mes, el monto y el estado. Con los filtros de mes, año y estado ves quién tiene deudas. | Pagos · pestañas, formulario |
 | ad14 | Notas y asistencia | En Calificaciones y Asistencia revisas lo que registran los profesores en cualquier curso, y puedes corregirlo si hace falta. | Calificaciones / Asistencia |

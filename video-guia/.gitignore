@@ -1,2 +1,7 @@
 renders/
 tools/capturas/anon-map.json
+# Mezclas generadas por tools/build-movil.mjs (pesan más de 100 MB; GitHub no las acepta)
+assets/voz/narracion.wav
+assets/musica/fondo.wav
+assets/musica/bucle.wav
+.hyperframes/artifacts/

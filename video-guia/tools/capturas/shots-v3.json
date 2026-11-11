@@ -1484,5 +1484,135 @@
   "boxes": {
    "dialog": "[role=dialog]"
   }
+ },
+ {
+  "name": "admin-exalumnos-desktop",
+  "role": "administrador",
+  "path": "/exalumnos",
+  "boxes": {
+   "menu": "nav [aria-current=page]",
+   "buscar": "input[placeholder*=\"Buscar por nombre\"]",
+   "importar": "button:has-text(\"Importar desde Excel\")",
+   "registrar": "button:has-text(\"Registrar exalumno\")",
+   "situacion": "text=Trasladado >> nth=0"
+  }
+ },
+ {
+  "name": "admin-exalumno-nuevo-desktop",
+  "role": "administrador",
+  "path": "/exalumnos",
+  "steps": [
+   {
+    "click": "button:has-text(\"Registrar exalumno\")",
+    "wait": 700
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]",
+   "dni": "#exalumno-dni",
+   "situacion": "#ex-estado",
+   "grado": "#ex-grado"
+  }
+ },
+ {
+  "name": "admin-importar-desktop",
+  "role": "administrador",
+  "path": "/exalumnos/importar",
+  "steps": [
+   {
+    "upload": "input[type=file]",
+    "file": "tools/demo/exalumnos-ejemplo.csv",
+    "wait": 400
+   },
+   {
+    "click": "button:has-text(\"Revisar archivo\")",
+    "wait": 1800
+   },
+   {
+    "scroll": 300,
+    "wait": 700
+   }
+  ],
+  "boxes": {
+   "plantilla": "button:has-text(\"Descargar plantilla\")",
+   "revisar": "button:has-text(\"Revisar archivo\")",
+   "resumen": "section:has(table) .flex.flex-wrap.items-center.gap-2",
+   "errores": "section:has(table) tbody tr >> nth=0",
+   "importar": "button:has-text(\"Importar\") >> nth=-1"
+  }
+ },
+ {
+  "name": "admin-exalumno-ficha-desktop",
+  "role": "administrador",
+  "path": "/alumnos/{exalumno}",
+  "boxes": {
+   "historial": "section[aria-labelledby=\"historial-previo-titulo\"]",
+   "tramites": "section[aria-labelledby=\"tramites-alumno-titulo\"]",
+   "nuevo": "button:has-text(\"Nuevo trámite\")",
+   "constancias": "section[aria-labelledby=\"tramites-alumno-titulo\"] > div.rounded-lg",
+   "tramite": "section[aria-labelledby=\"tramites-alumno-titulo\"] li",
+   "adjuntar": "button:has-text(\"Adjuntar archivo\")",
+   "avanzar": "section[aria-labelledby=\"tramites-alumno-titulo\"] li button.btn-primary"
+  }
+ },
+ {
+  "name": "admin-tramite-nuevo-desktop",
+  "role": "administrador",
+  "path": "/alumnos/{exalumno}",
+  "steps": [
+   {
+    "click": "button:has-text(\"Nuevo trámite\")",
+    "wait": 600
+   },
+   {
+    "select": "#tramite-tipo",
+    "value": "traslado",
+    "wait": 300
+   },
+   {
+    "fill": "#tramite-solicitante",
+    "value": "Madre",
+    "wait": 200
+   },
+   {
+    "fill": "#tramite-destino",
+    "value": "I.E. San Martín de Porres",
+    "wait": 400
+   }
+  ],
+  "boxes": {
+   "dialog": "[role=dialog]",
+   "tipo": "#tramite-tipo",
+   "solicitante": "#tramite-solicitante",
+   "destino": "#tramite-destino"
+  }
+ },
+ {
+  "name": "admin-constancia-desktop",
+  "role": "administrador",
+  "path": "/alumnos/{exalumno}",
+  "steps": [
+   {
+    "popup": "button:has-text(\"Constancia de estudios\")",
+    "wait": 900
+   }
+  ],
+  "boxes": {
+   "hoja": "main",
+   "tabla": "table",
+   "imprimir": "button:has-text(\"Imprimir\")",
+   "aviso": ".aviso"
+  }
+ },
+ {
+  "name": "admin-tramites-desktop",
+  "role": "administrador",
+  "path": "/tramites",
+  "boxes": {
+   "menu": "nav [aria-current=page]",
+   "filtro": "select[aria-label=\"Estado del trámite\"]",
+   "nuevo": "button:has-text(\"Nuevo trámite\")",
+   "buscar": "input[placeholder*=\"Filtrar\"]"
+  }
  }
 ]
