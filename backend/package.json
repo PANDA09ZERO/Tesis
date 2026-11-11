@@ -38,7 +38,8 @@
     "test:libretas": "npm run build && node --test tests/libreta-rules.test.cjs",
     "migrate:incidencias": "npm run build && node scripts/migrate-incidencias.cjs",
     "test:incidencias": "npm run build && node --test tests/incidencias.test.cjs",
-    "test:alertas": "npm run build && node --test tests/alertas-reglas.test.cjs"
+    "test:alertas": "npm run build && node --test tests/alertas-reglas.test.cjs",
+    "migrate:historicos": "npm run build && node scripts/migrate-historicos.cjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

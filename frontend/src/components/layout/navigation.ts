@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, ClipboardCheck,
   FileText, AlertTriangle, BarChart3, Calendar,
-  School, DollarSign, Layers, ShieldAlert, Bell
+  School, DollarSign, Layers, ShieldAlert, Bell, Archive, FileCheck
 } from 'lucide-react';
 
 import type { LucideIcon } from 'lucide-react';
@@ -19,6 +19,8 @@ const adminMenu: NavigationItem[] = [
       { to: '/alumnos', icon: Users, label: 'Alumnos' },
       { to: '/profesores', icon: Users, label: 'Profesores' },
       { to: '/admin/apoderados', icon: Users, label: 'Apoderados' },
+      { to: '/exalumnos', icon: Archive, label: 'Exalumnos' },
+      { to: '/tramites', icon: FileCheck, label: 'Trámites y certificados' },
     ]
   },
   {

@@ -33,7 +33,30 @@ export const alumnosApi = {
   getById: (id: number, params?: any) => client.get<ApiResponse<Alumno>>(`/alumnos/${id}`, { params }),
   create: (data: any) => client.post<ApiResponse<CreatedAccount>>('/alumnos', data),
   update: (id: number, data: any) => client.put<ApiResponse>(`/alumnos/${id}`, data),
-  getHorario: (id: number) => client.get<ApiResponse<Horario[]>>(`/alumnos/${id}/horario`)
+  getHorario: (id: number) => client.get<ApiResponse<Horario[]>>(`/alumnos/${id}/horario`),
+  importarHistoricos: (archivo: File, modo: 'vista_previa' | 'confirmar') => {
+    const form = new FormData(); form.append('archivo', archivo);
+    return client.post<ApiResponse<any>>('/alumnos/historicos/importar', form, { params: { modo }, headers: { 'Content-Type': 'multipart/form-data' }, timeout: 300000 });
+  },
+  crearHistorico: (data: Record<string, string>) => client.post<ApiResponse<any>>('/alumnos/historicos', data),
+  actualizarHistorico: (id: number, data: Record<string, string>) => client.put<ApiResponse>(`/alumnos/${id}/historico`, data)
+};
+
+// Trámites documentales (traslados, certificados y constancias)
+export type TipoTramite = 'traslado' | 'certificado_estudios' | 'constancia_estudios' | 'constancia_matricula' | 'constancia_conducta' | 'otro';
+export type EstadoTramite = 'solicitado' | 'en_proceso' | 'listo' | 'entregado' | 'anulado';
+export interface Tramite {
+  id: number; alumno_id: number; tipo: TipoTramite; estado: EstadoTramite; solicitante: string | null; destino: string | null;
+  observaciones: string | null; documento_id: number | null; documento_titulo: string | null; created_at: string; updated_at: string;
+  entregado_en: string | null; atendido_por_nombre: string | null; creado_por_nombre: string | null;
+  codigo_alumno: string; nombre: string; apellido: string; dni: string | null; estado_alumno: string; es_historico: number;
+}
+export const tramitesApi = {
+  getAll: (params?: { alumno_id?: number; estado?: string; pendientes?: '1' }) => client.get<ApiResponse<Tramite[]>>('/tramites', { params }),
+  create: (data: { alumno_id: number; tipo: TipoTramite; solicitante?: string; destino?: string; observaciones?: string }) =>
+    client.post<ApiResponse<Tramite>>('/tramites', data),
+  update: (id: number, data: Partial<{ estado: EstadoTramite; solicitante: string; destino: string; observaciones: string; documento_id: number | null }>) =>
+    client.put<ApiResponse<Tramite>>(`/tramites/${id}`, data)
 };
 
 // Profesores
@@ -328,4 +351,10 @@ export const libretasApi = {
  calculate: (alumno: number, periodo: number, grado: number) => client.get<ApiResponse<CalculatedResponse>>(`/alumnos/${alumno}/libretas/${periodo}/${grado}`),
  emit: (alumno: number, periodo: number, grado: number, revision: number, solicitud_id: string, huella: string) => client.post<ApiResponse<{id:number}>>(`/alumnos/${alumno}/libretas/${periodo}/${grado}`, {revision,solicitud_id,huella,revisada:true}),
  issued: (alumno:number,id:number) => client.get<ApiResponse<IssuedReport>>(`/alumnos/${alumno}/libretas/emisiones/${id}`)
+};
+
+// Consulta de DNI (RENIEC) para autocompletar registros
+export interface PersonaDni { dni: string; nombre: string; apellido: string; apellido_paterno: string; apellido_materno: string; registrado: { id: number; nombre: string } | null }
+export const consultaApi = {
+  dni: (dni: string) => client.get<ApiResponse<PersonaDni>>(`/consulta/dni/${dni}`),
 };

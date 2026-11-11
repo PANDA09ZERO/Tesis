@@ -8,6 +8,9 @@ import { alumnosApi } from '../../api/endpoints';
 import DataTable from '../../components/ui/DataTable';
 import { useAuth } from '../../context/AuthContext';
 import IncidenciasAlumno from '../incidencias/IncidenciasAlumno';
+import TramitesAlumno from '../tramites/TramitesAlumno';
+import HistorialPrevio from './HistorialPrevio';
+import { ESTADOS_ALUMNO } from '../tramites/tramites';
 
 function AcademicAlumnoDetailPage() {
   const { id } = useParams();
@@ -74,7 +77,9 @@ function AcademicAlumnoDetailPage() {
                 <h2 className="break-words text-xl font-bold text-gray-900 sm:text-2xl">{alumno.nombre} {alumno.apellido}</h2>
                 <p className="text-gray-500 font-mono">{alumno.codigo_alumno}</p>
               </div>
-              <Badge variant={!matriculas.length ? 'info' : alumno.estado === 'matriculado' ? 'success' : alumno.estado ? 'danger' : 'info'}>{matriculas.length ? (alumno.estado || 'Con matrícula registrada') : 'Sin matrícula'}</Badge>
+              {alumno.es_historico === 1
+                ? <Badge variant="default">Exalumno · {ESTADOS_ALUMNO[alumno.estado] || alumno.estado}</Badge>
+                : <Badge variant={!matriculas.length ? 'info' : alumno.estado === 'matriculado' ? 'success' : alumno.estado ? 'danger' : 'info'}>{matriculas.length ? (alumno.estado || 'Con matrícula registrada') : 'Sin matrícula'}</Badge>}
             </div>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
               {alumno.email && <div className="flex min-w-0 items-start gap-2 break-all text-gray-600"><Mail className="h-4 w-4 shrink-0" /> {alumno.email}</div>}
@@ -86,6 +91,10 @@ function AcademicAlumnoDetailPage() {
         </div>
       </div>
 
+      {(alumno.es_historico === 1 || alumno.anio_ultimo_estudio || alumno.ultimo_grado_cursado || alumno.observaciones_historicas) &&
+        <HistorialPrevio alumno={alumno} editable={esAdmin} onSaved={() => loadAlumno(Number(id))} />}
+
+      {alumno.es_historico !== 1 && <>
       <nav aria-label="Secciones del alumno" className="grid grid-cols-3 gap-1 rounded-xl border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-900 lg:hidden">
         {[['matricula','Matrícula y cursos'],['notas','Calificaciones'],['asistencia','Asistencia']].map(([key,label]) => <button key={key} type="button" aria-pressed={section===key} aria-controls={`student-${key}`} onClick={() => setSection(key)} className={`min-h-12 rounded-lg px-1 py-2 text-xs font-medium ${section===key ? 'bg-primary-600 text-white dark:bg-gray-700' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'}`}>{label}</button>)}
       </nav>
@@ -144,6 +153,9 @@ function AcademicAlumnoDetailPage() {
       </div>
 
       <IncidenciasAlumno alumnoId={Number(id)} registrarHref={`/incidencias?registrar=${alumno.id}&nombre=${encodeURIComponent(`${alumno.nombre} ${alumno.apellido} · ${alumno.codigo_alumno}`)}`} />
+      </>}
+
+      {esAdmin && <TramitesAlumno alumnoId={alumno.id} nombre={`${alumno.nombre} ${alumno.apellido}`} />}
     </div>
   );
 }

@@ -19,3 +19,9 @@ El checksum normaliza CRLF/LF para ser reproducible entre Windows y Linux. `prod
 `schema.sql` pasa a la versión `20261108_incidencias`: agrega la tabla `incidencias` (módulo de conducta) y retira `profesor_curso`, el sistema de asignaciones reemplazado por `periodo_grado_curso_profesores`. Las bases instaladas antes conservaban además la tabla `secciones` y columnas `seccion_id` vacías en alumnos, horarios y matriculas, que ningún código usa.
 
 Para una base existente: respaldar (Workbench: Server > Data Export) y ejecutar completo `20261108_workbench_incidencias_y_limpieza.sql`. Crea `incidencias`, elimina esos restos (se detiene si alguna `seccion_id` tuviera datos) y registra la versión con su checksum. Se puede repetir sin efectos. Si solo se necesita la tabla nueva: `npm run migrate:incidencias`.
+
+## Alumnos históricos y trámites (20261111)
+
+`schema.sql` pasa a la versión `20261111_historicos`: la tabla `alumnos` admite el estado `trasladado` y suma `es_historico`, `anio_ingreso`, `anio_ultimo_estudio`, `ultimo_grado_cursado` y `observaciones_historicas` para los alumnos anteriores al sistema (solo datos, sin matrícula ni cuenta activa). Se agrega `tramites_documentales` para traslados, certificados y constancias.
+
+Para una base existente: respaldar y ejecutar completo `20261111_alumnos_historicos_tramites.sql` en Workbench, o `npm run migrate:historicos` desde backend. Ambos se pueden repetir, no cambian datos y registran la versión con su checksum.

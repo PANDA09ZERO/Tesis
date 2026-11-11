@@ -208,7 +208,7 @@ export async function createMatricula(req: Request, res: Response) {
 
     // Actualizar datos del alumno sin borrar los que ya tenía
     await connection.query(
-      `UPDATE alumnos SET estado = 'matriculado',
+      `UPDATE alumnos SET estado = 'matriculado', es_historico = 0,
          grado_id = COALESCE(?, grado_id),
          periodo_academico_id = COALESCE(?, periodo_academico_id)
        WHERE id = ?`,
@@ -271,7 +271,7 @@ export async function updateMatricula(req: Request, res: Response) {
     }
     await connection.query('UPDATE matriculas SET estado = ?, observaciones = ?, grado_id = ?, curso_id = ? WHERE id = ?', [estado ?? current.estado, observaciones === undefined ? current.observaciones : observaciones, grade, course, req.params.id]);
     if (estado === 'cancelada') await connection.query(`UPDATE alumnos SET estado = 'retirado' WHERE id = ? AND NOT EXISTS (SELECT 1 FROM matriculas WHERE alumno_id = ? AND estado = 'activa')`, [current.alumno_id,current.alumno_id]);
-    if (estado === 'activa') await connection.query("UPDATE alumnos SET estado = 'matriculado' WHERE id = ?", [current.alumno_id]);
+    if (estado === 'activa') await connection.query("UPDATE alumnos SET estado = 'matriculado', es_historico = 0 WHERE id = ?", [current.alumno_id]);
     await connection.commit(); transaction = false;
     return sendSuccess(res, null, 'Matrícula actualizada exitosamente');
   } catch (error: any) {

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Edit, Trash2, Users, Eye, EyeOff } from 'lucide-react';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
+import DniLookupField from '../../components/ui/DniLookupField';
 import SearchInput from '../../components/ui/SearchInput';
 import Badge from '../../components/ui/Badge';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
@@ -123,6 +124,7 @@ export default function ProfesoresPage() {
       <Modal isOpen={showModal} className="people-dialog" onClose={() => { if(!saving){setShowModal(false); setEditing(null);} }} title={editing ? 'Editar Profesor' : 'Registrar Profesor'} size="lg">
         <form onSubmit={handleSubmit} className="space-y-4"><fieldset disabled={saving} className="min-w-0 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {!editing&&<DniLookupField id="teacher-dni-lookup" value={formData.dni} onChange={dni=>setFormData(f=>({...f,dni}))} onFound={p=>setFormData(f=>({...f,nombre:p.nombre,apellido:p.apellido}))}/>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label><input aria-label="Nombre" readOnly={!!editing} type="text" maxLength={100} value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="input-field" required /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Apellido *</label><input aria-label="Apellido" readOnly={!!editing} type="text" maxLength={100} value={formData.apellido} onChange={e => setFormData({...formData, apellido: e.target.value})} className="input-field" required /></div>
             {editing ? <div><label className="block text-sm font-medium text-gray-700 mb-1">Usuario de acceso</label><input aria-label="Usuario de acceso" readOnly type="text" value={formData.email} className="input-field" /></div> : <p className="sm:col-span-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100">El usuario institucional y la contraseña temporal se generarán al registrar la cuenta. No se crea un buzón de correo.</p>}
@@ -149,7 +151,7 @@ export default function ProfesoresPage() {
                 </button>
               </div>
             </div>}
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input aria-label="DNI" readOnly={!!editing} type="text" maxLength={20} value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>
+            {editing&&<div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input aria-label="DNI" readOnly={!!editing} type="text" maxLength={20} value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label><input aria-label="Teléfono" readOnly={!!editing} type="text" maxLength={20} value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="input-field" /></div>
             {!editing && <div className="sm:col-span-2"><label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label><input aria-label="Dirección" type="text" maxLength={500} value={formData.direccion} onChange={e => setFormData({...formData, direccion: e.target.value})} className="input-field" /></div>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Especialidad</label><input aria-label="Especialidad" type="text" maxLength={200} value={formData.especialidad} onChange={e => setFormData({...formData, especialidad: e.target.value})} className="input-field" /></div>

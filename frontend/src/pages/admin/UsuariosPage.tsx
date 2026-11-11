@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
+import DniLookupField from '../../components/ui/DniLookupField';
 import SearchInput from '../../components/ui/SearchInput';
 import Badge from '../../components/ui/Badge';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
@@ -123,13 +124,14 @@ export default function UsuariosPage() {
       <Modal isOpen={showModal} onClose={() => { setShowModal(false); setEditing(null); }} title={editing ? 'Editar Usuario' : 'Nuevo Usuario'} size="lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {!editing&&<DniLookupField id="user-dni-lookup" value={formData.dni} onChange={dni=>setFormData(f=>({...f,dni}))} onFound={p=>setFormData(f=>({...f,nombre:p.nombre,apellido:p.apellido}))}/>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label><input type="text" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="input-field" required /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Apellido *</label><input type="text" value={formData.apellido} onChange={e => setFormData({...formData, apellido: e.target.value})} className="input-field" required /></div>
             {editing ? <>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Usuario de acceso</label><input type="text" value={formData.email} className="input-field" readOnly /></div>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Restablecer contraseña (opcional)</label><input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="input-field" minLength={6} autoComplete="new-password" placeholder="Dejar vacío para mantener actual" /></div>
             </> : <p className="sm:col-span-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100">El usuario institucional y la contraseña temporal se generarán al crear la cuenta. No se crea un buzón de correo.</p>}
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input type="text" value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>
+            {editing&&<div><label className="block text-sm font-medium text-gray-700 mb-1">DNI</label><input type="text" value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} className="input-field" /></div>}
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label><input type="text" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} className="input-field" /></div>
             <div className="sm:col-span-2"><label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label><input type="text" maxLength={500} value={formData.direccion} onChange={e => setFormData({...formData, direccion: e.target.value})} className="input-field" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Fecha Nacimiento</label><input type="date" value={formData.fecha_nacimiento} onChange={e => setFormData({...formData, fecha_nacimiento: e.target.value})} className="input-field" /></div>

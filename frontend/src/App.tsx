@@ -29,6 +29,9 @@ import ConfiguracionAcademicaPage from './pages/academics/ConfiguracionAcademica
 import DocumentosPage from './pages/documents/DocumentosPage';
 import AlertasPage from './pages/alerts/AlertasPage';
 import IncidenciasPage from './pages/incidencias/IncidenciasPage';
+import ExalumnosPage from './pages/students/ExalumnosPage';
+import ImportarExalumnosPage from './pages/students/ImportarExalumnosPage';
+import TramitesPage from './pages/tramites/TramitesPage';
 import ReportesPage from './pages/reports/ReportesPage';
 import PagosPage from './pages/admin/PagosPage';
 import UsuariosPage from './pages/admin/UsuariosPage';
@@ -116,6 +119,9 @@ function ApplicationRoutes() {
       <Route path="/familia/alumnos" element={<ProtectedRoute><RoleRoute allowed={['apoderado']}><AppLayout title="Estudiantes a mi cargo"><FamilyStudentsPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="/alumnos" element={<ProtectedRoute><AppLayout title="Gestión de Alumnos"><AlumnosPage /></AppLayout></ProtectedRoute>} />
+      <Route path="/exalumnos" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Exalumnos"><ExalumnosPage /></AppLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/exalumnos/importar" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Importar exalumnos"><ImportarExalumnosPage /></AppLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/tramites" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Trámites y certificados"><TramitesPage /></AppLayout></RoleRoute></ProtectedRoute>} />
       <Route path="/alumnos/:id" element={<ProtectedRoute><AppLayout title="Detalle del Alumno"><AlumnoDetailPage /></AppLayout></ProtectedRoute>} />
 
       <Route path="/profesores" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Gestión de Profesores"><ProfesoresPage /></AppLayout></RoleRoute></ProtectedRoute>} />

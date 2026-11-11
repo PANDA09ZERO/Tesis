@@ -25,6 +25,8 @@ const descriptions: Record<string, string> = {
   '/reportes': 'Consulta de reportes institucionales.',
   '/admin/notificaciones': 'Envía avisos masivos por rol.',
   '/incidencias': 'Registro y seguimiento de incidencias de conducta.',
+  '/exalumnos': 'Alumnos anteriores al sistema e importación desde Excel.',
+  '/tramites': 'Traslados, certificados de estudios y constancias.',
   '/admin/usuarios': 'Cuentas y datos de acceso.',
   '/admin/matriculas': 'Inscripción de alumnos por periodo.',
   '/admin/pagos': 'Matrícula, mensualidades y sueldos.',

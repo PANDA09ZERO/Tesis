@@ -33,10 +33,13 @@ export async function getAllAlumnos(req: AuthRequest, res: Response) {
 
     let whereClause = 'WHERE 1=1';
     const params: any[] = [];
+    // Exalumnos anteriores al sistema: solo aparecen en su propia vista (historicos=1).
+    const verHistoricos = req.query.historicos === '1' && req.user?.rol === 'administrador';
+    whereClause += verHistoricos ? ' AND a.es_historico = 1' : ' AND a.es_historico = 0';
 
     if (search) {
-      whereClause += ' AND (u.nombre LIKE ? OR u.apellido LIKE ? OR a.codigo_alumno LIKE ?)';
-      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      whereClause += ' AND (u.nombre LIKE ? OR u.apellido LIKE ? OR a.codigo_alumno LIKE ? OR u.dni LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
     }
     if (gradoId) {
       if (req.user?.rol === 'profesor') {
@@ -114,6 +117,7 @@ export async function getAllAlumnos(req: AuthRequest, res: Response) {
               u.fecha_nacimiento, u.genero, u.telefono, u.foto_url, u.activo,
               ${gradoExpression} as grado, g.nivel,
               pa.nombre as periodo_academico, a.estado, a.created_at,
+              a.es_historico, a.anio_ultimo_estudio, a.ultimo_grado_cursado,
               ${estadoMatriculaExpression} as estado_matricula,
               ${activaPeriodoExpression} as tiene_matricula_activa_periodo,
               EXISTS(SELECT 1 FROM matriculas ma WHERE ma.alumno_id = a.id) tiene_matricula
@@ -265,7 +269,7 @@ export async function updateAlumno(req: Request, res: Response) {
   const validation = accountError(req.body,false);
   if(validation)return sendError(res,validation,400);
   if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
-  if(req.body.estado!==undefined&&!['matriculado','retirado','egresado'].includes(req.body.estado))return sendError(res,'Estado del alumno inválido',400);
+  if(req.body.estado!==undefined&&!['matriculado','retirado','egresado','trasladado'].includes(req.body.estado))return sendError(res,'Estado del alumno inválido',400);
   if (req.body.grado_id !== undefined || req.body.periodo_academico_id !== undefined) {
     return sendError(res, 'El grado y el periodo se modifican desde la matrícula', 400);
   }

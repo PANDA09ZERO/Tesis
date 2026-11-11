@@ -24,6 +24,7 @@ export async function getExpedienteAlumno(req: AuthRequest, res: Response) {
 
 export async function getExpedienteData(id: number, db: Pick<typeof pool, 'query'> = pool) {
     const [students] = await db.query<RowDataPacket[]>(`SELECT a.id, a.codigo_alumno, a.estado,
+      a.es_historico, a.anio_ingreso, a.anio_ultimo_estudio, a.ultimo_grado_cursado, a.observaciones_historicas, u.genero,
       u.nombre, u.apellido, u.dni, u.email, u.telefono, u.direccion, u.fecha_nacimiento
       FROM alumnos a JOIN usuarios u ON u.id = a.usuario_id WHERE a.id = ?`, [id]);
     if (!students.length) return null;

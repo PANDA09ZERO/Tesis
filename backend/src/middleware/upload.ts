@@ -58,3 +58,23 @@ export function uploadDocumentoFile(req: Request, res: Response, next: NextFunct
     return sendError(res, 'No se pudo guardar el archivo. Verifique el almacenamiento e intente nuevamente', 500);
   });
 }
+
+// Hojas de cálculo para importaciones: se leen en memoria y nunca se guardan.
+const hojaCalculo = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (_req, file, cb) => {
+    const extension = path.extname(file.originalname).toLowerCase();
+    if (['.xlsx', '.csv'].includes(extension)) cb(null, true);
+    else cb(new Error('Formato no admitido. Usa Excel (.xlsx) o CSV'));
+  },
+  limits: { fileSize: 5 * 1024 * 1024, fields: 5, parts: 6, files: 1 }
+});
+
+export function uploadHojaCalculo(req: Request, res: Response, next: NextFunction) {
+  hojaCalculo.single('archivo')(req, res, error => {
+    if (!error) return next();
+    if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') return sendError(res, 'El archivo supera el límite de 5 MB', 413);
+    if (error instanceof multer.MulterError) return sendError(res, 'Formulario de archivo inválido', 400);
+    return sendError(res, error.message || 'No se pudo leer el archivo', 400);
+  });
+}

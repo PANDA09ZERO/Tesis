@@ -60,7 +60,12 @@ CREATE TABLE alumnos (
     codigo_alumno VARCHAR(20) UNIQUE,
     grado_id INT,
     periodo_academico_id INT,
-    Estado ENUM('matriculado', 'retirado', 'egresado') DEFAULT 'matriculado',
+    Estado ENUM('matriculado', 'retirado', 'egresado', 'trasladado') DEFAULT 'matriculado',
+    es_historico TINYINT(1) NOT NULL DEFAULT 0,
+    anio_ingreso YEAR NULL,
+    anio_ultimo_estudio YEAR NULL,
+    ultimo_grado_cursado VARCHAR(80) NULL,
+    observaciones_historicas TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -517,4 +522,27 @@ CREATE TABLE IF NOT EXISTS incidencias (
  FOREIGN KEY (periodo_academico_id) REFERENCES periodos_academicos(id),
  FOREIGN KEY (reportado_por) REFERENCES usuarios(id),
  FOREIGN KEY (cerrada_por) REFERENCES usuarios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Alumnos históricos y trámites documentales (20261111)
+CREATE TABLE IF NOT EXISTS tramites_documentales (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ alumno_id INT NOT NULL,
+ tipo ENUM('traslado','certificado_estudios','constancia_estudios','constancia_matricula','constancia_conducta','otro') NOT NULL,
+ estado ENUM('solicitado','en_proceso','listo','entregado','anulado') NOT NULL DEFAULT 'solicitado',
+ solicitante VARCHAR(150) NULL,
+ destino VARCHAR(200) NULL,
+ observaciones TEXT NULL,
+ documento_id INT NULL,
+ creado_por INT NOT NULL,
+ atendido_por INT NULL,
+ entregado_en TIMESTAMP NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ KEY idx_tramites_alumno (alumno_id, created_at),
+ KEY idx_tramites_estado (estado, created_at),
+ FOREIGN KEY (alumno_id) REFERENCES alumnos(id) ON DELETE CASCADE,
+ FOREIGN KEY (documento_id) REFERENCES documentos(id) ON DELETE SET NULL,
+ FOREIGN KEY (creado_por) REFERENCES usuarios(id),
+ FOREIGN KEY (atendido_por) REFERENCES usuarios(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

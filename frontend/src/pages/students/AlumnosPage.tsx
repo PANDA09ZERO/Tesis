@@ -5,6 +5,7 @@ import { Plus, Edit, Eye, UserPlus } from 'lucide-react';
 import StudentMobileCard from './StudentMobileCard';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
+import DniLookupField from '../../components/ui/DniLookupField';
 import SearchInput from '../../components/ui/SearchInput';
 import Badge from '../../components/ui/Badge';
 import { alumnosApi, gradosApi, configuracionApi, matriculasApi } from '../../api/endpoints';
@@ -373,6 +374,7 @@ export default function AlumnosPage() {
           {!editingAlumno&&<p className="rounded-lg bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100">El usuario institucional se generará con el nombre y apellido del alumno. La contraseña temporal se mostrará una sola vez al terminar.</p>}
           <p className="text-sm text-gray-500">El grado, periodo y cursos se establecen después al registrar la matrícula.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {!editingAlumno&&<DniLookupField id="student-dni-lookup" value={formData.dni} onChange={dni=>setFormData(f=>({...f,dni}))} onFound={p=>setFormData(f=>({...f,nombre:p.nombre,apellido:p.apellido}))}/>}
             <div>
               <label htmlFor="student-nombre" className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
               <input type="text" id="student-nombre" readOnly={!!editingAlumno} value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})}
@@ -388,11 +390,11 @@ export default function AlumnosPage() {
               <input type="email" id="student-email" readOnly={!!editingAlumno} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
                 className="input-field" required />
             </div>}
-            <div>
+            {editingAlumno && <div>
               <label htmlFor="student-dni" className="block text-sm font-medium text-gray-700 mb-1">DNI</label>
               <input type="text" id="student-dni" readOnly={!!editingAlumno} value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})}
                 className="input-field" />
-            </div>
+            </div>}
             <div>
               <label htmlFor="student-telefono" className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
               <input type="tel" id="student-telefono" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})}
