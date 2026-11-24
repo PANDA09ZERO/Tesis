@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { Suspense, useCallback } from 'react';
+import PageLoader from '../ui/PageLoader';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CalendarDays, Moon, Sun, UserRound } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -48,7 +49,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         {showHeader && <ContentHeader title={title} />}
         <div className={`flex min-h-0 min-w-0 flex-1 overflow-hidden ${showTasks ? 'flex-col lg:flex-row' : ''}`}>
           <main className="app-surface min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 dark:bg-slate-950 dark:lg:bg-gray-900 px-4 pt-5 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 lg:pb-12">
-            <div className="app-page">{children}</div>
+            <div className="app-page"><Suspense fallback={<PageLoader />}>{children}</Suspense></div>
           </main>
           {showTasks && <TaskPanel />}
         </div>
