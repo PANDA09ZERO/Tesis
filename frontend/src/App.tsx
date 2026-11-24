@@ -43,6 +43,7 @@ import ProfesorOfertasPage from './pages/teachers/ProfesorOfertasPage';
 import EstudiantePage, { EstudianteCursoPage } from './pages/students/EstudiantePage';
 import FamilyStudentsPage from './pages/guardian/FamilyStudentsPage';
 import ForcedPasswordChangePage from './pages/auth/ForcedPasswordChangePage';
+import GaleriaPage from './pages/public/GaleriaPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -107,6 +108,7 @@ function ApplicationRoutes() {
       <><SystemSuspended/><Routes>
       <Route path="/superadministracion" element={<ProtectedRoute><SuperRoute><AppLayout title="Control del sistema"><SuperadministracionPage /></AppLayout></SuperRoute></ProtectedRoute>} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/galeria" element={<GaleriaPage />} />
 
       <Route path="/" element={<ProtectedRoute><RoleRoute allowed={['administrador', 'profesor', 'alumno']}><AppLayout><RoleInicioPage /></AppLayout></RoleRoute></ProtectedRoute>} />
       <Route path="/perfil" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Mi cuenta"><ProfilePage /></AppLayout></RoleRoute></ProtectedRoute>} />
