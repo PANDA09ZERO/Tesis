@@ -6,6 +6,8 @@ async function login(page:any,id=1){await page.goto('/login');await page.locator
 test('detalle de periodo: historial, estructura y libros con pagos separados y filtro persistente',async({page},info)=>{
  const records=page.getByRole('main');
  const value=(name:string)=>records.getByText(name,{exact:true}).first();
+ // La sección puede redibujarse y cerrar las tarjetas tras abrirlas: reabre y reintenta hasta ver el dato.
+ const seen=(name:string)=>expect(async()=>{await openAll(page);await expect(records.getByText(name,{exact:true}).filter({visible:true}).first()).toBeVisible({timeout:1000});}).toPass({timeout:15000});
  await login(page);const token=await page.evaluate(()=>localStorage.getItem('token'));const headers={Authorization:'Bearer '+token};const created:Array<{path:string;id:number}>=[];
  try{
   for(const [path,data] of [
@@ -16,12 +18,12 @@ test('detalle de periodo: historial, estructura y libros con pagos separados y f
   ] as const){const response=await page.request.post(path,{headers,data});expect(response.status()).toBe(201);created.push({path,id:(await response.json()).data.id});}
   await page.goto('/periodos');await page.getByRole('link',{name:'Ver detalle de Anterior',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Detalle del periodo: Anterior',exact:true})).toBeVisible();await expect(page.getByText('01/01/2025 al 31/12/2025',{exact:true})).toBeVisible();await page.screenshot({path:info.outputPath('detalle-periodo.png'),fullPage:true});
-  await page.getByRole('button',{name:'Estructura académica',exact:true}).click();await openAll(page);await expect(page.getByRole('heading',{name:'Primaria · Segundo',exact:true})).toBeVisible();await expect(value('Usuario 2')).toBeVisible();await expect(page.getByRole('link',{name:'Gestionar estructura de este periodo'})).toHaveAttribute('href','/admin/configuracion-academica?periodo_id=2');
-  await page.getByRole('button',{name:'Matrículas',exact:true}).click();await openAll(page);await expect(value('11, Usuario')).toBeVisible();await expect(records.locator('details.mobile-bento-card')).toHaveCount(1);
+  await page.getByRole('button',{name:'Estructura académica',exact:true}).click();await openAll(page);await expect(page.getByRole('heading',{name:'Primaria · Segundo',exact:true})).toBeVisible();await seen('Usuario 2');await expect(page.getByRole('link',{name:'Gestionar estructura de este periodo'})).toHaveAttribute('href','/admin/configuracion-academica?periodo_id=2');
+  await page.getByRole('button',{name:'Matrículas',exact:true}).click();await openAll(page);await seen('11, Usuario');await expect(records.locator('details.mobile-bento-card')).toHaveCount(1);
   await page.getByRole('button',{name:'Calificaciones y asistencia',exact:true}).click();await openAll(page);await expect(records.getByRole('link',{name:'Calificaciones',exact:true})).toHaveAttribute('href','/calificaciones/oferta/4');await expect(records.getByRole('link',{name:'Asistencia',exact:true})).toHaveAttribute('href','/asistencias/oferta/4?vista=historial');
-  await page.getByRole('button',{name:'Pagos de matrícula',exact:true}).click();await openAll(page);await expect(value('S/ 50.00')).toBeVisible();await expect(value('S/ 200.00')).toHaveCount(0);await expect(value('pagado')).toBeVisible();
-  await page.getByRole('button',{name:'Mensualidades',exact:true}).click();await openAll(page);await expect(value('S/ 80.00')).toBeVisible();await expect(value('Septiembre 2025')).toBeVisible();await expect(value('S/ 100.00')).toHaveCount(0);await expect(value('pendiente')).toBeVisible();
-  await page.reload();await expect(page.getByRole('heading',{name:'Detalle del periodo: Anterior',exact:true})).toBeVisible();await openAll(page);await expect(value('S/ 80.00')).toBeVisible();
+  await page.getByRole('button',{name:'Pagos de matrícula',exact:true}).click();await openAll(page);await seen('S/ 50.00');await expect(value('S/ 200.00')).toHaveCount(0);await seen('pagado');
+  await page.getByRole('button',{name:'Mensualidades',exact:true}).click();await openAll(page);await seen('S/ 80.00');await seen('Septiembre 2025');await expect(value('S/ 100.00')).toHaveCount(0);await seen('pendiente');
+  await page.reload();await expect(page.getByRole('heading',{name:'Detalle del periodo: Anterior',exact:true})).toBeVisible();await openAll(page);await seen('S/ 80.00');
   await page.getByRole('navigation',{name:'Secciones del periodo'}).getByRole('button',{name:'Horarios',exact:true}).click();await expect(page.getByText('Sin registros en este periodo',{exact:true})).toBeVisible();
  }finally{for(const item of created.reverse())expect((await page.request.delete(item.path+'/'+item.id,{headers})).status()).toBe(200);}
 });
