@@ -9,11 +9,12 @@ for(const [name,url] of routes){
   await page.screenshot({path:info.outputPath(`${name}-claro.png`),fullPage:true,animations:'disabled'});
   await page.getByRole('button',{name:'Cambiar a tema oscuro',exact:true}).click();await expect(page.locator('html')).toHaveClass(/dark/);
   await page.screenshot({path:info.outputPath(`${name}-oscuro.png`),fullPage:true,animations:'disabled'});
-  if(info.project.name==='mobile' && ['notas','asistencia'].includes(name)){await main.locator('.record-table tbody tr').first().scrollIntoViewIfNeeded();await page.screenshot({path:info.outputPath(`${name}-registro-oscuro.png`),fullPage:true,animations:'disabled'});}
+  if(info.project.name==='mobile' && ['notas','asistencia'].includes(name)){await main.locator('.mobile-bento-card').first().scrollIntoViewIfNeeded();await page.screenshot({path:info.outputPath(`${name}-registro-oscuro.png`),fullPage:true,animations:'disabled'});}
   const contrast=await main.locator('.text-gray-900').evaluateAll(nodes=>nodes.filter(n=>(n as HTMLElement).offsetParent!==null).map(n=>({text:n.textContent?.slice(0,60),color:getComputedStyle(n).color})).filter(n=>{const values=n.color.match(/[\d.]+/g)?.map(Number)||[];return values.length>=3&&values.slice(0,3).every(v=>v<100);}));
   expect(contrast).toEqual([]);
   const neutral=await main.locator('.btn-primary').evaluateAll(nodes=>nodes[0]?getComputedStyle(nodes[0]).backgroundColor:null);
-  if(neutral){const rgb=neutral.match(/[\d.]+/g)!.map(Number);expect(Math.abs(rgb[0]-rgb[2])).toBeLessThanOrEqual(2);}
+  // Sistema "Tinta y pizarra": la acción principal conserva la tinta institucional (primary-600) también en oscuro.
+  if(neutral)expect(neutral).toBe('rgb(35, 64, 142)');
   if(info.project.name==='mobile'){
    await page.setViewportSize({width:320,height:740});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
    // A clipped toolbar is still a layout defect, even if main hides horizontal overflow.

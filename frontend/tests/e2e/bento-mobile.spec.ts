@@ -54,8 +54,9 @@ test('bento: registros táctiles, edición única y diseño sin desbordamiento',
   await expect(page.getByRole('table')).toHaveCount(0);
   await page.goto('/admin/usuarios');
   await page.setViewportSize({ width: 1280, height: 900 });
-  await expect(page.locator('.data-table > .mobile-bento-grid')).not.toBeVisible();
-  await expect(page.getByRole('table')).toBeVisible();
+  // DataTable usa tarjetas también en escritorio (cuadrícula de varias columnas), sin tabla.
+  await expect(page.locator('.data-table .mobile-bento-card').first()).toBeVisible();
+  await expect(page.getByRole('table')).toHaveCount(0);
   await page.setViewportSize({ width: 393, height: 851 });
   await page.goto('/modulos');
   await page.screenshot({ path: info.outputPath('bento-modulos.png'), fullPage: true });

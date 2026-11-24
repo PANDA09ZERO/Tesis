@@ -1,4 +1,4 @@
-import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 async function login(page: Page, id = 1) {
   await page.goto('/login');
@@ -10,10 +10,22 @@ async function login(page: Page, id = 1) {
   await expect(page).not.toHaveURL(/login$/);
   await page.goto('/alumnos');
 }
-function student(page: Page, info: TestInfo, name: string) {
-  return info.project.name === 'mobile'
-    ? page.getByRole('article', { name, exact: true })
-    : page.getByRole('row').filter({ has: page.getByRole('cell', { name, exact: true }) });
+// DataTable muestra cada alumno como tarjeta desplegable en todas las pantallas; la ficha (article)
+// con estado, grado y acciones queda dentro y solo es visible al abrirla.
+function studentCard(page: Page, name: string) {
+  return page.getByRole('main').locator('details.mobile-bento-card').filter({ has: page.locator(`article[aria-label="${name}"]`) });
+}
+async function openStudent(page: Page, name: string, text?: string) {
+  const card = text ? studentCard(page, name).filter({ hasText: text }) : studentCard(page, name);
+  await expect(card.first()).toBeVisible();
+  if (!await card.first().evaluate(d => (d as HTMLDetailsElement).open)) await card.first().locator('summary').click();
+  return card.first().getByRole('article', { name, exact: true });
+}
+// El periodo de consulta se elige en Módulos → Contexto académico y se conserva entre páginas.
+async function choosePeriod(page: Page, value: string) {
+  await page.goto('/modulos');
+  await page.getByRole('combobox', { name: 'Periodo académico de consulta' }).selectOption(value);
+  await page.goto('/alumnos');
 }
 async function noOverflow(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -22,7 +34,7 @@ async function noOverflow(page: Page) {
 test('alumnos: tarjetas y detalle móvil, tabla de escritorio y tema neutro', async ({ page }, info) => {
   await login(page);
   await expect(page.getByRole('heading', { name: 'Alumnos', exact: true })).toBeVisible();
-  const record = student(page, info, 'Usuario 11');
+  const record = await openStudent(page, 'Usuario 11');
   await expect(record).toContainText('Primero');
   await expect(record).toContainText('activa');
   await noOverflow(page);
@@ -30,19 +42,17 @@ test('alumnos: tarjetas y detalle móvil, tabla de escritorio y tema neutro', as
   await page.getByRole('button', { name: 'Cambiar a tema oscuro', exact: true }).click();
   await expect(page.locator('html')).toHaveClass(/dark/);
   const primary = record.getByRole('button', { name: 'Ver detalle de Usuario 11', exact: true });
+  // Sistema "Tinta y pizarra": la acción principal conserva la tinta institucional también en oscuro.
+  await expect.poll(() => primary.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(35, 64, 142)');
   if (info.project.name === 'mobile') {
-    await expect.poll(async () => {
-      const background = await primary.evaluate(el => getComputedStyle(el).backgroundColor);
-      const channels = background.match(/[\d.]+/g)!.map(Number);
-      return channels[0] === channels[1] && channels[1] === channels[2];
-    }).toBe(true);
     for (const button of await record.getByRole('button').all()) expect((await button.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
   await page.screenshot({ path: info.outputPath('alumnos-oscuro.png'), fullPage: true });
   await primary.click();
   await expect(page).toHaveURL(/alumnos\/1\?periodo_id=1$/);
   await expect(page.getByRole('heading', { name: 'Usuario 11', exact: true })).toBeVisible();
-  await expect(page.getByText('Con matrícula registrada', { exact: true })).toBeVisible();
+  // Con matrícula, la ficha muestra el estado del alumno ("Con matrícula registrada" solo si no tiene estado).
+  await expect(page.getByRole('main').getByText('matriculado', { exact: true }).first()).toBeVisible();
   const sections = page.getByRole('navigation', { name: 'Secciones del alumno' });
   if (info.project.name === 'mobile') {
     await sections.getByRole('button', { name: 'Calificaciones', exact: true }).click();
@@ -64,11 +74,14 @@ test('alumnos: tarjetas y detalle móvil, tabla de escritorio y tema neutro', as
 
 test('alumnos: error recuperable, búsqueda vacía y filtro de periodo', async ({ page }, info) => {
   const path = '**/api/alumnos?**';
-  await page.route(path, route => route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, message: 'Fallo sintético del listado' }) }));
+  // El listado puede recargarse solo al terminar de cargar el periodo: el fallo sigue activo hasta pulsar Reintentar.
+  let failing = true;
+  await page.route(path, route => failing ? route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, message: 'Fallo sintético del listado' }) }) : route.continue());
   await login(page);
   await expect(page.getByRole('alert')).toContainText('Fallo sintético del listado');
-  await page.unroute(path);
+  failing = false;
   await page.getByRole('button', { name: 'Reintentar alumnos', exact: true }).click();
+  await page.unroute(path);
   await expect(page.getByRole('status').filter({ hasText: 'alumnos encontrados' })).toBeVisible();
   const search = page.getByPlaceholder('Buscar alumno...');
   await search.fill('NoExisteSintetico');
@@ -76,7 +89,7 @@ test('alumnos: error recuperable, búsqueda vacía y filtro de periodo', async (
   await page.getByRole('button', { name: 'Limpiar búsqueda', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'alumnos encontrados' })).toBeVisible();
   const historical = page.waitForResponse(r => r.url().includes('/api/alumnos?') && new URL(r.url()).searchParams.get('periodo_id') === '2');
-  await page.getByRole('combobox', { name: 'Periodo académico de consulta' }).selectOption('2');
+  await choosePeriod(page, '2');
   expect((await historical).status()).toBe(200);
   await expect(page.getByText(info.project.name==='mobile' ? 'Matrículas · Anterior' : 'Mostrando alumnos con matrícula en', { exact: false })).toContainText('Anterior');
 });
@@ -101,7 +114,8 @@ test('alumnos: registrar sin matrícula, conservar error y editar datos que pers
   await page.getByRole('button', { name: 'Registrar', exact: true }).click();
   const response = await created; expect(response.status()).toBe(201);
   const result = (await response.json()).data;
-  expect(result.credentials.email).toBe('pruebainterfaz.alumno@cienciaseingenieria.edu');
+  // Escritorio y celular comparten la base de pruebas: el segundo registro recibe un sufijo numérico.
+  expect(result.credentials.email).toMatch(/^pruebainterfaz\.alumno\d*@cienciaseingenieria\.edu$/);
   expect(result.credentials.mustChangePassword).toBe(true);
   expect(result.credentials.mailboxCreated).toBe(false);
   await expect(page.getByRole('heading', { name: 'Credenciales creadas', exact: true })).toBeVisible();
@@ -126,11 +140,11 @@ test('alumnos: registrar sin matrícula, conservar error y editar datos que pers
     const profile = (await data.json()).data;
     expect(profile.matriculas_academicas).toHaveLength(0);
     expect(profile.direccion).toBe('Calle de prueba 123');
-    await page.getByRole('combobox', { name: 'Periodo académico de consulta' }).selectOption('');
+    await choosePeriod(page, '');
     await page.getByPlaceholder('Buscar alumno...').fill('PruebaInterfaz');
-    const record = student(page, info, 'PruebaInterfaz Alumno').filter({ hasText: result.credentials.email });
-    await expect(record).toBeVisible();
-    await record.getByRole('button', { name: info.project.name === 'mobile' ? 'Editar a PruebaInterfaz Alumno' : 'Editar alumno', exact: true }).click();
+    const record = await openStudent(page, 'PruebaInterfaz Alumno', result.credentials.email);
+    await expect(record).toContainText(result.credentials.email);
+    await record.getByRole('button', { name: 'Editar a PruebaInterfaz Alumno', exact: true }).click();
     await expect(page.getByLabel('Nombre *', { exact: true })).toHaveAttribute('readonly', '');
     await page.getByLabel('Teléfono', { exact: true }).fill('987654321');
     const updated = page.waitForResponse(r => r.url().endsWith(`/api/alumnos/${result.id}`) && r.request().method() === 'PUT');
@@ -146,11 +160,11 @@ test('alumnos: registrar sin matrícula, conservar error y editar datos que pers
 test('alumnos: profesor consulta asignados sin acciones administrativas', async ({ page }, info) => {
   await login(page, 2);
   await expect(page.getByRole('heading', { name: 'Mis alumnos', exact: true })).toBeVisible();
-  await expect(student(page, info, 'Usuario 11')).toBeVisible();
-  await expect(student(page, info, 'Usuario 12')).toHaveCount(0);
+  await expect(studentCard(page, 'Usuario 11')).toBeVisible();
+  await expect(studentCard(page, 'Usuario 12')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Nuevo Alumno', exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Editar|Rematricular/ })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Ver detalle de Usuario 11', exact: true }).click();
+  await (await openStudent(page, 'Usuario 11')).getByRole('button', { name: 'Ver detalle de Usuario 11', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Gestionar matrícula', exact: true })).toHaveCount(0);
   await expect(page.getByText('Matrícula pendiente de pago', { exact: true })).toHaveCount(0);
 });
@@ -166,7 +180,7 @@ test('alumnos: rematrícula muestra los errores de datos y cursos y permite rein
   const history = '**/api/alumnos/1/matriculas';
   await page.route(history, route => route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, message: 'Fallo sintético de historial' }) }));
   await login(page);
-  await student(page, info, 'Usuario 11').getByRole('button', { name: info.project.name === 'mobile' ? 'Rematricular a Usuario 11' : 'Rematricular a Actual', exact: true }).click();
+  await (await openStudent(page, 'Usuario 11')).getByRole('button', { name: 'Rematricular a Usuario 11', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Fallo sintético de historial');
   await expect(page.getByRole('button', { name: 'Confirmar rematrícula', exact: true })).toBeDisabled();
   await page.unroute(history);

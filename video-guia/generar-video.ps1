@@ -3,7 +3,7 @@
 #   powershell -ExecutionPolicy Bypass -File C:\xampp\htdocs\Tesis\video-guia\generar-video.ps1
 # Opciones:
 #   -SinCapturas   reutiliza las capturas ya tomadas
-#   -SinVoz        reutiliza la voz ya generada
+#   -SinVoz        reutiliza la voz ya generada (sin esta opción solo se generan las frases nuevas; VOZ_TODO=1 las rehace todas)
 #   -SoloRender    solo vuelve a renderizar (no captura ni genera voz)
 #   -SoloCapturas  solo toma las capturas (para revisarlas antes de generar el video)
 # Las capturas usan una base de demostración (gestion_video_demo) con datos ficticios; tu base real no se toca.
@@ -95,13 +95,23 @@ if (-not $SinVoz) {
   if ($codigo -ne 0) { Falla 'No se pudo generar la voz (revisa tu conexión a internet).' }
 }
 
-# ---------- 3. Composición ----------
+# ---------- 3. Música de fondo ----------
+if (-not (Test-Path (Join-Path $vg 'assets\musica\bucle.wav'))) {
+  Titulo 'Generando la música de fondo'
+  Push-Location $vg
+  node tools\musica-fondo.mjs
+  $codigo = $LASTEXITCODE
+  Pop-Location
+  if ($codigo -ne 0) { Falla 'No se pudo generar la música de fondo.' }
+}
+
+# ---------- 4. Composición ----------
 Titulo 'Armando el video vertical'
 Push-Location $vg
 node tools\build-movil.mjs
 if ($LASTEXITCODE -ne 0) { Pop-Location; Falla 'No se pudo armar la composición.' }
 
-# ---------- 4. Render ----------
+# ---------- 5. Render ----------
 Titulo 'Renderizando el MP4 (puede tardar varios minutos)'
 $inicio = Get-Date
 npx --yes hyperframes@0.9.9 render

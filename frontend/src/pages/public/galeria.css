@@ -1,0 +1,110 @@
+/* Galería pública: colores tomados del escudo y del letrero del colegio. */
+.galeria {
+  --g-tinta: #23408e;
+  --g-tinta-honda: #13234d;
+  --g-granate: #8c2f2b;
+  --g-cielo: #2fa4e7;
+  --g-papel: #f4f6f9;
+  --g-texto: #1a1f29;
+  --g-suave: #4a5260;
+  min-height: 100dvh;
+  background: var(--g-papel);
+  color: var(--g-texto);
+  font-family: var(--font-sans);
+}
+.galeria :is(a, button):focus-visible { outline: 3px solid var(--g-cielo); outline-offset: 3px; }
+
+.galeria-barra {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.75rem clamp(1rem, 4vw, 3rem);
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+  background: var(--g-tinta-honda); color: #fff;
+}
+.galeria-marca { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.0625rem; color: inherit; text-decoration: none; }
+.galeria-marca img { width: 40px; height: 40px; padding: 3px; object-fit: contain; background: #fff; border-radius: 0.625rem; }
+.galeria-ingresar {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.125rem;
+  border-radius: 0.5rem; background: #fff; color: var(--g-tinta-honda);
+  font-weight: 700; font-size: 0.9375rem; text-decoration: none; white-space: nowrap;
+  transition: background-color .15s;
+}
+.galeria-ingresar:hover { background: #dce4f7; }
+
+/* Portada: lema a la izquierda sobre tinta, foto de formación a sangre a la derecha. */
+.galeria-portada {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  min-height: min(78dvh, 44rem); background: var(--g-tinta); color: #fff;
+}
+.galeria-portada-texto { display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(2rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 3rem); }
+.galeria-sede { margin: 0 0 1.5rem; font-size: 0.9375rem; color: #b9c8ee; }
+.galeria-portada h1 {
+  margin: 0; max-width: 11ch;
+  font-size: clamp(2.75rem, 6.2vw, 5.5rem); font-weight: 700; line-height: 0.98; letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.galeria-portada h1::after { content: ""; display: block; width: 4.5rem; height: 6px; margin-top: 1.75rem; background: var(--g-granate); border-radius: 3px; box-shadow: 4.5rem 0 0 var(--g-cielo); }
+.galeria-bajada { margin: 1.5rem 0 0; max-width: 34ch; font-size: 1.125rem; line-height: 1.55; color: #dce4f7; }
+.galeria-niveles { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 2rem 0 0; padding: 0; list-style: none; }
+.galeria-niveles li { padding: 0.375rem 0.875rem; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; font-size: 0.875rem; font-weight: 600; }
+.galeria-portada-foto { width: 100%; height: 100%; min-height: 20rem; object-fit: cover; object-position: center 60%; }
+
+/* Franja de valores, tal como aparecen en las columnas del patio. */
+.galeria-valores {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 2rem;
+  padding: 1.125rem clamp(1rem, 4vw, 3rem); background: var(--g-granate); color: #fff;
+  font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;
+}
+
+.galeria-fotos { max-width: 76rem; margin: 0 auto; padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 4vw, 3rem); }
+.galeria-encabezado { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; margin-bottom: 2rem; }
+.galeria-encabezado h2 { margin: 0; font-size: clamp(1.75rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; color: var(--g-tinta-honda); }
+.galeria-encabezado p { margin: 0; color: var(--g-suave); }
+
+.galeria-mosaico { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(1rem, 2.4vw, 1.75rem); margin: 0; padding: 0; list-style: none; }
+.galeria-item { display: flex; flex-direction: column; gap: 0.75rem; }
+.galeria-item-1 { grid-column: span 4; }
+.galeria-item-2 { grid-column: span 2; }
+.galeria-item-3 { grid-column: span 3; }
+.galeria-item-4 { grid-column: span 3; }
+.galeria-item button { display: block; padding: 0; border: 0; background: #dce4f7; border-radius: 0.75rem; overflow: hidden; cursor: zoom-in; }
+.galeria-item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .35s ease; }
+.galeria-item-1 img { aspect-ratio: 16 / 10; }
+.galeria-item-2 img { height: 100%; aspect-ratio: auto; min-height: 100%; }
+.galeria-item-2 button { flex: 1; }
+.galeria-item button:hover img { transform: scale(1.03); }
+.galeria-pie h3 { margin: 0; font-size: 1.0625rem; font-weight: 700; color: var(--g-tinta-honda); }
+.galeria-pie p { margin: 0.25rem 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--g-suave); }
+
+.galeria-letrero { background: var(--g-cielo); }
+.galeria-letrero img { display: block; width: 100%; max-width: 90rem; margin: 0 auto; height: auto; }
+
+.galeria-pie-pagina {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 2rem clamp(1rem, 4vw, 3rem); padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  background: var(--g-tinta-honda); color: #dce4f7;
+}
+.galeria-pie-pagina strong { color: #fff; font-size: 1.0625rem; }
+.galeria-pie-pagina p { margin: 0.25rem 0 0; font-size: 0.9375rem; }
+
+/* Visor */
+.galeria-visor { width: min(96vw, 72rem); max-width: none; max-height: 94dvh; margin: auto; padding: 0; border: 0; background: transparent; color: #fff; overflow: visible; }
+.galeria-visor::backdrop { background: rgba(10, 18, 40, .9); }
+.galeria-visor figure { margin: 0; display: grid; gap: 0.75rem; }
+.galeria-visor img { width: 100%; max-height: 78dvh; object-fit: contain; border-radius: 0.5rem; }
+.galeria-visor figcaption { display: flex; justify-content: space-between; gap: 1rem; font-weight: 600; }
+.galeria-contador { color: #b9c8ee; font-weight: 400; white-space: nowrap; }
+.galeria-visor-controles { display: flex; justify-content: center; gap: 0.75rem; }
+.galeria-visor-controles button { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; background: rgba(255,255,255,.08); color: #fff; cursor: pointer; }
+.galeria-visor-controles button:hover { background: rgba(255,255,255,.2); }
+
+@media (max-width: 860px) {
+  .galeria-portada { grid-template-columns: 1fr; min-height: 0; }
+  .galeria-portada-foto { order: -1; height: 52vw; min-height: 14rem; }
+  .galeria-portada-texto { padding-top: 2rem; }
+  .galeria-mosaico { grid-template-columns: 1fr; }
+  .galeria-item-1, .galeria-item-2, .galeria-item-3, .galeria-item-4 { grid-column: auto; }
+  .galeria-item-2 img { aspect-ratio: 4 / 3; height: auto; }
+  .galeria-marca span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .galeria-item img { transition: none; } .galeria-item button:hover img { transform: none; } }

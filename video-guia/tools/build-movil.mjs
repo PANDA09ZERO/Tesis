@@ -346,7 +346,16 @@ for (const f of Object.values(FILES)) {
     execFileSync(`npx --yes hyperframes@0.9.9 media-treatment --project . --file compositions/${f} --selector "img.privacy" --grading "{\\"effects\\":{\\"blur\\":1}}" --apply`, { cwd: ROOT, stdio: 'ignore', shell: true });
   } catch { aviso(`no se pudo aplicar el difuminado en ${f}: revisa que npx funcione`); }
 }
-if (!process.argv.includes('--no-audio')) buildVoice();
+// ---- música de fondo: el bucle (tools/musica-fondo.mjs) se repite todo el video, bajo, y se aparta cuando habla la voz ----
+const MUSICA = fs.existsSync(ROOT + 'assets/musica/bucle.wav') && !process.argv.includes('--sin-musica');
+function buildMusic() {
+  const fin = r2(TOTAL - 4);
+  const f = `[0]aresample=48000,atrim=0:${TOTAL},asetpts=N/SR/TB,volume=0.32,afade=t=in:d=2,afade=t=out:st=${fin}:d=4[m];` +
+    `[1]aresample=48000[v];[m][v]sidechaincompress=threshold=0.015:ratio=6:attack=40:release=700:makeup=1[out]`;
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-stream_loop', '-1', '-i', ROOT + 'assets/musica/bucle.wav', '-i', ROOT + 'assets/voz/narracion.wav',
+    '-filter_complex', f, '-map', '[out]', '-ar', '48000', '-ac', '2', '-t', String(TOTAL), ROOT + 'assets/musica/fondo.wav'], { stdio: 'inherit' });
+}
+if (!process.argv.includes('--no-audio')) { buildVoice(); if (MUSICA) buildMusic(); }
 
 const hosts = plan.map(S => `      <div id="${S.id}" data-composition-id="${S.id}" data-composition-src="compositions/${FILES[S.id]}" data-start="${S.start}" data-duration="${S.dur}" data-track-index="1" data-track-kind="graphics" data-width="${W}" data-height="${H}"></div>`).join('\n');
 fs.writeFileSync(ROOT + 'index.html', `<!doctype html>
@@ -367,7 +376,8 @@ fs.writeFileSync(ROOT + 'index.html', `<!doctype html>
     <div id="main" data-composition-id="main" data-start="0" data-duration="${TOTAL}" data-width="${W}" data-height="${H}">
       <div id="main-bg"></div>
 ${hosts}
-      <audio id="voz" class="clip" src="assets/voz/narracion.wav" data-start="0" data-duration="${TOTAL}" data-track-index="3" data-volume="1"></audio>
+      <audio id="voz" class="clip" src="assets/voz/narracion.wav" data-start="0" data-duration="${TOTAL}" data-track-index="3" data-volume="1"></audio>${MUSICA ? `
+      <audio id="musica" class="clip" src="assets/musica/fondo.wav" data-start="0" data-duration="${TOTAL}" data-track-index="4" data-volume="1"></audio>` : ''}
     </div>
     <script>
       window.__timelines = window.__timelines || {};

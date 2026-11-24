@@ -76,6 +76,8 @@ async function token(role) {
     console.log(oferta ? `oferta del profesor: ${oferta}` : 'aviso: el profesor no tiene ofertas asignadas; las pantallas de notas y asistencia saldrán vacías');
   }
   shots = JSON.parse(JSON.stringify(shots).split('{oferta}').join(String(oferta || 0)));
+  // otros ids de la base de demostración ({exalumno}, {alumno}…), anotados por crear-base-demo.cjs
+  if (fs.existsSync(idsDemo)) for (const [k, v] of Object.entries(JSON.parse(fs.readFileSync(idsDemo, 'utf8')))) shots = JSON.parse(JSON.stringify(shots).split(`{${k}}`).join(String(v)));
   const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
   if (only) shots = shots.filter(s => only.includes(s.name));
   const fallos = [];
@@ -84,12 +86,14 @@ async function token(role) {
   for (const s of shots) { try {
     const vp = s.vp || 'desktop';
     const ctx = await browser.newContext({ viewport: VP[vp], deviceScaleFactor: vp === 'mobile' ? 3 : 1.5, isMobile: vp === 'mobile', hasTouch: vp === 'mobile', colorScheme: 'light', locale: 'es-PE' });
-    const page = await ctx.newPage();
+    let page = await ctx.newPage();
     const errores = [];
     page.on('pageerror', e => errores.push(String(e.message).split('\n')[0]));
     page.on('console', m => { if (m.type() === 'error') errores.push(m.text().slice(0, 160)); });
     await page.route('**/api/**', async route => {
       const url = route.request().url();
+      // subidas de archivos: se envían sin interceptar (route.fetch corrompe el cuerpo multipart)
+      if ((route.request().headers()['content-type'] || '').includes('multipart/form-data')) return route.continue();
       const m = (s.mock || []).find(x => url.includes(x.url) && !(x.except && url.includes(x.except)) && (!x.method || x.method === route.request().method()));
       if (m) {
         if (m.patchProfile) {
@@ -113,6 +117,13 @@ async function token(role) {
     for (const st of s.steps || []) { try {
       if (st.click) await page.locator(st.click).first().click({ timeout: 8000 });
       if (st.fill) await page.locator(st.fill).first().fill(st.value);
+      // upload: selector del input de archivo + file (ruta relativa a video-guia/)
+      if (st.upload) await page.locator(st.upload).first().setInputFiles(path.resolve(__dirname, '../..', st.file));
+      // popup: clic que abre una ventana nueva; la captura sigue en esa ventana
+      if (st.popup) {
+        const [nueva] = await Promise.all([ctx.waitForEvent('page'), page.locator(st.popup).first().click({ timeout: 8000 })]);
+        await nueva.setViewportSize(VP[vp]); await nueva.waitForLoadState('load'); page = nueva;
+      }
       if (st.press) await page.keyboard.press(st.press);
       if (st.select) await page.locator(st.select).first().selectOption(st.label ? { label: st.label } : st.value);
       if (st.eval) await page.evaluate(st.eval);

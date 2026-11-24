@@ -37,7 +37,16 @@ async def one(line):
 async def main():
     lines = json.load(open(os.path.join(ROOT, "narracion.json"), encoding="utf8"))
     dur, pal = {}, {}
+    # Por defecto solo se generan las frases que aún no tienen audio (VOZ_TODO=1 las regenera todas).
+    todo = os.environ.get("VOZ_TODO") == "1"
+    prev_d = os.path.join(VOZ, "duraciones.json"); prev_p = os.path.join(VOZ, "palabras.json")
+    old_d = json.load(open(prev_d)) if os.path.exists(prev_d) else {}
+    old_p = json.load(open(prev_p, encoding="utf8")) if os.path.exists(prev_p) else {}
     for line in lines:
+        i = line["id"]
+        if not todo and i in old_d and i in old_p and os.path.exists(os.path.join(VOZ, i + ".wav")):
+            dur[i], pal[i] = old_d[i], old_p[i]
+            continue
         i, d, w = await one(line)
         dur[i], pal[i] = d, w
         print(i, d, len(w), file=sys.stderr)

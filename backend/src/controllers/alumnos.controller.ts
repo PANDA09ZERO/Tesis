@@ -148,7 +148,7 @@ export async function getAlumnoById(req: AuthRequest, res: Response) {
       }
     }
     const [alumnos] = await pool.query<RowDataPacket[]>(
-      `SELECT a.*, u.nombre, u.apellido, u.email, u.dni, u.telefono,
+      `SELECT a.*, a.estado AS estado, u.nombre, u.apellido, u.email, u.dni, u.telefono,
               u.direccion, u.fecha_nacimiento, u.genero, u.foto_url,
               g.nombre as grado, g.nivel,
               pa.nombre as periodo_academico

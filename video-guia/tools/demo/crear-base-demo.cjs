@@ -193,8 +193,29 @@ const diasHabiles = (n) => { const out = []; const d = new Date(hoy); while (out
   for (const [u, acc, ent] of [[adminId, 'login', 'usuarios'], [prof[0].u, 'login', 'usuarios'], [adminId, 'crear_incidencia', 'incidencias'], [adminId, 'evaluar_alertas', 'alertas'], [prof[1].u, 'login', 'usuarios']])
     await q('INSERT INTO registro_actividades(usuario_id,accion,entidad,detalles) VALUES(?,?,?,?)', [u, acc, ent, JSON.stringify({ demo: true })]);
 
-  // la herramienta de capturas usa este curso para las pantallas del profesor
-  fs.writeFileSync(path.join(__dirname, 'demo-ids.json'), JSON.stringify({ oferta: oferta[`${p2}-0-0`].id, alumno: alumnos[0].id }));
+  // ---------- exalumnos (anteriores al sistema) y trámites ----------
+  // Solo datos, sin matrícula y con la cuenta desactivada, igual que la importación desde Excel.
+  const EXA = [['Renata', 'Aguilar Pino', 'F', 'egresado', 2012, 2023, '5.° de secundaria'], ['Bruno', 'Ccahua Medina', 'M', 'egresado', 2011, 2022, '5.° de secundaria'],
+    ['Milagros', 'Paucar Soto', 'F', 'trasladado', 2016, 2021, '1.° de secundaria'], ['Álvaro', 'Inga Zevallos', 'M', 'egresado', 2010, 2021, '5.° de secundaria'],
+    ['Ximena', 'Tello Ramírez', 'F', 'retirado', 2014, 2019, '6.° de primaria'], ['Rodrigo', 'Villena Cruz', 'M', 'egresado', 2011, 2022, '5.° de secundaria'],
+    ['Abigail', 'Saavedra León', 'F', 'egresado', 2012, 2023, '5.° de secundaria'], ['Franco', 'Huerta Ccori', 'M', 'trasladado', 2015, 2022, '2.° de secundaria']];
+  const exa = [];
+  for (const [i, [n, a, g, estado, ingreso, ultimo, grado]] of EXA.entries()) {
+    const u = await usuario(slug(n, a) + DOM, 'Demo-2026-video', n, a, R_ALU, g);
+    await q('UPDATE usuarios SET activo=0, debe_cambiar_password=1, ultimo_acceso=NULL, fecha_nacimiento=? WHERE id=?', [`${ultimo - 16}-0${1 + (i % 9)}-1${i % 9}`, u]);
+    exa.push(await ins('INSERT INTO alumnos(usuario_id,codigo_alumno,estado,es_historico,anio_ingreso,anio_ultimo_estudio,ultimo_grado_cursado) VALUES(?,?,?,1,?,?,?)',
+      [u, `ALU-HIS-${String(i + 1).padStart(3, '0')}`, estado, ingreso, ultimo, grado]));
+  }
+  const tramite = (al, tipo, estado, solicitante, destino, dias) => q(`INSERT INTO tramites_documentales(alumno_id,tipo,estado,solicitante,destino,creado_por,atendido_por,entregado_en,created_at)
+    VALUES(?,?,?,?,?,?,?,?,?)`, [al, tipo, estado, solicitante, destino, adminId, estado === 'solicitado' ? null : adminId, estado === 'entregado' ? `${dd(-1)} 11:00:00` : null, `${dd(-dias)} 09:30:00`]);
+  await tramite(exa[0], 'certificado_estudios', 'en_proceso', 'La exalumna', 'Universidad (admisión 2027)', 2);
+  await tramite(exa[1], 'constancia_estudios', 'solicitado', 'El exalumno', 'Instituto técnico', 1);
+  await tramite(exa[2], 'traslado', 'listo', 'Madre', 'I.E. Nuestra Señora del Carmen', 5);
+  await tramite(alumnos[1].id, 'constancia_matricula', 'solicitado', 'Padre', 'Seguro escolar', 0);
+  await tramite(exa[3], 'certificado_estudios', 'entregado', 'El exalumno', 'Universidad', 9);
+
+  // la herramienta de capturas usa estos ids (curso del profesor y fichas)
+  fs.writeFileSync(path.join(__dirname, 'demo-ids.json'), JSON.stringify({ oferta: oferta[`${p2}-0-0`].id, alumno: alumnos[0].id, exalumno: exa[0] }));
   const [[c]] = await q('SELECT (SELECT COUNT(*) FROM usuarios) usuarios,(SELECT COUNT(*) FROM alumnos) alumnos,(SELECT COUNT(*) FROM calificaciones) notas,(SELECT COUNT(*) FROM asistencias) asistencias');
   console.log(`Base ${DB} lista:`, JSON.stringify(c));
   await db.end();

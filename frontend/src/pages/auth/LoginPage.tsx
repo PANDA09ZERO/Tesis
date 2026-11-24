@@ -1,6 +1,6 @@
 import { useTheme } from '../../context/ThemeContext';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { GraduationCap, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -37,7 +37,9 @@ export default function LoginPage() {
   return (
     <div className="app-surface relative grid min-h-screen min-h-dvh bg-gray-50 dark:bg-gray-900 lg:grid-cols-[minmax(0,1fr)_minmax(0,36rem)]">
       {/* Panel institucional: solo en escritorio, donde hay espacio para la identidad sin empujar el formulario. */}
-      <aside aria-hidden="true" className="relative hidden flex-col justify-between overflow-hidden bg-primary-700 p-12 text-white lg:flex dark:bg-gray-950">
+      <aside aria-hidden="true" className="relative isolate hidden flex-col justify-between overflow-hidden bg-primary-800 p-12 text-white lg:flex dark:bg-gray-950">
+        <img src="/galeria/formacion-patio.jpg" alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-45" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-primary-900 via-primary-900/80 to-primary-800/40" />
         <div className="flex items-center gap-3">
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white p-1"><img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" /></span>
           <span className="text-lg font-bold">Ciencias e Ingeniería</span>
@@ -47,7 +49,7 @@ export default function LoginPage() {
           <p className="text-[2.25rem] font-bold leading-[1.15] tracking-tight">Notas, asistencia y horarios del año escolar en un solo lugar.</p>
           <p className="mt-4 text-base text-primary-100">Para docentes, estudiantes, familias y administración.</p>
         </div>
-        <p className="text-sm text-primary-200">Gestión académica institucional</p>
+        <p className="text-sm text-primary-100">Disciplina y exigencia académica</p>
       </aside>
       <button type="button" onClick={toggleTheme} aria-label={theme==='dark'?'Cambiar a tema claro':'Cambiar a tema oscuro'} className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">{theme==='dark'?<Sun className="h-5 w-5"/>:<Moon className="h-5 w-5"/>}</button>
       <main className="flex items-center justify-center px-5 py-16 sm:px-8">
@@ -110,6 +112,7 @@ export default function LoginPage() {
             </button>
           </form>
           <div className="mt-6"><InstallAppCard compacto permitirOcultar={false} /></div>
+          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">¿Quieres conocer el colegio? <Link to="/galeria" className="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Ver la galería de fotos</Link></p>
         </div>
       </div>
       </main>

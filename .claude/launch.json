@@ -14,6 +14,18 @@
       "port": 5173
     },
     {
+      "name": "backend-video-demo",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set DB_NAME=gestion_video_demo&& set PORT=3010&& npm --prefix backend run dev"],
+      "port": 3010
+    },
+    {
+      "name": "frontend-video-demo",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set VITE_API_PROXY_TARGET=http://localhost:3010&& npm --prefix frontend run dev -- --port 5174 --strictPort"],
+      "port": 5174
+    },
+    {
       "name": "tuspa-demo",
       "runtimeExecutable": "C:/Program Files/Git/bin/bash.exe",
       "runtimeArgs": ["C:/xampp/htdocs/TuSpa/video/guia-essence/supabase-local/run-demo.sh"],

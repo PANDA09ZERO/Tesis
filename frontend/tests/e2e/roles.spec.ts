@@ -3,7 +3,8 @@ async function login(page:any,id:number){
  await page.goto('/login');await page.locator('input[type=email]').fill(`user${id}@test.local`);await page.locator('input[type=password]').fill('originalTest');await page.getByRole('button',{name:'Iniciar Sesión',exact:true}).click();await expect(page).not.toHaveURL(/\/login$/);
 }
 test('login sin credenciales demo, errores visibles y diseño adaptable',async({page},testInfo)=>{
- await page.goto('/login');await expect(page.getByRole('heading',{name:'Ciencias e Ingeniería'})).toBeVisible();await expect(page.getByText('admin@escuela.edu')).toHaveCount(0);
+ // Celular titula con el nombre del colegio; escritorio lo muestra en el panel lateral y titula "Iniciar sesión".
+ await page.goto('/login');await expect(page.getByRole('heading',{level:1,name:testInfo.project.name==='mobile'?'Ciencias e Ingeniería':'Iniciar sesión'})).toBeVisible();await expect(page.getByText('admin@escuela.edu')).toHaveCount(0);
  await page.getByRole('button',{name:'Iniciar Sesión',exact:true}).click();await expect(page.getByText('Complete todos los campos')).toBeVisible();
  const dimensions=await page.evaluate(()=>({width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.width);await page.screenshot({path:testInfo.outputPath('login.png'),fullPage:true});
 });
