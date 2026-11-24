@@ -1,6 +1,8 @@
 import {test,expect} from '@playwright/test';
 // Las secciones muestran sus registros como tarjetas desplegables; los datos y enlaces quedan dentro.
 async function openAll(page:any){const cards=page.getByRole('main').locator('details.mobile-bento-card');await cards.first().waitFor({timeout:5000}).catch(()=>{});for(const summary of await cards.locator(':scope:not([open]) > summary').all())await summary.click();}
+// Reabre las tarjetas y reintenta la comprobación si la sección se redibujó al cargar.
+async function inCards(page:any,check:()=>Promise<void>){await expect(async()=>{await openAll(page);await check();}).toPass({timeout:15000});}
 async function login(page:any,id=1){await page.goto('/login');await page.locator('input[type=email]').fill(`user${id}@test.local`);await page.locator('input[type=password]').fill('originalTest');const signed=page.waitForResponse(r=>r.url().endsWith('/api/auth/login')&&r.request().method()==='POST');await page.getByRole('button',{name:'Iniciar Sesión',exact:true}).click();expect((await signed).status()).toBe(200);await expect(page).toHaveURL(/dashboard$/);}
 
 test('detalle de periodo: historial, estructura y libros con pagos separados y filtro persistente',async({page},info)=>{
@@ -20,7 +22,7 @@ test('detalle de periodo: historial, estructura y libros con pagos separados y f
   await expect(page.getByRole('heading',{name:'Detalle del periodo: Anterior',exact:true})).toBeVisible();await expect(page.getByText('01/01/2025 al 31/12/2025',{exact:true})).toBeVisible();await page.screenshot({path:info.outputPath('detalle-periodo.png'),fullPage:true});
   await page.getByRole('button',{name:'Estructura académica',exact:true}).click();await openAll(page);await expect(page.getByRole('heading',{name:'Primaria · Segundo',exact:true})).toBeVisible();await seen('Usuario 2');await expect(page.getByRole('link',{name:'Gestionar estructura de este periodo'})).toHaveAttribute('href','/admin/configuracion-academica?periodo_id=2');
   await page.getByRole('button',{name:'Matrículas',exact:true}).click();await openAll(page);await seen('11, Usuario');await expect(records.locator('details.mobile-bento-card')).toHaveCount(1);
-  await page.getByRole('button',{name:'Calificaciones y asistencia',exact:true}).click();await openAll(page);await expect(records.getByRole('link',{name:'Calificaciones',exact:true})).toHaveAttribute('href','/calificaciones/oferta/4');await expect(records.getByRole('link',{name:'Asistencia',exact:true})).toHaveAttribute('href','/asistencias/oferta/4?vista=historial');
+  await page.getByRole('button',{name:'Calificaciones y asistencia',exact:true}).click();await openAll(page);await inCards(page,async()=>{await expect(records.getByRole('link',{name:'Calificaciones',exact:true})).toHaveAttribute('href','/calificaciones/oferta/4',{timeout:1000});await expect(records.getByRole('link',{name:'Asistencia',exact:true})).toHaveAttribute('href','/asistencias/oferta/4?vista=historial',{timeout:1000});});
   await page.getByRole('button',{name:'Pagos de matrícula',exact:true}).click();await openAll(page);await seen('S/ 50.00');await expect(value('S/ 200.00')).toHaveCount(0);await seen('pagado');
   await page.getByRole('button',{name:'Mensualidades',exact:true}).click();await openAll(page);await seen('S/ 80.00');await seen('Septiembre 2025');await expect(value('S/ 100.00')).toHaveCount(0);await seen('pendiente');
   await page.reload();await expect(page.getByRole('heading',{name:'Detalle del periodo: Anterior',exact:true})).toBeVisible();await openAll(page);await seen('S/ 80.00');
@@ -31,8 +33,8 @@ test('detalle de periodo: historial, estructura y libros con pagos separados y f
 test('detalle de periodo: profesor consulta solo asignaciones propias sin finanzas ni administración',async({page})=>{
  await login(page,2);await page.goto('/periodos');await expect(page.getByRole('button',{name:'Nuevo Periodo',exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Editar',exact:true})).toHaveCount(0);await expect(page.getByRole('link',{name:'Ver detalle de Superpuesto',exact:true})).toHaveCount(0);
  await page.getByRole('link',{name:'Ver detalle de Anterior',exact:true}).click();await expect(page.getByText(/Periodo histórico: solo consulta/)).toBeVisible();await expect(page.getByRole('button',{name:'Pagos de matrícula',exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Mensualidades',exact:true})).toHaveCount(0);
- await page.getByRole('button',{name:'Estructura académica',exact:true}).click();await openAll(page);await expect(page.getByRole('link',{name:'Gestionar estructura de este periodo'})).toHaveCount(0);await expect(page.getByRole('link',{name:'Ver curso',exact:true})).toHaveCount(1);
- await page.getByRole('button',{name:'Mis alumnos por curso',exact:true}).click();await openAll(page);await expect(page.getByRole('link',{name:'Alumnos y curso',exact:true})).toHaveAttribute('href','/cursos/oferta/4');
+ await page.getByRole('button',{name:'Estructura académica',exact:true}).click();await openAll(page);await expect(page.getByRole('link',{name:'Gestionar estructura de este periodo'})).toHaveCount(0);await inCards(page,()=>expect(page.getByRole('link',{name:'Ver curso',exact:true})).toHaveCount(1,{timeout:1000}));
+ await page.getByRole('button',{name:'Mis alumnos por curso',exact:true}).click();await openAll(page);await inCards(page,()=>expect(page.getByRole('link',{name:'Alumnos y curso',exact:true})).toHaveAttribute('href','/cursos/oferta/4',{timeout:1000}));
  await page.goto('/periodos/3');await expect(page.getByRole('alert')).toContainText('Periodo no encontrado o fuera de sus asignaciones');await expect(page.getByText('Alumnos con matrícula activa',{exact:true})).toHaveCount(0);
 });
 
