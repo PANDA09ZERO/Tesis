@@ -18,7 +18,7 @@ test('pagos HTTP y persistencia en MySQL aislado',async t=>{
   for(const sql of [
    "CREATE TABLE roles(id INT PRIMARY KEY,nombre VARCHAR(50))",
    'CREATE TABLE usuarios (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(50),apellido VARCHAR(50),telefono VARCHAR(30),email VARCHAR(100),dni VARCHAR(20),direccion VARCHAR(100),fecha_nacimiento DATE,genero VARCHAR(20),foto_url VARCHAR(100),password_hash VARCHAR(255) DEFAULT \'hash\',debe_cambiar_password TINYINT(1) NOT NULL DEFAULT 0,rol_id INT,activo TINYINT DEFAULT 1)',
-   "CREATE TABLE alumnos (id INT AUTO_INCREMENT PRIMARY KEY,usuario_id INT,codigo_alumno VARCHAR(20),grado_id INT,periodo_academico_id INT,estado VARCHAR(20) DEFAULT 'matriculado')",
+   "CREATE TABLE alumnos (id INT AUTO_INCREMENT PRIMARY KEY,usuario_id INT,codigo_alumno VARCHAR(20),grado_id INT,periodo_academico_id INT,estado VARCHAR(20) DEFAULT 'matriculado',es_historico TINYINT(1) NOT NULL DEFAULT 0)",
    'CREATE TABLE profesores (id INT PRIMARY KEY,usuario_id INT)',
    'CREATE TABLE periodos_academicos (id INT PRIMARY KEY,nombre VARCHAR(50),fecha_inicio DATE,fecha_fin DATE,activo TINYINT DEFAULT 0)',
    'CREATE TABLE cursos (id INT PRIMARY KEY,nombre VARCHAR(50),codigo VARCHAR(20),grado_id INT)',
@@ -123,15 +123,15 @@ test('pagos HTTP y persistencia en MySQL aislado',async t=>{
    assert.equal((await call('/alumnos/1/matriculas','GET',undefined,otherToken)).status,404);
   });
   await t.test('alta personal sin grado/periodo, matrícula asigna cursos y pago exige esa inscripción',async()=>{
-   const personal={password:'Synthetic-2026!',nombre:'Nuevo',apellido:'Alumno',email:'nuevo@example.test',genero:'Otro'};
+   const personal={nombre:'Nuevo',apellido:'Alumno',genero:'Otro'};
    assert.equal((await call('/alumnos','POST',{...personal,grado_id:1})).status,400);
-   const student=await call('/alumnos','POST',personal);assert.equal(student.status,201);const alumnoId=student.data.id;
+   const student=await call('/alumnos','POST',personal);assert.equal(student.status,201);const alumnoId=student.data.id;assert.equal(student.data.credentials.mustChangePassword,true);assert.ok(student.data.credentials.email&&student.data.credentials.temporaryPassword);
    const [initial]=await db.query('SELECT grado_id,periodo_academico_id FROM alumnos WHERE id=?',[alumnoId]);assert.equal(initial[0].grado_id,null);assert.equal(initial[0].periodo_academico_id,null);
    assert.equal((await call('/alumnos/'+alumnoId,'PUT',{grado_id:2})).status,400);
    assert.equal((await call('/pagos-matricula','POST',{alumno_id:alumnoId,matricula_id:1,monto:1})).status,400);
    assert.equal((await call('/matriculas','POST',{alumno_id:alumnoId,periodo_academico_id:1})).status,400);
    const enrollment=await call('/matriculas','POST',{alumno_id:alumnoId,periodo_academico_id:1,grado_id:1});assert.equal(enrollment.status,201);assert.equal(enrollment.data.cursos_inscritos,2);
-   const [newAccount]=await db.query('SELECT password_hash FROM usuarios WHERE id=?',[student.data.usuario_id]);hashes.set(student.data.usuario_id,newAccount[0].password_hash);
+   await db.query('UPDATE usuarios SET debe_cambiar_password=0 WHERE id=?',[student.data.usuario_id]);const [newAccount]=await db.query('SELECT password_hash FROM usuarios WHERE id=?',[student.data.usuario_id]);hashes.set(student.data.usuario_id,newAccount[0].password_hash);
    const own=sign({userId:student.data.usuario_id,rol:'alumno'});
    const detail=await call('/alumnos/'+alumnoId,'GET',undefined,own);assert.equal(detail.status,200);assert.equal(detail.data.grado_id,1);assert.equal(detail.data.periodo_academico_id,1);assert.equal(detail.data.matriculas_academicas[0].inscripciones.length,2);assert.equal(detail.data.matriculas_academicas[0].pago,null);
    const paid=await call('/pagos-matricula','POST',{alumno_id:alumnoId,matricula_id:enrollment.data.id,monto:120,estado:'pagado',fecha_pago:'2026-10-07'});assert.equal(paid.status,201);
