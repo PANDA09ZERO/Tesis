@@ -131,8 +131,6 @@ export async function createUser(req: Request, res: Response) {
 export async function updateUser(req: AuthRequest, res: Response) {
   const validation=accountError(req.body,false);if(validation)return sendError(res,validation,400);
   if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
-  // Lógica: un administrador no puede desactivar su propia cuenta (quedaría bloqueado sin acceso).
-  if(Number(req.params.id)===req.user?.userId&&req.body.activo!==undefined&&!req.body.activo)return sendError(res,'No puede desactivar su propia cuenta',400);
   try {
     const { nombre, apellido, dni, telefono, direccion, fecha_nacimiento, genero, activo, password } = req.body;
     const userId = req.params.id;
@@ -157,6 +155,9 @@ export async function updateUser(req: AuthRequest, res: Response) {
     if(!updateFields.length)return sendError(res,'No hay campos para actualizar',400);
     const [existing]=await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id = ? AND rol_id IN (SELECT id FROM roles WHERE nombre <> \'superadministrador\')' ,[userId]);
     if(!existing.length)return sendError(res,'Usuario no encontrado',404);
+    // Un administrador no puede desactivar su propia cuenta (quedaría sin acceso). Va después de la búsqueda
+    // para que la supercuenta, oculta, responda 404 también a sí misma.
+    if(Number(userId)===req.user?.userId&&activo!==undefined&&!activo)return sendError(res,'No puede desactivar su propia cuenta',400);
     updateValues.push(userId);
 
     await pool.query(
@@ -173,9 +174,9 @@ export async function updateUser(req: AuthRequest, res: Response) {
 export async function deleteUser(req: AuthRequest, res: Response) {
   try {
     if(!positiveId(req.params.id))return sendError(res,'ID inválido',400);
-    if(Number(req.params.id)===req.user?.userId)return sendError(res,'No puede desactivar su propia cuenta',400); // Evita autobloqueo
     const [existing]=await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id=? AND rol_id IN (SELECT id FROM roles WHERE nombre <> \'superadministrador\')' ,[req.params.id]);
     if(!existing.length)return sendError(res,'Usuario no encontrado',404);
+    if(Number(req.params.id)===req.user?.userId)return sendError(res,'No puede desactivar su propia cuenta',400); // Evita autobloqueo; tras la búsqueda para no revelar la supercuenta
     await pool.query('UPDATE usuarios SET activo = 0 WHERE id = ?', [req.params.id]);
     return sendSuccess(res, null, 'Usuario desactivado exitosamente');
   } catch (error) {
