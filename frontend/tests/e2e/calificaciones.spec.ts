@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import { expectRecord, openCards } from './helpers';
 
 async function login(page: any, id = 1) {
   await page.goto('/login');
@@ -12,16 +13,20 @@ test('calificaciones: administración usa ofertas y separa escalas, conserva cer
   await login(page);
   await page.goto('/calificaciones');
   await expect(page.getByRole('heading', {name:'Libros de calificaciones', exact:true})).toBeVisible();
-  await expect(page.getByRole('combobox', {name:'Periodo académico'})).toBeVisible();
+  // El periodo de consulta se muestra en la cabecera (se cambia en Módulos → Contexto académico).
+  await expect(page.getByTitle('Cambiar periodo en Módulos → Contexto académico')).toContainText('Actual');
   await page.goto('/calificaciones/oferta/1');
+  // En celular cada alumno es una tarjeta desplegable con su nota dentro.
+  const mobile = info.project.name === 'mobile';
+  const show = async () => { if (mobile) await openCards(page); };
   const select = page.getByRole('combobox', {name:'Evaluación', exact:true});
-  await select.selectOption('1');
+  await select.selectOption('1'); await show();
   const note = page.getByRole('spinbutton', {name:'Nota de Usuario 11', exact:true});
   await expect(note).toHaveValue(/^9(?:\.0+)?$/);
-  await expect(page.getByRole('cell', {name:/^9\.00 \/ 10(?:\.0+)?$/})).toBeVisible();
-  await select.selectOption('2');
-  await expect(page.getByRole('cell', {name:/^18\.00 \/ 20(?:\.0+)?$/})).toBeVisible();
-  await select.selectOption('1');
+  await expectRecord(page, mobile, /^9\.00 \/ 10(?:\.0+)?$/);
+  await select.selectOption('2'); await show();
+  await expectRecord(page, mobile, /^18\.00 \/ 20(?:\.0+)?$/);
+  await select.selectOption('1'); await show();
   await page.screenshot({path:info.outputPath('libro-escalas.png'), fullPage:true});
   const token = await page.evaluate(() => localStorage.getItem('token'));
   try {
@@ -29,16 +34,18 @@ test('calificaciones: administración usa ofertas y separa escalas, conserva cer
     const saved = page.waitForResponse(r => r.url().endsWith('/calificaciones/oferta/1/evaluacion/1/bulk') && r.request().method() === 'POST');
     await page.getByRole('button', {name:'Guardar notas', exact:true}).click();
     expect((await saved).status()).toBe(200);
-    await expect(page.getByRole('cell', {name:/^0\.00 \/ 10(?:\.0+)?$/})).toBeVisible();
+    await show();
+    await expectRecord(page, mobile, /^0\.00 \/ 10(?:\.0+)?$/);
     await page.reload();
-    await page.getByRole('combobox', {name:'Evaluación', exact:true}).selectOption('1');
+    await page.getByRole('combobox', {name:'Evaluación', exact:true}).selectOption('1'); await show();
     await expect(note).toHaveValue(/^0(?:\.0+)?$/);
   } finally {
     expect((await page.request.post('/api/calificaciones/oferta/1/evaluacion/1/bulk', {headers:{Authorization:'Bearer '+token}, data:{calificaciones:[{alumno_id:1, nota:9}]}})).status()).toBe(200);
   }
   await page.goto('/asistencias');
   await expect(page.getByRole('heading', {name:'Asistencia por oferta', exact:true})).toBeVisible();
-  await expect(page.getByRole('combobox', {name:'Periodo académico'})).toBeVisible();
+  // El periodo de consulta se muestra en la cabecera (se cambia en Módulos → Contexto académico).
+  await expect(page.getByTitle('Cambiar periodo en Módulos → Contexto académico')).toContainText('Actual');
 });
 
 test('calificaciones: errores visibles con reintento y creación protegida contra doble envío', async ({page}, info) => {
@@ -73,6 +80,7 @@ test('calificaciones: errores visibles con reintento y creación protegida contr
   } finally { release(); await page.unroute(path); }
   const save = '**/api/calificaciones/oferta/1/evaluacion/1/bulk';
   await page.getByRole('combobox', {name:'Evaluación', exact:true}).selectOption('1');
+  if (info.project.name === 'mobile') await openCards(page);
   await page.getByRole('spinbutton', {name:'Nota de Usuario 11', exact:true}).fill('8');
   await page.route(save, route => route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({success:false,message:'No se pudo guardar la nota sintética'})}));
   await page.getByRole('button', {name:'Guardar notas', exact:true}).click();
@@ -81,16 +89,18 @@ test('calificaciones: errores visibles con reintento y creación protegida contr
   await page.unroute(save);
 });
 
-test('asistencia: docente histórico tiene todos los campos de solo consulta', async ({page}) => {
+test('asistencia: docente histórico tiene todos los campos de solo consulta', async ({page}, info) => {
   await login(page, 2);
   await page.goto('/asistencias/oferta/4');
   await page.getByLabel('Fecha', {exact:true}).fill('2025-10-14');
+  if (info.project.name === 'mobile') await openCards(page);
   await expect(page.getByRole('combobox', {name:'Asistencia de Usuario 11', exact:true})).toBeDisabled();
   await expect(page.getByRole('textbox', {name:'Observación de Usuario', exact:true})).toBeDisabled();
   await expect(page.getByRole('button', {name:'Todos presentes', exact:true})).toBeDisabled();
   await page.goto('/calificaciones/oferta/4');
   await expect(page.getByText('Periodo histórico: solo consulta.', {exact:true})).toBeVisible();
   await expect(page.getByRole('button', {name:'Nueva evaluación', exact:true})).toBeDisabled();
+  if (info.project.name === 'mobile') await openCards(page);
   await expect(page.getByRole('spinbutton', {name:'Nota de Usuario 11', exact:true})).toBeDisabled();
 });
 

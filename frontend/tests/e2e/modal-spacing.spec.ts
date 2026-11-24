@@ -13,7 +13,8 @@ test('diálogos: vista de imagen y formulario separados de los bordes', async ({
   await page.route('**/api/documentos/*/archivo', async route => {
     await route.fulfill({ contentType: 'image/png', body: '' });
   });
-  if (info.project.name === 'mobile') await page.locator('.mobile-bento-card').first().locator('summary').click();
+  // Los documentos se muestran como tarjetas desplegables en todas las pantallas.
+  await page.locator('.mobile-bento-card').first().locator('summary').click();
   await page.getByRole('button', { name: 'Ver archivo', exact: true }).first().click();
   const dialog = page.getByRole('dialog');
   const image = dialog.locator('img');

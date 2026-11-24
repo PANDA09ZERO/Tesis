@@ -82,7 +82,9 @@ test('perfil: validación, visibilidad, error de servidor y envío único', asyn
   const current = page.getByLabel('Contraseña actual', { exact: true });
   const next = page.getByLabel('Nueva contraseña', { exact: true });
   const confirm = page.getByLabel('Confirmar nueva contraseña', { exact: true });
-  const save = page.locator('.profile-page form button[type=submit]');
+  // La página tiene dos formularios (datos y contraseña); esta prueba usa el de contraseña.
+  const passwordForm = page.locator('.profile-page form').filter({ has: page.getByLabel('Contraseña actual', { exact: true }) });
+  const save = passwordForm.locator('button[type=submit]');
   await current.fill('incorrecta'); await next.fill('SyntheticPass123'); await confirm.fill('SyntheticPass124');
   await save.click(); await expect(page.getByRole('alert')).toContainText('no coinciden');
   await confirm.fill('SyntheticPass123');
@@ -101,7 +103,7 @@ test('perfil: validación, visibilidad, error de servidor y envío único', asyn
   });
   try {
     await save.click(); await expect(save).toBeDisabled();
-    await page.locator('.profile-page form').evaluate((form: HTMLFormElement) => form.requestSubmit());
+    await passwordForm.evaluate((form: HTMLFormElement) => form.requestSubmit());
     await expect.poll(() => sent).toBe(1); release();
     await expect(page.getByRole('alert')).toContainText('Fallo sintético de seguridad');
     await expect(next).toHaveValue('SyntheticPass123');
