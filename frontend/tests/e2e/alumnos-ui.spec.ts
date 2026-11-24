@@ -21,6 +21,14 @@ async function openStudent(page: Page, name: string, text?: string) {
   if (!await card.first().evaluate(d => (d as HTMLDetailsElement).open)) await card.first().locator('summary').click();
   return card.first().getByRole('article', { name, exact: true });
 }
+// La lista se recarga tras buscar (con retardo) y vuelve a cerrar las tarjetas: reabre y reintenta el clic.
+async function clickInStudent(page: Page, name: string, text: string, button: string) {
+  await expect(async () => {
+    const card = studentCard(page, name).filter({ hasText: text }).first();
+    if (!await card.evaluate(d => (d as HTMLDetailsElement).open)) await card.locator('summary').click();
+    await card.getByRole('button', { name: button, exact: true }).click({ timeout: 2000 });
+  }).toPass({ timeout: 15000 });
+}
 // El periodo de consulta se elige en Módulos → Contexto académico y se conserva entre páginas.
 async function choosePeriod(page: Page, value: string) {
   await page.goto('/modulos');
@@ -95,6 +103,7 @@ test('alumnos: error recuperable, búsqueda vacía y filtro de periodo', async (
 });
 
 test('alumnos: registrar sin matrícula, conservar error y editar datos que persiste la API', async ({ page }, info) => {
+  test.setTimeout(60_000); // Flujo largo: alta con error simulado, edición, comprobación por API y baja.
   await login(page);
   await page.getByRole('button', { name: 'Nuevo Alumno', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Registrar Alumno', exact: true })).toBeVisible();
@@ -144,7 +153,7 @@ test('alumnos: registrar sin matrícula, conservar error y editar datos que pers
     await page.getByPlaceholder('Buscar alumno...').fill('PruebaInterfaz');
     const record = await openStudent(page, 'PruebaInterfaz Alumno', result.credentials.email);
     await expect(record).toContainText(result.credentials.email);
-    await record.getByRole('button', { name: 'Editar a PruebaInterfaz Alumno', exact: true }).click();
+    await clickInStudent(page, 'PruebaInterfaz Alumno', result.credentials.email, 'Editar a PruebaInterfaz Alumno');
     await expect(page.getByLabel('Nombre *', { exact: true })).toHaveAttribute('readonly', '');
     await page.getByLabel('Teléfono', { exact: true }).fill('987654321');
     const updated = page.waitForResponse(r => r.url().endsWith(`/api/alumnos/${result.id}`) && r.request().method() === 'PUT');

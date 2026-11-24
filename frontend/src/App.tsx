@@ -1,49 +1,53 @@
-import ProfilePage from './pages/profile/ProfilePage';
-import ModulesPage from './pages/modules/ModulesPage';
-import SuperadministracionPage from './pages/admin/SuperadministracionPage';
 import SystemSuspended from './components/SystemSuspended';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
+import PageLoader from './components/ui/PageLoader';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/auth/LoginPage';
-import DashboardPage from './pages/dashboard/DashboardPage';
-import AlumnosPage from './pages/students/AlumnosPage';
-import AlumnoDetailPage from './pages/students/AlumnoDetailPage';
-import ProfesoresPage from './pages/teachers/ProfesoresPage';
-import ProfesorDetailPage from './pages/teachers/ProfesorDetailPage';
-import CursosPage from './pages/academics/CursosPage';
-import OfertaDetailPage from './pages/academics/OfertaDetailPage';
-import CalificacionesPage from './pages/academics/CalificacionesPage';
-import OfertaCalificacionesPage from './pages/academics/OfertaCalificacionesPage';
-import ProfesorOfertasCalificacionesPage from './pages/academics/ProfesorOfertasCalificacionesPage';
-import ProfesorApoderadosPage from './pages/teachers/ProfesorApoderadosPage';
-import CalendarPage from './pages/CalendarPage';
-import AsistenciasPage from './pages/academics/AsistenciasPage';
-import OfertaAsistenciasPage from './pages/academics/OfertaAsistenciasPage';
-import HorariosPage from './pages/academics/HorariosPage';
-import PeriodoDetailPage from './pages/academics/PeriodoDetailPage';
-import PeriodosPage from './pages/academics/PeriodosPage';
-import ConfiguracionAcademicaPage from './pages/academics/ConfiguracionAcademicaPage';
-import DocumentosPage from './pages/documents/DocumentosPage';
-import AlertasPage from './pages/alerts/AlertasPage';
-import IncidenciasPage from './pages/incidencias/IncidenciasPage';
-import ExalumnosPage from './pages/students/ExalumnosPage';
-import ImportarExalumnosPage from './pages/students/ImportarExalumnosPage';
-import TramitesPage from './pages/tramites/TramitesPage';
-import ReportesPage from './pages/reports/ReportesPage';
-import PagosPage from './pages/admin/PagosPage';
-import UsuariosPage from './pages/admin/UsuariosPage';
-import ApoderadosPage from './pages/admin/ApoderadosPage';
-import MatriculasPage from './pages/admin/MatriculasPage';
-import NotificacionesPage from './pages/admin/NotificacionesPage';
-import ProfesorPerfilPage from './pages/teachers/ProfesorPerfilPage';
-import ProfesorOfertasPage from './pages/teachers/ProfesorOfertasPage';
-import EstudiantePage, { EstudianteCursoPage } from './pages/students/EstudiantePage';
-import FamilyStudentsPage from './pages/guardian/FamilyStudentsPage';
 import ForcedPasswordChangePage from './pages/auth/ForcedPasswordChangePage';
-import GaleriaPage from './pages/public/GaleriaPage';
+
+// Cada página se descarga al visitarla por primera vez; el login queda en el paquete inicial.
+const ProfilePage = lazy(() => import('./pages/profile/ProfilePage'));
+const ModulesPage = lazy(() => import('./pages/modules/ModulesPage'));
+const SuperadministracionPage = lazy(() => import('./pages/admin/SuperadministracionPage'));
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
+const AlumnosPage = lazy(() => import('./pages/students/AlumnosPage'));
+const AlumnoDetailPage = lazy(() => import('./pages/students/AlumnoDetailPage'));
+const ProfesoresPage = lazy(() => import('./pages/teachers/ProfesoresPage'));
+const ProfesorDetailPage = lazy(() => import('./pages/teachers/ProfesorDetailPage'));
+const CursosPage = lazy(() => import('./pages/academics/CursosPage'));
+const OfertaDetailPage = lazy(() => import('./pages/academics/OfertaDetailPage'));
+const CalificacionesPage = lazy(() => import('./pages/academics/CalificacionesPage'));
+const OfertaCalificacionesPage = lazy(() => import('./pages/academics/OfertaCalificacionesPage'));
+const ProfesorOfertasCalificacionesPage = lazy(() => import('./pages/academics/ProfesorOfertasCalificacionesPage'));
+const ProfesorApoderadosPage = lazy(() => import('./pages/teachers/ProfesorApoderadosPage'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const AsistenciasPage = lazy(() => import('./pages/academics/AsistenciasPage'));
+const OfertaAsistenciasPage = lazy(() => import('./pages/academics/OfertaAsistenciasPage'));
+const HorariosPage = lazy(() => import('./pages/academics/HorariosPage'));
+const PeriodoDetailPage = lazy(() => import('./pages/academics/PeriodoDetailPage'));
+const PeriodosPage = lazy(() => import('./pages/academics/PeriodosPage'));
+const ConfiguracionAcademicaPage = lazy(() => import('./pages/academics/ConfiguracionAcademicaPage'));
+const DocumentosPage = lazy(() => import('./pages/documents/DocumentosPage'));
+const AlertasPage = lazy(() => import('./pages/alerts/AlertasPage'));
+const IncidenciasPage = lazy(() => import('./pages/incidencias/IncidenciasPage'));
+const ExalumnosPage = lazy(() => import('./pages/students/ExalumnosPage'));
+const ImportarExalumnosPage = lazy(() => import('./pages/students/ImportarExalumnosPage'));
+const TramitesPage = lazy(() => import('./pages/tramites/TramitesPage'));
+const ReportesPage = lazy(() => import('./pages/reports/ReportesPage'));
+const PagosPage = lazy(() => import('./pages/admin/PagosPage'));
+const UsuariosPage = lazy(() => import('./pages/admin/UsuariosPage'));
+const ApoderadosPage = lazy(() => import('./pages/admin/ApoderadosPage'));
+const MatriculasPage = lazy(() => import('./pages/admin/MatriculasPage'));
+const NotificacionesPage = lazy(() => import('./pages/admin/NotificacionesPage'));
+const ProfesorPerfilPage = lazy(() => import('./pages/teachers/ProfesorPerfilPage'));
+const ProfesorOfertasPage = lazy(() => import('./pages/teachers/ProfesorOfertasPage'));
+const EstudiantePage = lazy(() => import('./pages/students/EstudiantePage'));
+const EstudianteCursoPage = lazy(() => import('./pages/students/EstudiantePage').then(m => ({ default: m.EstudianteCursoPage })));
+const FamilyStudentsPage = lazy(() => import('./pages/guardian/FamilyStudentsPage'));
+const GaleriaPage = lazy(() => import('./pages/public/GaleriaPage'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -105,7 +109,7 @@ function ApplicationRoutes() {
   if (isAuthenticated && user?.debe_cambiar_password) return <ForcedPasswordChangePage />;
 
   return (
-      <><SystemSuspended/><Routes>
+      <><SystemSuspended/><Suspense fallback={<PageLoader fullScreen />}><Routes>
       <Route path="/superadministracion" element={<ProtectedRoute><SuperRoute><AppLayout title="Control del sistema"><SuperadministracionPage /></AppLayout></SuperRoute></ProtectedRoute>} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/galeria" element={<GaleriaPage />} />
@@ -161,7 +165,7 @@ function ApplicationRoutes() {
       <Route path="/admin/pagos" element={<ProtectedRoute><RoleRoute allowed={['administrador']}><AppLayout title="Gestión de Pagos"><PagosPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes></>
+    </Routes></Suspense></>
   );
 }
 

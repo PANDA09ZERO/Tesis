@@ -1,8 +1,10 @@
 import MobileDashboard, {activityDate, type MobileDashboardStats} from './MobileDashboard';
 import ProfesorPanelPage from '../teachers/ProfesorPanelPage';
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { lazy, Suspense, useEffect, useState, useCallback, useRef } from 'react';
 import { Users, GraduationCap, BookOpen, AlertTriangle, FileText, TrendingUp, Layers, Calendar, ClipboardCheck, BarChart3, ChevronRight, School } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+// La gráfica (recharts) se descarga aparte y solo en pantallas anchas, donde se muestra.
+const RiskPieChart = lazy(() => import('./RiskPieChart'));
+const wideScreen = () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
 import { dashboardApi, alertasApi, matriculasApi, periodosApi } from '../../api/endpoints';
@@ -11,7 +13,6 @@ import { useAuth } from '../../context/AuthContext';
 import { usePeriodo } from '../../context/PeriodoContext';
 import { useNavigate } from 'react-router-dom';
 
-const COLORS = ['#22c55e', '#f59e0b', '#ef4444', 'var(--app-primary-500)'];
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -168,25 +169,7 @@ export default function DashboardPage() {
         <div className="card">
           <h3 className="mb-2 text-[1.1875rem] font-bold text-gray-900 dark:text-gray-100">Alertas por Nivel de Riesgo</h3>
           {alertas.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  dataKey="value"
-                  data={[
-                    { name: 'Alto', value: alertas.filter(a => a.tipo_riesgo === 'alto').length },
-                    { name: 'Medio', value: alertas.filter(a => a.tipo_riesgo === 'medio').length },
-                    { name: 'Bajo', value: alertas.filter(a => a.tipo_riesgo === 'bajo').length },
-                  ].filter(d => d.value > 0)}
-                  cx="50%" cy="50%" outerRadius={100}
-                  label={({ name, value }) => `${name}: ${value}`}
-                >
-                  {[2, 1, 0].map((_, i) => (
-                    <Cell key={i} fill={COLORS[i]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            wideScreen() ? <Suspense fallback={<div className="h-[250px]" aria-busy="true" />}><RiskPieChart alertas={alertas} /></Suspense> : null
           ) : (
             <p className="text-gray-500 dark:text-gray-400 text-center py-12 text-sm">Sin alertas activas</p>
           )}

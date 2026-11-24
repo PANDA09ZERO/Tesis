@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    // Las páginas se cargan de forma diferida: analizar todo src al arrancar evita que el servidor de
+    // desarrollo descubra dependencias tarde y recargue la página en mitad del uso (o de las pruebas).
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{ts,tsx}'] },
     server: {
       host: '0.0.0.0',
       port: 5173,
