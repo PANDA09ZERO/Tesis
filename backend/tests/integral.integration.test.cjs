@@ -165,6 +165,21 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
     await db.query('DELETE FROM incidencias WHERE id=?',[created.data.id]);
    }
   });
+  await t.test('editar usuario con el formulario completo: campos vacíos como NULL y contraseña restablecida',async()=>{
+   const [[before]]=await db.query('SELECT password_hash,fecha_nacimiento,dni,telefono,genero FROM usuarios WHERE id=12');
+   try{
+    // Así lo envía Administración de usuarios: todos los campos, los opcionales vacíos como "".
+    const body={email:'user12@test.local',nombre:'Usuario',apellido:'12',dni:'',telefono:'',direccion:'',fecha_nacimiento:'',genero:before.genero||'M',rol_id:'3',password:'ClaveNueva2026'};
+    const updated=await call('/users/12','PUT',body);assert.equal(updated.status,200);
+    const [[row]]=await db.query('SELECT fecha_nacimiento,dni,telefono,direccion,genero,debe_cambiar_password FROM usuarios WHERE id=12');
+    assert.equal(row.fecha_nacimiento,null);assert.equal(row.dni,null);assert.equal(row.telefono,null);assert.equal(row.direccion,null);assert.equal(row.genero,before.genero||'M');assert.equal(Number(row.debe_cambiar_password),1);
+    assert.equal((await call('/auth/login','POST',{email:'user12@test.local',password:'ClaveNueva2026'},null)).status,200);
+    assert.equal((await call('/users/12','PUT',{fecha_nacimiento:'2010-05-04'})).status,200);
+    const [[dated]]=await db.query("SELECT DATE_FORMAT(fecha_nacimiento,'%Y-%m-%d') f FROM usuarios WHERE id=12");assert.equal(dated.f,'2010-05-04');
+   }finally{
+    await db.query('UPDATE usuarios SET password_hash=?,fecha_nacimiento=?,dni=?,telefono=?,genero=?,debe_cambiar_password=0 WHERE id=12',[before.password_hash,before.fecha_nacimiento,before.dni,before.telefono,before.genero]);
+   }
+  });
   await t.test('contraseña propia cierra todas las sesiones, exige reautenticación y no modifica otro usuario',async()=>{const another=sign(21,'apoderado');assert.equal((await call('/auth/change-password','PUT',{currentPassword:'originalTest',newPassword:'nuevaTest',userId:22},'g1')).status,200);assert.equal((await call('/auth/profile','GET',undefined,'g1')).status,401);assert.equal((await call('/auth/profile','GET',undefined,another)).status,401);assert.equal((await call('/auth/profile','GET',undefined,'g2')).status,200);assert.equal((await call('/auth/login','POST',{email:'user21@test.local',password:'originalTest'},null)).status,401);const r=await call('/auth/login','POST',{email:'user21@test.local',password:'nuevaTest'},null);assert.equal(r.status,200);assert.equal((await call('/auth/profile','GET',undefined,r.data.token)).status,200);});
  }finally{if(server)await new Promise(resolve=>server.close(resolve));if(db)await db.end();await admin.query('DROP DATABASE IF EXISTS `'+name+'`');await admin.end();await original.end();}
 });
