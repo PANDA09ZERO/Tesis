@@ -1,12 +1,12 @@
-﻿# Levanta el sistema publicado desde esta PC (plan B: backend local + Tailscale Funnel + Vercel).
+﻿# Levanta el sistema publicado desde esta PC (plan B: backend local + tunel ngrok + Vercel).
+# Tailscale Funnel dejo de conectar en las redes de esta PC (25/11/2026); ver docs/despliegue-local-tailscale.md.
 # Uso (PowerShell):  powershell -ExecutionPolicy Bypass -File C:\xampp\htdocs\Tesis\deploy\local\iniciar-sistema.ps1
 # Variables privadas: C:\gestion-produccion\backend.env (fuera del repositorio).
 
 $ErrorActionPreference = 'Stop'
 $repo      = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $envFile   = 'C:\gestion-produccion\backend.env'
-$tailscale = 'C:\Program Files\Tailscale\tailscale.exe'
-$publica   = 'https://cienciaseingeniaria.tail4a4bea.ts.net'
+$publica   = 'https://estrogen-wildcard-molecule.ngrok-free.dev'
 
 function Paso($numero, $texto, [scriptblock]$accion) {
   Write-Host "[$numero] $texto..." -NoNewline
@@ -79,24 +79,27 @@ Paso 5 'Iniciar backend con PM2' {
   pm2 save 2>&1 | Out-Null
 }
 
-Paso 6 'Tailscale Funnel (puerto 3000)' {
-  if (-not (Test-Path $tailscale)) { throw "No se encontro $tailscale" }
+Paso 6 'Tunel ngrok (puerto 3000)' {
+  # Requiere haber guardado el token una vez: ngrok config add-authtoken <TOKEN>
+  Set-Location $repo
   $ErrorActionPreference = 'Continue'
-  $salida = & $tailscale funnel --bg 3000 2>&1
-  if ($LASTEXITCODE -ne 0) { throw "tailscale funnel fallo: $salida. Revisa que Tailscale este abierto y con sesion iniciada." }
+  pm2 delete gestion-tunel 2>&1 | Out-Null
+  pm2 start deploy\local\tunel-ngrok.config.cjs 2>&1 | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw 'pm2 no pudo iniciar ngrok; revisa "pm2 logs gestion-tunel"' }
+  pm2 save 2>&1 | Out-Null
 }
 
 # Comprobacion final
 Start-Sleep -Seconds 6
 try { $local = (Invoke-RestMethod http://127.0.0.1:3000/api/ready -TimeoutSec 10).status } catch { $local = 'ERROR' }
-try { $web = (Invoke-RestMethod "$publica/api/ready" -TimeoutSec 30).status } catch { $web = 'ERROR' }
+try { $web = (Invoke-RestMethod "$publica/api/ready" -Headers @{'ngrok-skip-browser-warning'='true'} -TimeoutSec 30).status } catch { $web = 'ERROR' }
 Write-Host ''
 Write-Host "Backend local:   $local"
-Write-Host "Backend por Tailscale: $web  ($publica)"
+Write-Host "Backend por ngrok: $web  ($publica)"
 Write-Host '  (desde esta laptop se prueba por la red interna; para confirmar el acceso publico abre la URL en el celular con datos moviles)' -ForegroundColor DarkGray
 Write-Host 'Frontend:        https://cienciaseingeniaria.vercel.app'
 if ($local -ne 'ready') { Write-Host 'El backend no responde. Ultimas lineas del registro:' -ForegroundColor Red; pm2 logs gestion-backend --lines 20 --nostream }
-elseif ($web -ne 'ready') { Write-Host 'El backend funciona pero Tailscale no lo expone: revisa "tailscale status" y "tailscale funnel status".' -ForegroundColor Red }
+elseif ($web -ne 'ready') { Write-Host 'El backend funciona pero ngrok no lo expone: revisa "pm2 logs gestion-tunel --lines 20".' -ForegroundColor Red }
 else {
   Write-Host 'Todo listo.' -ForegroundColor Green
   Write-Host 'Si en ESTA laptop Vercel no carga: desactiva "DNS seguro" en el navegador (brave://settings/security o chrome://settings/security).' -ForegroundColor DarkGray
