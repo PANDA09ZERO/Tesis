@@ -1,4 +1,43 @@
-# Despliegue actual: backend en esta PC + Tailscale Funnel + Vercel (plan B)
+# Despliegue actual: backend en esta PC + túnel ngrok + Vercel (plan B)
+
+> **Cambio del 25/11/2026: Tailscale Funnel se reemplazó por ngrok.** En las redes de esta PC (Wi-Fi y datos móviles) se filtra por nombre `controlplane.tailscale.com`: la conexión segura nunca recibe respuesta, aunque `login.tailscale.com`, en los mismos servidores, sí responde. Las versiones actuales de Tailscale siempre usan `controlplane`, así que no hay forma de evitarlo desde la PC.
+
+## Cómo funciona ahora
+
+| Pieza | Dónde | Dirección |
+|---|---|---|
+| Frontend | Vercel, conectado a `main` | https://cienciaseingeniaria.vercel.app |
+| Llamadas a la API | La app llama a `/api` en su propio dominio; la regla de `frontend/vercel.json` las reenvía al túnel | — |
+| Túnel | ngrok, plan gratuito, PM2 `gestion-tunel` (`deploy/local/tunel-ngrok.config.cjs`) | https://estrogen-wildcard-molecule.ngrok-free.dev → `127.0.0.1:3000` |
+| Backend | Esta PC, PM2 `gestion-backend` | puerto 3000 |
+| Base de datos | MySQL 8.0 local (`MySQL80`, puerto 3307) | solo local |
+
+- La dirección del backend vive en `frontend/vercel.json` (no en el panel de Vercel). `VITE_API_BASE_URL` ya no se usa. Si cambia la dirección del túnel, se edita esa regla y se hace `git push` a `main`.
+- El plan gratuito de ngrok muestra una página de aviso a los navegadores; la app envía `ngrok-skip-browser-warning` y Vercel la reenvía.
+- **Límites del plan gratuito de ngrok:** crédito único de 5 USD, hasta 20 000 peticiones y 1 GB de transferencia. Sirve para presentaciones y pruebas; para uso diario del colegio hace falta un plan de pago o un servidor.
+- Como las llamadas pasan por Vercel, el backend ve la IP de Vercel: el límite de 100 intentos de login cada 15 minutos por IP lo comparten todos los usuarios.
+- El token de ngrok se guarda una vez con `ngrok config add-authtoken <TOKEN>` (queda en `%LOCALAPPDATA%\ngrok\ngrok.yml`, fuera del repositorio).
+
+## Encender
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\xampp\htdocs\Tesis\deploy\local\iniciar-sistema.ps1
+```
+
+Compila el backend, lo inicia con PM2 y levanta el túnel de ngrok. Debe terminar con `Backend local: ready` y `Backend por ngrok: ready`.
+
+## Detener
+
+```powershell
+pm2 stop gestion-tunel gestion-backend
+```
+
+Para volver a modo desarrollo (`npm run dev`), detén antes `gestion-backend`: ambos usan el puerto 3000.
+
+---
+
+## Historial: montaje con Tailscale Funnel (06/11/2026)
+
 
 Puesto en marcha el 06/11/2026. Oracle Cloud rechazó el registro de la cuenta, así que el backend se publica desde esta PC. Cuando haya un servidor, se sigue [despliegue-oracle.md](despliegue-oracle.md); el frontend en Vercel no cambia, salvo la variable `VITE_API_BASE_URL`.
 

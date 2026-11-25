@@ -47,6 +47,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://estrogen-wildcard-molecule.ngrok-free.dev/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

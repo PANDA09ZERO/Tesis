@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+// La app llama siempre a /api en su propio dominio. En desarrollo lo atiende el proxy de Vite; en
+// Vercel, la regla de frontend/vercel.json lo reenvía al backend (hoy, el túnel de ngrok de esta PC).
+// Así la dirección del backend vive en el repositorio y no en una variable del panel de Vercel.
 const client = axios.create({
-  baseURL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
-    // Con el backend publicado por un túnel gratuito de ngrok, esta cabecera evita la página de
-    // aviso que ngrok muestra a los navegadores (que rompería las respuestas JSON).
-    ...(/\.ngrok(-free)?\.(app|dev|io)/.test(baseURL) ? { 'ngrok-skip-browser-warning': 'true' } : {})
+    // El plan gratuito de ngrok muestra una página de aviso a los navegadores que rompería las
+    // respuestas JSON; Vercel reenvía esta cabecera y ngrok la omite. Otros backends la ignoran.
+    'ngrok-skip-browser-warning': 'true'
   }
 });
 
