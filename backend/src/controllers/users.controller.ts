@@ -142,11 +142,15 @@ export async function updateUser(req: AuthRequest, res: Response) {
 
     if (nombre !== undefined) { updateFields.push('nombre = ?'); updateValues.push(nombre); }
     if (apellido !== undefined) { updateFields.push('apellido = ?'); updateValues.push(apellido); }
-    if (dni !== undefined) { updateFields.push('dni = ?'); updateValues.push(dni); }
-    if (telefono !== undefined) { updateFields.push('telefono = ?'); updateValues.push(telefono); }
-    if (direccion !== undefined) { updateFields.push('direccion = ?'); updateValues.push(direccion); }
-    if (fecha_nacimiento !== undefined) { updateFields.push('fecha_nacimiento = ?'); updateValues.push(fecha_nacimiento); }
-    if (genero !== undefined) { updateFields.push('genero = ?'); updateValues.push(genero); }
+    // El formulario envía todos los campos: los opcionales vacíos se guardan como NULL (igual que al
+    // crear). Antes se guardaba "" y MySQL rechazaba una fecha vacía (ER_TRUNCATED_WRONG_VALUE), lo
+    // que impedía también restablecer la contraseña de cualquier usuario sin fecha de nacimiento.
+    const vacioANull = (value: unknown) => (value === '' ? null : value);
+    if (dni !== undefined) { updateFields.push('dni = ?'); updateValues.push(vacioANull(dni)); }
+    if (telefono !== undefined) { updateFields.push('telefono = ?'); updateValues.push(vacioANull(telefono)); }
+    if (direccion !== undefined) { updateFields.push('direccion = ?'); updateValues.push(vacioANull(direccion)); }
+    if (fecha_nacimiento !== undefined) { updateFields.push('fecha_nacimiento = ?'); updateValues.push(vacioANull(fecha_nacimiento)); }
+    if (genero !== undefined && genero !== '') { updateFields.push('genero = ?'); updateValues.push(genero); }
     if (activo !== undefined) { updateFields.push('activo = ?'); updateValues.push(activo); }
     if (password) {
       updateFields.push('password_hash = ?');
