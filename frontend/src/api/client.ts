@@ -1,9 +1,13 @@
 import axios from 'axios';
 
+const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    // Con el backend publicado por un túnel gratuito de ngrok, esta cabecera evita la página de
+    // aviso que ngrok muestra a los navegadores (que rompería las respuestas JSON).
+    ...(/\.ngrok(-free)?\.(app|dev|io)/.test(baseURL) ? { 'ngrok-skip-browser-warning': 'true' } : {})
   }
 });
 
