@@ -6,6 +6,7 @@ import { getPagination } from '../utils/pagination';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { AuthRequest } from '../types';
 import { positiveId } from '../utils/academicValidation';
+import { seccionesPendientes } from '../utils/avisos';
 
 const TIPOS_NOTIFICACION = ['info', 'warning', 'success', 'error', 'alerta'];
 const PRIORIDADES = ['baja', 'normal', 'alta', 'urgente'];
@@ -205,9 +206,13 @@ export async function getNotificacionesNoLeidas(req: Request, res: Response) {
       respuestasPendientes = Number(pendientes[0].total);
     }
 
+    // Alertas activas, incidencias abiertas y trámites solicitados que esperan atención.
+    const secciones = await seccionesPendientes(pool, currentUserId, authRequest.user?.rol);
+
     return sendSuccess(res, {
       total: notificaciones[0].total,
       respuestas_pendientes: respuestasPendientes,
+      secciones,
       recientes
     });
   } catch (error) {

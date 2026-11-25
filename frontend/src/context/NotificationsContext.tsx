@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { notificacionesApi } from '../api/endpoints';
 import { useAuth } from './AuthContext';
 
@@ -13,11 +14,18 @@ export function notificationsPath(rol?: string) {
     : rol === 'apoderado' ? '/familia/notificaciones' : null;
 }
 
+export type Sections = { alertas: number; incidencias: number; tramites: number };
+const NO_SECTIONS: Sections = { alertas: 0, incidencias: 0, tramites: 0 };
+
 type NotificationsState = {
   /** Notificaciones propias sin leer más, para la administración, respuestas sin abrir. */
   pending: number;
   unread: number;
   replies: number;
+  /** Lo que espera atención en cada sección (alertas activas, incidencias abiertas, trámites solicitados). */
+  sections: Sections;
+  /** Contador que corresponde a un enlace del menú, o 0. */
+  countFor: (path: string) => number;
   soundEnabled: boolean;
   setSoundEnabled: (enabled: boolean) => void;
   refresh: () => Promise<void>;
@@ -25,7 +33,7 @@ type NotificationsState = {
 };
 
 const NotificationsContext = createContext<NotificationsState>({
-  pending: 0, unread: 0, replies: 0, soundEnabled: true, setSoundEnabled: () => {}, refresh: async () => {}, path: null,
+  pending: 0, unread: 0, replies: 0, sections: NO_SECTIONS, countFor: () => 0, soundEnabled: true, setSoundEnabled: () => {}, refresh: async () => {}, path: null,
 });
 
 // Aviso corto de dos notas generado con Web Audio (sin archivos). Si el navegador aún no permite
@@ -57,6 +65,8 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated, user } = useAuth();
   const [unread, setUnread] = useState(0);
   const [replies, setReplies] = useState(0);
+  const [sections, setSections] = useState<Sections>(NO_SECTIONS);
+  const { pathname } = useLocation();
   const [soundEnabled, setSoundState] = useState(() => localStorage.getItem(SOUND_KEY) !== 'off');
   const previous = useRef<number | null>(null);
   const soundRef = useRef(soundEnabled);
@@ -70,17 +80,20 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       const data = res.data.data || {};
       const nextUnread = Number(data.total) || 0;
       const nextReplies = Number(data.respuestas_pendientes) || 0;
-      const total = nextUnread + nextReplies;
+      const raw = data.secciones || {};
+      const nextSections = { alertas: Number(raw.alertas) || 0, incidencias: Number(raw.incidencias) || 0, tramites: Number(raw.tramites) || 0 };
+      const total = nextUnread + nextReplies + nextSections.alertas + nextSections.incidencias + nextSections.tramites;
       // Suena al llegar algo nuevo (también al entrar si hay pendientes), no en cada consulta.
       if (soundRef.current && total > (previous.current ?? 0)) playChime();
       previous.current = total;
       setUnread(nextUnread);
       setReplies(nextReplies);
+      setSections(nextSections);
     } catch { /* se reintenta en la siguiente consulta */ }
   }, [active]);
 
   useEffect(() => {
-    if (!active) { previous.current = null; setUnread(0); setReplies(0); return; }
+    if (!active) { previous.current = null; setUnread(0); setReplies(0); setSections(NO_SECTIONS); return; }
     void refresh();
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') void refresh(); }, POLL_MS);
     const onVisible = () => { if (document.visibilityState === 'visible') void refresh(); };
@@ -93,6 +106,14 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     };
   }, [active, user?.id, refresh]);
 
+  // Al cambiar de página (p. ej. tras atender una alerta) el contador se pone al día sin esperar.
+  useEffect(() => { if (active) void refresh(); }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const path = notificationsPath(user?.rol);
+  const countFor = useCallback((to: string) => to === path ? unread + replies
+    : to === '/alertas' ? sections.alertas : to === '/incidencias' ? sections.incidencias : to === '/tramites' ? sections.tramites : 0,
+  [path, unread, replies, sections]);
+
   const setSoundEnabled = useCallback((enabled: boolean) => {
     localStorage.setItem(SOUND_KEY, enabled ? 'on' : 'off');
     setSoundState(enabled);
@@ -100,7 +121,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <NotificationsContext.Provider value={{ pending: unread + replies, unread, replies, soundEnabled, setSoundEnabled, refresh, path: notificationsPath(user?.rol) }}>
+    <NotificationsContext.Provider value={{ pending: unread + replies, unread, replies, sections, countFor, soundEnabled, setSoundEnabled, refresh, path }}>
       {children}
     </NotificationsContext.Provider>
   );

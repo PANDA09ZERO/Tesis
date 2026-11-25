@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Send } from 'lucide-react';
 import { notificacionesApi } from '../../api/endpoints';
 
 type Respuesta = { id: number; mensaje: string; created_at: string; usuario_id: number; nombre: string; apellido: string; rol: string };
-type Thread = { notificacion: { id: number; titulo: string; mensaje: string; usuario_id: number | null; usuario_nombre?: string; usuario_apellido?: string; created_at: string }; respuestas: Respuesta[] };
+type Thread = { notificacion: { id: number; titulo: string; mensaje: string; link?: string | null; usuario_id: number | null; usuario_nombre?: string; usuario_apellido?: string; created_at: string }; respuestas: Respuesta[] };
 
 const ROLES: Record<string, string> = { administrador: 'Administración', profesor: 'Profesor', alumno: 'Alumno', apoderado: 'Apoderado' };
 const MAX = 2000;
@@ -57,6 +58,12 @@ export default function NotificationThread({ id, currentUserId, onChanged }: { i
         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           {fecha(notificacion.created_at)}{notificacion.usuario_nombre ? ` · Para ${notificacion.usuario_nombre} ${notificacion.usuario_apellido}` : ''}
         </p>
+        {/* Avisos automáticos (alertas, incidencias) enlazan al detalle dentro del sistema. */}
+        {notificacion.link?.startsWith('/') && !notificacion.link.startsWith('//') && (
+          <Link to={notificacion.link} className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-primary-700 underline-offset-4 hover:underline dark:text-blue-300">
+            Ir al detalle <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        )}
       </section>
 
       <section aria-label="Respuestas">

@@ -7,7 +7,7 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
  try {
   const [source]=await original.query('SELECT DATABASE() name');assert.match(source[0].name,/^[a-zA-Z0-9_]+$/);
   await admin.query('CREATE DATABASE `'+name+'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');db=mysql.createPool({...settings,database:name,connectionLimit:6});
-  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','calificaciones','asistencias','horarios','pagos_matricula','mensualidades','alertas_academicas','notificaciones','documentos','documentos_historial','documento_categorias','formularios_documentales','formularios_documentales_envios','registro_actividades','apoderados','apoderado_alumno','eventos_calendario'])await db.query('CREATE TABLE `'+table+'` LIKE `'+source[0].name+'`.`'+table+'`');
+  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','calificaciones','asistencias','horarios','pagos_matricula','mensualidades','alertas_academicas','notificaciones','documentos','documentos_historial','documento_categorias','formularios_documentales','formularios_documentales_envios','registro_actividades','apoderados','apoderado_alumno','eventos_calendario','incidencias','tramites_documentales'])await db.query('CREATE TABLE `'+table+'` LIKE `'+source[0].name+'`.`'+table+'`');
   await require('../scripts/migrate-respuestas.cjs').migrateRespuestas(db,{recordVersion:false});
   const {encryptPassword}=require('../dist/utils/encrypt');const passwordHash=encryptPassword('originalTest');
   await db.query("INSERT INTO roles(id,nombre) VALUES(1,'administrador'),(2,'profesor'),(3,'alumno'),(4,'apoderado')");
@@ -34,7 +34,7 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
   const tokens={admin:sign(1,'administrador'),teacher:sign(2,'profesor'),a1:sign(11,'alumno'),g1:sign(21,'apoderado'),g2:sign(22,'apoderado'),none:sign(23,'apoderado')};
   const app=express();app.use(express.json());const {authenticate}=require('../dist/middleware/auth');const {limitarApoderado}=require('../dist/middleware/apoderado');const {limitarEstudiante}=require('../dist/middleware/estudiante');
   app.use('/api',(req,res,next)=>req.originalUrl.split('?')[0]==='/api/auth/login'?next():authenticate(req,res,()=>limitarApoderado(req,res,()=>limitarEstudiante(req,res,next))));
-  for(const [prefix,module] of [['auth','auth'],['periodos','periodos'],['reportes','reportes'],['matriculas','matriculas'],['apoderados','apoderados'],['alumnos','alumnos'],['calificaciones','calificaciones'],['asistencias','asistencias'],['documentos','documentos'],['users','users'],['mensualidades','mensualidades'],['pagos-matricula','pagosMatricula'],['dashboard','dashboard'],['notificaciones','notificaciones']])app.use('/api/'+prefix,require('../dist/routes/'+module+'.routes').default);
+  for(const [prefix,module] of [['auth','auth'],['periodos','periodos'],['reportes','reportes'],['matriculas','matriculas'],['apoderados','apoderados'],['alumnos','alumnos'],['calificaciones','calificaciones'],['asistencias','asistencias'],['documentos','documentos'],['users','users'],['mensualidades','mensualidades'],['pagos-matricula','pagosMatricula'],['dashboard','dashboard'],['notificaciones','notificaciones'],['incidencias','incidencias']])app.use('/api/'+prefix,require('../dist/routes/'+module+'.routes').default);
   server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
   async function call(route,method='GET',body,actor='admin'){const response=await fetch('http://127.0.0.1:'+server.address().port+'/api'+route,{method,headers:{'Content-Type':'application/json',...(actor?{Authorization:'Bearer '+(tokens[actor]||actor)}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:response.status,...await response.json()};}
   await t.test('usuario activo, desactivado, rol cambiado y eliminado',async()=>{
@@ -142,6 +142,28 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
     const found=await call('/users?search=user1&activo=1&limit=50');
     assert.ok(found.data.some(u=>u.id===11));assert.ok(!found.data.some(u=>u.id===12));
    }finally{await db.query('UPDATE usuarios SET activo=1 WHERE id=12');await db.query('DELETE FROM notificaciones WHERE id=?',[created.data.id]);}
+  });
+  await t.test('avisos automáticos: incidencia y alerta llegan a la familia; contadores por sección según el rol',async()=>{
+   const before=(await call('/notificaciones/no-leidas')).data.secciones;assert.deepEqual(Object.keys(before).sort(),['alertas','incidencias','tramites']);
+   const created=await call('/incidencias','POST',{alumno_id:1,fecha:'2026-10-14',tipo:'agresion',gravedad:'grave',descripcion:'Empujó a un compañero en el recreo'});assert.equal(created.status,201);
+   const {avisarFamilia}=require('../dist/utils/avisos');let alertIds=[];
+   try{
+    const g1=(await call('/notificaciones','GET',undefined,'g1')).data.find(n=>n.titulo==='Incidencia de conducta: Usuario 11');
+    assert.ok(g1);assert.equal(g1.link,'/alumnos/1?vista=incidencias');assert.equal(g1.prioridad,'alta');assert.match(g1.mensaje,/^Agresión \(grave\) registrada el 2026-10-14\. Empujó/);
+    assert.ok(!(await call('/notificaciones','GET',undefined,'g2')).data.some(n=>n.titulo==='Incidencia de conducta: Usuario 11'));
+    assert.ok(!(await call('/notificaciones','GET',undefined,'a1')).data.some(n=>n.titulo==='Incidencia de conducta: Usuario 11'));
+    assert.equal((await call('/notificaciones/no-leidas')).data.secciones.incidencias,before.incidencias+1);
+    const own=(await call('/notificaciones/no-leidas','GET',undefined,'a1')).data;assert.deepEqual(own.secciones,{alertas:0,incidencias:0,tramites:0});
+    assert.equal(typeof (await call('/notificaciones/no-leidas','GET',undefined,'teacher')).data.secciones.alertas,'number');
+    // Alerta nueva: avisa al alumno (enlace a Mis alertas) y a su apoderado (ficha del alumno).
+    assert.equal(await avisarFamilia(db,1,{titulo:'Alerta académica (riesgo alto): {alumno}',mensaje:'Faltas reiteradas',prioridad:'alta',linkAlumno:'/alertas',linkApoderado:'/alumnos/1'},{alumno:true,apoderados:true}),2);
+    const [rows]=await db.query("SELECT id,usuario_id,link FROM notificaciones WHERE titulo='Alerta académica (riesgo alto): Usuario 11' ORDER BY usuario_id");alertIds=rows.map(r=>r.id);
+    assert.deepEqual(rows.map(r=>[r.usuario_id,r.link]),[[11,'/alertas'],[21,'/alumnos/1']]);
+    assert.equal(await avisarFamilia(db,999999,{titulo:'x',mensaje:'y'},{alumno:true,apoderados:true}),0);
+   }finally{
+    await db.query("DELETE FROM notificaciones WHERE titulo='Incidencia de conducta: Usuario 11'");if(alertIds.length)await db.query('DELETE FROM notificaciones WHERE id IN (?)',[alertIds]);
+    await db.query('DELETE FROM incidencias WHERE id=?',[created.data.id]);
+   }
   });
   await t.test('contraseña propia cierra todas las sesiones, exige reautenticación y no modifica otro usuario',async()=>{const another=sign(21,'apoderado');assert.equal((await call('/auth/change-password','PUT',{currentPassword:'originalTest',newPassword:'nuevaTest',userId:22},'g1')).status,200);assert.equal((await call('/auth/profile','GET',undefined,'g1')).status,401);assert.equal((await call('/auth/profile','GET',undefined,another)).status,401);assert.equal((await call('/auth/profile','GET',undefined,'g2')).status,200);assert.equal((await call('/auth/login','POST',{email:'user21@test.local',password:'originalTest'},null)).status,401);const r=await call('/auth/login','POST',{email:'user21@test.local',password:'nuevaTest'},null);assert.equal(r.status,200);assert.equal((await call('/auth/profile','GET',undefined,r.data.token)).status,200);});
  }finally{if(server)await new Promise(resolve=>server.close(resolve));if(db)await db.end();await admin.query('DROP DATABASE IF EXISTS `'+name+'`');await admin.end();await original.end();}

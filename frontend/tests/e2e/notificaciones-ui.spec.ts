@@ -87,3 +87,42 @@ test('notificaciones: se envía a una persona concreta y solo ella la recibe', a
     if (id) expect((await page.request.delete(`/api/notificaciones/${id}`, { headers: { Authorization: 'Bearer ' + token } })).status()).toBe(200);
   }
 });
+
+test('avisos: una incidencia nueva suma al contador de la sección y avisa al apoderado', async ({ page }, info) => {
+  test.setTimeout(60_000);
+  const mobile = info.project.name === 'mobile';
+  const descripcion = `Incidente de prueba ${info.project.name} ${Date.now()}`;
+  let id: number | undefined;
+  await login(page, 1);
+  const headers = { Authorization: 'Bearer ' + await page.evaluate(() => localStorage.getItem('token')) };
+  try {
+    const created = await page.request.post('/api/incidencias', { headers, data: { alumno_id: 1, fecha: '2026-10-14', tipo: 'conducta', gravedad: 'leve', descripcion } });
+    expect(created.status()).toBe(201);
+    id = (await created.json()).data.id;
+    const pendientes = (await (await page.request.get('/api/notificaciones/no-leidas', { headers })).json()).data.secciones.incidencias;
+    expect(pendientes).toBeGreaterThan(0);
+
+    await page.goto('/dashboard');
+    if (mobile) {
+      // En celular el contador va en "Módulos" (barra inferior) y en la tarjeta de Incidencias.
+      const modules = page.getByRole('navigation', { name: 'Navegación inferior' }).getByRole('button', { name: 'Módulos', exact: true });
+      await expect(modules).toHaveAccessibleDescription(/\d+ pendientes?/);
+      await modules.click();
+      await expect(page.locator('.modules-catalog a[href="/incidencias"]')).toHaveAccessibleName(`Incidencias: ${pendientes} ${pendientes === 1 ? 'pendiente' : 'pendientes'}`);
+    } else {
+      const sidebar = page.getByRole('complementary', { name: 'Navegación principal' });
+      await expect(sidebar.locator('a[href="/incidencias"]')).toContainText(String(pendientes));
+    }
+
+    // El apoderado del alumno recibe la notificación, con enlace a la pestaña Conducta.
+    await login(page, 21);
+    await page.goto('/familia/notificaciones');
+    await expect(page.getByText('Incidencia de conducta: Usuario 11', { exact: true }).first()).toBeVisible();
+  } finally {
+    if (id) {
+      await login(page, 1);
+      const admin = { Authorization: 'Bearer ' + await page.evaluate(() => localStorage.getItem('token')) };
+      expect((await page.request.put(`/api/incidencias/${id}/estado`, { headers: admin, data: { estado: 'cerrada', resolucion: 'Prueba automática' } })).status()).toBe(200);
+    }
+  }
+});

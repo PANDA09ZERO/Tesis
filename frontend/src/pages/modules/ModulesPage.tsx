@@ -4,6 +4,8 @@ import { LayoutGrid, Search, X, ArrowUpRight, CalendarDays } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext';
 import { usePeriodo } from '../../context/PeriodoContext';
 import PeriodoSelector from '../../components/layout/PeriodoSelector';
+import { useNotifications } from '../../context/NotificationsContext';
+import NotificationBadge from '../../components/ui/NotificationBadge';
 import InstallAppCard from '../../components/ui/InstallAppCard';
 import { getNavigationMenu, type NavigationLink } from '../../components/layout/navigation';
 
@@ -49,6 +51,7 @@ const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u0
 
 export default function ModulesPage() {
   const { user } = useAuth();
+  const { countFor } = useNotifications();
   const { aplica, periodo, esHistorico, todos } = usePeriodo();
   const [search, setSearch] = useState('');
 
@@ -123,8 +126,9 @@ export default function ModulesPage() {
       <h2 id={`module-group-${index}`} className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">{group.label}</h2>
       <div className="module-bento-grid grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">{group.links.map(link => {
         const Icon = link.icon;
-        return <Link key={link.to} to={link.to} aria-label={link.label} className="group flex min-h-36 min-w-0 flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-sm transition-colors hover:border-primary-300 hover:bg-primary-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-500 dark:hover:bg-gray-800 sm:p-4">
-          <div className="mb-3 flex items-start justify-between gap-2"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-gray-200"><Icon className="h-5 w-5" aria-hidden="true"/></span><ArrowUpRight className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true"/></div>
+        const pendientes = countFor(link.to);
+        return <Link key={link.to} to={link.to} aria-label={pendientes ? `${link.label}: ${pendientes} ${pendientes === 1 ? 'pendiente' : 'pendientes'}` : link.label} className="group flex min-h-36 min-w-0 flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-sm transition-colors hover:border-primary-300 hover:bg-primary-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-500 dark:hover:bg-gray-800 sm:p-4">
+          <div className="mb-3 flex items-start justify-between gap-2"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-gray-800 dark:text-gray-200"><Icon className="h-5 w-5" aria-hidden="true"/></span>{pendientes ? <NotificationBadge count={pendientes} /> : <ArrowUpRight className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true"/>}</div>
           <h3 className="break-words text-sm font-semibold text-gray-900 dark:text-gray-100">{link.label}</h3><p className="mt-1 break-words text-xs leading-relaxed text-gray-500 dark:text-gray-400">{descriptions[link.to] || 'Consulta este espacio de tu cuenta.'}</p>
         </Link>;
       })}</div>
