@@ -1,7 +1,7 @@
 import PageHeading from '../../components/ui/PageHeading';
 import { useAuth } from '../../context/AuthContext';
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, CheckCircle, Clock, Info, RefreshCw } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Info, RefreshCw, RotateCcw } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import SearchInput from '../../components/ui/SearchInput';
 import { alertasApi } from '../../api/endpoints';
@@ -57,7 +57,7 @@ export default function AlertasPage() {
   };
 
   const handleEstado = async (id: number, estado: string) => {
-    setUpdating(id); try { await alertasApi.updateEstado(id, estado); toast.success('Alerta actualizada'); loadAlertas(); loadStats(); }
+    setUpdating(id); try { await alertasApi.updateEstado(id, estado); toast.success(estado === 'resuelta' ? 'Alerta marcada como resuelta' : estado === 'atendida' ? 'Alerta marcada como atendida' : 'Alerta reabierta'); loadAlertas(); loadStats(); }
     catch (error: any) { toast.error(error.response?.data?.message || 'No se pudo actualizar la alerta'); } finally { setUpdating(null); }
   };
 
@@ -147,16 +147,28 @@ export default function AlertasPage() {
                     {new Date(alerta.created_at).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex gap-2 ml-4">
+                <div className="ml-4 flex flex-wrap justify-end gap-2">
+                  {/* Activa → atender o resolver; atendida → resolver o volver a activa; resuelta → reabrir.
+                      Las superadas las cierra la revisión automática y no tienen acciones. */}
                   {canManage && alerta.estado === 'activa' && (
-                    <>
-                      <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'atendida')} className="btn-secondary text-xs py-1 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> Atender
-                      </button>
-                      <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'resuelta')} className="btn-success text-xs py-1 flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" /> Resolver
-                      </button>
-                    </>
+                    <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'atendida')} className="btn-secondary min-h-11 text-xs flex items-center gap-1">
+                      <Clock className="w-3 h-3" aria-hidden="true" /> Atender
+                    </button>
+                  )}
+                  {canManage && (alerta.estado === 'activa' || alerta.estado === 'atendida') && (
+                    <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'resuelta')} className="btn-success min-h-11 text-xs flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" aria-hidden="true" /> {alerta.estado === 'atendida' ? 'Marcar como resuelta' : 'Resolver'}
+                    </button>
+                  )}
+                  {canManage && alerta.estado === 'atendida' && (
+                    <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'activa')} className="btn-secondary min-h-11 text-xs flex items-center gap-1">
+                      <RotateCcw className="w-3 h-3" aria-hidden="true" /> Volver a activa
+                    </button>
+                  )}
+                  {canManage && alerta.estado === 'resuelta' && (
+                    <button disabled={updating===alerta.id} onClick={() => handleEstado(alerta.id, 'activa')} className="btn-secondary min-h-11 text-xs flex items-center gap-1">
+                      <RotateCcw className="w-3 h-3" aria-hidden="true" /> Reabrir
+                    </button>
                   )}
                 </div>
               </div>

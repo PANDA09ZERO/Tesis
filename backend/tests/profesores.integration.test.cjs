@@ -125,6 +125,14 @@ test('perspectiva de profesores: HTTP con esquema MySQL real aislado',async t=>{
    assert.deepEqual((await call('/alertas')).data.map(a=>a.id),[1]);assert.equal(Number((await call('/alertas/estadisticas')).data.total),1);
    assert.equal((await call('/alertas/2/estado','PUT',{estado:'resuelta'})).status,404);
    assert.equal((await call('/alertas/1/estado','PUT',{estado:'incorrecto'})).status,400);
+   // Una alerta atendida aún se puede resolver o reactivar; una resuelta solo se reabre; una superada no cambia.
+   const estado=async(e)=>(await call('/alertas/1/estado','PUT',{estado:e})).status;
+   assert.equal(await estado('atendida'),200);assert.equal(await estado('atendida'),409);
+   assert.equal(await estado('activa'),200);assert.equal(await estado('atendida'),200);
+   assert.equal(await estado('resuelta'),200);assert.equal(await estado('atendida'),409);assert.equal(await estado('expirada'),409);
+   assert.equal(await estado('activa'),200);
+   await db.query("UPDATE alertas_academicas SET estado='expirada' WHERE id=1");assert.equal(await estado('activa'),409);
+   await db.query("UPDATE alertas_academicas SET estado='activa' WHERE id=1");
   });
   await t.test('notas de oferta: registro, actualización, evaluación y matrícula exacta',async()=>{
    const path='/calificaciones/oferta/1/evaluacion/1/bulk';
