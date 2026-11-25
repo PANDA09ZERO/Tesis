@@ -7,7 +7,8 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
  try {
   const [source]=await original.query('SELECT DATABASE() name');assert.match(source[0].name,/^[a-zA-Z0-9_]+$/);
   await admin.query('CREATE DATABASE `'+name+'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');db=mysql.createPool({...settings,database:name,connectionLimit:6});
-  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','calificaciones','asistencias','horarios','pagos_matricula','mensualidades','alertas_academicas','notificaciones','documentos','documentos_historial','documento_categorias','formularios_documentales','formularios_documentales_envios','registro_actividades','apoderados','apoderado_alumno','eventos_calendario'])await db.query('CREATE TABLE `'+table+'` LIKE `'+source[0].name+'`.`'+table+'`');
+  for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','calificaciones','asistencias','horarios','pagos_matricula','mensualidades','alertas_academicas','notificaciones','documentos','documentos_historial','documento_categorias','formularios_documentales','formularios_documentales_envios','registro_actividades','apoderados','apoderado_alumno','eventos_calendario','incidencias','tramites_documentales'])await db.query('CREATE TABLE `'+table+'` LIKE `'+source[0].name+'`.`'+table+'`');
+  await require('../scripts/migrate-respuestas.cjs').migrateRespuestas(db,{recordVersion:false});
   const {encryptPassword}=require('../dist/utils/encrypt');const passwordHash=encryptPassword('originalTest');
   await db.query("INSERT INTO roles(id,nombre) VALUES(1,'administrador'),(2,'profesor'),(3,'alumno'),(4,'apoderado')");
   for(const [id,role] of [[1,1],[2,2],[11,3],[12,3],[13,3],[14,3],[15,3],[21,4],[22,4],[23,4]])await db.query('INSERT INTO usuarios(id,email,password_hash,nombre,apellido,rol_id) VALUES(?,?,?,?,?,?)',[id,'user'+id+'@test.local',passwordHash,'Usuario',String(id),role]);
@@ -33,7 +34,7 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
   const tokens={admin:sign(1,'administrador'),teacher:sign(2,'profesor'),a1:sign(11,'alumno'),g1:sign(21,'apoderado'),g2:sign(22,'apoderado'),none:sign(23,'apoderado')};
   const app=express();app.use(express.json());const {authenticate}=require('../dist/middleware/auth');const {limitarApoderado}=require('../dist/middleware/apoderado');const {limitarEstudiante}=require('../dist/middleware/estudiante');
   app.use('/api',(req,res,next)=>req.originalUrl.split('?')[0]==='/api/auth/login'?next():authenticate(req,res,()=>limitarApoderado(req,res,()=>limitarEstudiante(req,res,next))));
-  for(const [prefix,module] of [['auth','auth'],['periodos','periodos'],['reportes','reportes'],['matriculas','matriculas'],['apoderados','apoderados'],['alumnos','alumnos'],['calificaciones','calificaciones'],['asistencias','asistencias'],['documentos','documentos'],['users','users'],['mensualidades','mensualidades'],['pagos-matricula','pagosMatricula'],['dashboard','dashboard']])app.use('/api/'+prefix,require('../dist/routes/'+module+'.routes').default);
+  for(const [prefix,module] of [['auth','auth'],['periodos','periodos'],['reportes','reportes'],['matriculas','matriculas'],['apoderados','apoderados'],['alumnos','alumnos'],['calificaciones','calificaciones'],['asistencias','asistencias'],['documentos','documentos'],['users','users'],['mensualidades','mensualidades'],['pagos-matricula','pagosMatricula'],['dashboard','dashboard'],['notificaciones','notificaciones'],['incidencias','incidencias']])app.use('/api/'+prefix,require('../dist/routes/'+module+'.routes').default);
   server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
   async function call(route,method='GET',body,actor='admin'){const response=await fetch('http://127.0.0.1:'+server.address().port+'/api'+route,{method,headers:{'Content-Type':'application/json',...(actor?{Authorization:'Bearer '+(tokens[actor]||actor)}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:response.status,...await response.json()};}
   await t.test('usuario activo, desactivado, rol cambiado y eliminado',async()=>{
@@ -101,6 +102,68 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
    assert.equal('documentos' in current,false);assert.equal('documentos' in current.pendientes,false);assert.equal(current.horarios.length,1);assert.equal(current.horarios[0].hora_inicio,'08:00:00');
    const history=(await call('/apoderados/me/alumnos/1/resumen?periodo_id=2','GET',undefined,'g1')).data;
    assert.equal(history.horarios.length,1);assert.equal(history.horarios[0].hora_inicio,'10:00:00');assert.equal('documentos' in history,false);
+  });
+  await t.test('notificación individual: exige destinatario activo y solo la recibe esa persona',async()=>{
+   const body={titulo:'Aviso individual',mensaje:'Solo para el alumno 11'};
+   assert.equal((await call('/notificaciones','POST',body)).status,400);
+   assert.equal((await call('/notificaciones','POST',{...body,usuario_id:'abc'})).status,400);
+   assert.equal((await call('/notificaciones','POST',{...body,usuario_id:999999})).status,404);
+   assert.equal((await call('/notificaciones','POST',{...body,usuario_id:11},'teacher')).status,403);
+   const created=await call('/notificaciones','POST',{...body,usuario_id:11});assert.equal(created.status,201);
+   try{
+    assert.ok((await call('/notificaciones','GET',undefined,'a1')).data.some(n=>n.id===created.data.id));
+    assert.ok(!(await call('/notificaciones','GET',undefined,'g1')).data.some(n=>n.id===created.data.id));
+    // El apoderado también recibe las suyas (antes su acceso de solo lectura bloqueaba /notificaciones).
+    const guardian=await call('/notificaciones','POST',{...body,mensaje:'Para el apoderado 21',usuario_id:21});assert.equal(guardian.status,201);
+    try{
+     assert.ok((await call('/notificaciones','GET',undefined,'g1')).data.some(n=>n.id===guardian.data.id));
+     assert.ok(!(await call('/notificaciones','GET',undefined,'g2')).data.some(n=>n.id===guardian.data.id));
+     assert.equal((await call('/notificaciones/'+guardian.data.id,'GET',undefined,'g2')).status,404);
+     assert.equal((await call('/notificaciones/'+guardian.data.id+'/marcar-leida','PUT',undefined,'g1')).status,200);
+     assert.equal((await call('/notificaciones','POST',body,'g1')).status,403);
+     // Respuestas: el destinatario contesta, la administración se entera y puede responder.
+     const thread='/notificaciones/'+guardian.data.id+'/respuestas';
+     assert.equal((await call(thread,'POST',{mensaje:'   '},'g1')).status,400);
+     assert.equal((await call(thread,'POST',{mensaje:'x'.repeat(2001)},'g1')).status,400);
+     assert.equal((await call(thread,'POST',{mensaje:'Asistiré a la reunión'},'g1')).status,201);
+     assert.ok((await call('/notificaciones/no-leidas')).data.respuestas_pendientes>=1);
+     assert.equal((await call(thread,'GET',undefined,'g2')).status,404);
+     assert.equal((await call(thread,'POST',{mensaje:'Intruso'},'g2')).status,404);
+     const seen=await call(thread);assert.equal(seen.status,200);assert.deepEqual(seen.data.respuestas.map(r=>[r.mensaje,r.rol]),[['Asistiré a la reunión','apoderado']]);
+     let [[row]]=await db.query('SELECT leida,respuesta_pendiente FROM notificaciones WHERE id=?',[guardian.data.id]);assert.equal(Number(row.respuesta_pendiente),0);
+     assert.equal((await call(thread,'POST',{mensaje:'Gracias, lo esperamos'})).status,201);
+     [[row]]=await db.query('SELECT leida,respuesta_pendiente FROM notificaciones WHERE id=?',[guardian.data.id]);assert.equal(Number(row.leida),0);
+     const listed=(await call('/notificaciones?search='+encodeURIComponent('Para el apoderado 21'))).data.find(n=>n.id===guardian.data.id);assert.equal(Number(listed.respuestas),2);
+     assert.equal((await call(thread,'GET',undefined,'g1')).data.respuestas.length,2);
+     [[row]]=await db.query('SELECT leida FROM notificaciones WHERE id=?',[guardian.data.id]);assert.equal(Number(row.leida),1);
+    }finally{await db.query('DELETE FROM notificaciones WHERE id=?',[guardian.data.id]);}
+    await db.query('UPDATE usuarios SET activo=0 WHERE id=12');
+    assert.equal((await call('/notificaciones','POST',{...body,usuario_id:12})).status,404);
+    const found=await call('/users?search=user1&activo=1&limit=50');
+    assert.ok(found.data.some(u=>u.id===11));assert.ok(!found.data.some(u=>u.id===12));
+   }finally{await db.query('UPDATE usuarios SET activo=1 WHERE id=12');await db.query('DELETE FROM notificaciones WHERE id=?',[created.data.id]);}
+  });
+  await t.test('avisos automáticos: incidencia y alerta llegan a la familia; contadores por sección según el rol',async()=>{
+   const before=(await call('/notificaciones/no-leidas')).data.secciones;assert.deepEqual(Object.keys(before).sort(),['alertas','incidencias','tramites']);
+   const created=await call('/incidencias','POST',{alumno_id:1,fecha:'2026-10-14',tipo:'agresion',gravedad:'grave',descripcion:'Empujó a un compañero en el recreo'});assert.equal(created.status,201);
+   const {avisarFamilia}=require('../dist/utils/avisos');let alertIds=[];
+   try{
+    const g1=(await call('/notificaciones','GET',undefined,'g1')).data.find(n=>n.titulo==='Incidencia de conducta: Usuario 11');
+    assert.ok(g1);assert.equal(g1.link,'/alumnos/1?vista=incidencias');assert.equal(g1.prioridad,'alta');assert.match(g1.mensaje,/^Agresión \(grave\) registrada el 2026-10-14\. Empujó/);
+    assert.ok(!(await call('/notificaciones','GET',undefined,'g2')).data.some(n=>n.titulo==='Incidencia de conducta: Usuario 11'));
+    assert.ok(!(await call('/notificaciones','GET',undefined,'a1')).data.some(n=>n.titulo==='Incidencia de conducta: Usuario 11'));
+    assert.equal((await call('/notificaciones/no-leidas')).data.secciones.incidencias,before.incidencias+1);
+    const own=(await call('/notificaciones/no-leidas','GET',undefined,'a1')).data;assert.deepEqual(own.secciones,{alertas:0,incidencias:0,tramites:0});
+    assert.equal(typeof (await call('/notificaciones/no-leidas','GET',undefined,'teacher')).data.secciones.alertas,'number');
+    // Alerta nueva: avisa al alumno (enlace a Mis alertas) y a su apoderado (ficha del alumno).
+    assert.equal(await avisarFamilia(db,1,{titulo:'Alerta académica (riesgo alto): {alumno}',mensaje:'Faltas reiteradas',prioridad:'alta',linkAlumno:'/alertas',linkApoderado:'/alumnos/1'},{alumno:true,apoderados:true}),2);
+    const [rows]=await db.query("SELECT id,usuario_id,link FROM notificaciones WHERE titulo='Alerta académica (riesgo alto): Usuario 11' ORDER BY usuario_id");alertIds=rows.map(r=>r.id);
+    assert.deepEqual(rows.map(r=>[r.usuario_id,r.link]),[[11,'/alertas'],[21,'/alumnos/1']]);
+    assert.equal(await avisarFamilia(db,999999,{titulo:'x',mensaje:'y'},{alumno:true,apoderados:true}),0);
+   }finally{
+    await db.query("DELETE FROM notificaciones WHERE titulo='Incidencia de conducta: Usuario 11'");if(alertIds.length)await db.query('DELETE FROM notificaciones WHERE id IN (?)',[alertIds]);
+    await db.query('DELETE FROM incidencias WHERE id=?',[created.data.id]);
+   }
   });
   await t.test('contraseña propia cierra todas las sesiones, exige reautenticación y no modifica otro usuario',async()=>{const another=sign(21,'apoderado');assert.equal((await call('/auth/change-password','PUT',{currentPassword:'originalTest',newPassword:'nuevaTest',userId:22},'g1')).status,200);assert.equal((await call('/auth/profile','GET',undefined,'g1')).status,401);assert.equal((await call('/auth/profile','GET',undefined,another)).status,401);assert.equal((await call('/auth/profile','GET',undefined,'g2')).status,200);assert.equal((await call('/auth/login','POST',{email:'user21@test.local',password:'originalTest'},null)).status,401);const r=await call('/auth/login','POST',{email:'user21@test.local',password:'nuevaTest'},null);assert.equal(r.status,200);assert.equal((await call('/auth/profile','GET',undefined,r.data.token)).status,200);});
  }finally{if(server)await new Promise(resolve=>server.close(resolve));if(db)await db.end();await admin.query('DROP DATABASE IF EXISTS `'+name+'`');await admin.end();await original.end();}

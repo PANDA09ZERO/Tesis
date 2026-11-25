@@ -3,9 +3,12 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ChevronDown, ChevronRight, LogOut, School } from 'lucide-react';
 import { getNavigationMenu } from './navigation';
+import { useNotifications } from '../../context/NotificationsContext';
+import NotificationBadge from '../ui/NotificationBadge';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
+  const { countFor } = useNotifications();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [openSections, setOpenSections] = React.useState<string[]>([]);
@@ -80,6 +83,7 @@ export default function Sidebar() {
               >
                 <item.icon className="w-5 h-5 mr-3 text-gray-400 shrink-0" />
                 <span className="flex-1 text-left">{item.label}</span>
+                {!openSections.includes(item.label) && <NotificationBadge count={item.children.reduce((sum, child) => sum + countFor(child.to), 0)} className="mr-2" />}
                 {openSections.includes(item.label) ?
                   <ChevronDown className="w-4 h-4 text-gray-400" /> :
                   <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -98,7 +102,8 @@ export default function Sidebar() {
                       }
                     >
                       <child.icon className="mr-3 h-4 w-4 shrink-0" aria-hidden="true" />
-                      {child.label}
+                      <span className="flex-1">{child.label}</span>
+                      <NotificationBadge count={countFor(child.to)} />
                     </NavLink>
                   ))}
                 </div>
@@ -115,7 +120,8 @@ export default function Sidebar() {
               }
             >
               <item.icon className="mr-3 h-5 w-5 shrink-0" aria-hidden="true" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              <NotificationBadge count={countFor(item.to)} />
             </NavLink>
           )
         ))}

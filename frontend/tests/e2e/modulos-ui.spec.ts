@@ -64,7 +64,7 @@ test('módulos: catálogo adaptable, búsqueda sin tildes y tema neutro', async 
 for (const account of [
   { id: 2, name: 'profesor', required: ['/alumnos', '/cursos', '/profesor/apoderados'], forbidden: ['/documentos', '/admin/pagos', '/admin/usuarios', '/reportes', '/profesores', '/superadministracion'] },
   { id: 11, name: 'alumno', required: ['/estudiante/cursos', '/estudiante/pagos', '/estudiante/calificaciones'], forbidden: ['/documentos', '/alumnos', '/admin/pagos', '/reportes', '/superadministracion'] },
-  { id: 21, name: 'apoderado', required: ['/familia/alumnos', '/familia/perfil'], forbidden: ['/documentos', '/admin/pagos', '/estudiante/pagos', '/reportes', '/superadministracion'] },
+  { id: 21, name: 'apoderado', required: ['/familia/alumnos', '/familia/perfil', '/familia/notificaciones'], forbidden: ['/documentos', '/admin/pagos', '/estudiante/pagos', '/reportes', '/superadministracion'] },
   { id: 31, name: 'superadministrador', required: ['/superadministracion', '/admin/usuarios', '/admin/pagos', '/documentos'], forbidden: ['/estudiante/pagos'] }
 ]) {
   test(`módulos: inventario y navegación de ${account.name}`, async ({ page }) => {
@@ -75,7 +75,7 @@ for (const account of [
     await expect(catalog).toBeVisible();
     for (const path of account.required) await expect(catalog.locator(`a[href="${path}"]`)).toBeVisible();
     for (const path of account.forbidden) await expect(catalog.locator(`a[href="${path}"]`)).toHaveCount(0);
-    if (account.id === 21) await expect(catalog.getByRole('link')).toHaveCount(2);
+    if (account.id === 21) await expect(catalog.getByRole('link')).toHaveCount(3);
     await page.reload();
     await expect(page).toHaveURL(/modulos$/);
     await catalog.locator(`a[href="${account.required[0]}"]`).click();

@@ -148,7 +148,9 @@ export const notificacionesApi = {
   enviarMasiva: (data: any) => client.post<ApiResponse>('/notificaciones/masiva', data),
   marcarLeida: (id: number) => client.put<ApiResponse>(`/notificaciones/${id}/marcar-leida`),
   marcarTodasLeidas: () => client.put<ApiResponse>('/notificaciones/marcar-todas-leidas'),
-  delete: (id: number) => client.delete<ApiResponse>(`/notificaciones/${id}`)
+  delete: (id: number) => client.delete<ApiResponse>(`/notificaciones/${id}`),
+  getRespuestas: (id: number) => client.get<ApiResponse<any>>(`/notificaciones/${id}/respuestas`),
+  responder: (id: number, mensaje: string) => client.post<ApiResponse>(`/notificaciones/${id}/respuestas`, { mensaje })
 };
 
 // Mensualidades

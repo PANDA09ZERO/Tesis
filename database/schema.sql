@@ -368,11 +368,24 @@ CREATE TABLE IF NOT EXISTS notificaciones (
     prioridad ENUM('baja', 'normal', 'alta', 'urgente') DEFAULT 'normal',
     leida TINYINT(1) DEFAULT 0,
     fecha_leida TIMESTAMP NULL,
+    respuesta_pendiente TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_usuario_id (usuario_id),
     INDEX idx_leida (leida),
     INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Respuestas del destinatario y de la administración a una notificación.
+CREATE TABLE IF NOT EXISTS notificacion_respuestas (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ notificacion_id INT NOT NULL,
+ usuario_id INT NOT NULL,
+ mensaje TEXT NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ KEY idx_respuestas_notificacion (notificacion_id, created_at),
+ FOREIGN KEY (notificacion_id) REFERENCES notificaciones(id) ON DELETE CASCADE,
+ FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

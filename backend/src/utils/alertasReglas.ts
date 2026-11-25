@@ -1,6 +1,7 @@
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { Pool } from 'mysql2/promise';
 import { academicToday, periodoVigenteSql } from './periodoVigencia';
+import { avisarFamilia } from './avisos';
 
 /**
  * Alertas académicas por reglas (sin IA). Revisa a los alumnos con matrícula activa
@@ -111,6 +112,13 @@ export async function evaluarAlertas(pool: Pool, hoy = academicToday()): Promise
           await db.query<ResultSetHeader>(`INSERT INTO alertas_academicas (alumno_id, tipo_riesgo, nivel_riesgo, indicadores, descripcion, recomendacion, estado, generada_por_ia)
             VALUES (?, ?, ?, ?, ?, ?, 'activa', 0)`, [id, ev.tipo_riesgo, ev.nivel_riesgo, indicadores, ev.descripcion, ev.recomendacion]);
           r.creadas++;
+          // Solo las alertas nuevas avisan al alumno y a su familia (no cada reevaluación).
+          await avisarFamilia(db, id, {
+            titulo: `Alerta académica (riesgo ${ev.tipo_riesgo}): {alumno}`,
+            mensaje: `${ev.descripcion} ${ev.recomendacion || ''}`.trim(),
+            tipo: 'alerta', prioridad: ev.tipo_riesgo === 'alto' ? 'alta' : 'normal',
+            linkAlumno: '/alertas', linkApoderado: `/alumnos/${id}`,
+          }, { alumno: true, apoderados: true });
         } else if (abierta) {
           await db.query("UPDATE alertas_academicas SET estado='expirada', recomendacion=CONCAT(COALESCE(recomendacion,''), ' Situación superada según la última revisión automática.') WHERE id=?", [abierta.id]);
           r.superadas++;

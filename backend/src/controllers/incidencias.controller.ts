@@ -7,8 +7,10 @@ import { getPagination } from '../utils/pagination';
 import { positiveId, validDate } from '../utils/academicValidation';
 import { profesorAlumnoScope, profesorTieneAccesoAlumno } from '../utils/profesorAlcance';
 import { academicToday, periodoVigenteSql } from '../utils/periodoVigencia';
+import { avisarFamilia } from '../utils/avisos';
 
 export const TIPOS_INCIDENCIA = ['derivacion_direccion', 'conducta', 'citacion_apoderado', 'agresion', 'otro'] as const;
+const TIPO_TEXTO = { derivacion_direccion: 'Derivación a dirección', conducta: 'Conducta', citacion_apoderado: 'Citación al apoderado', agresion: 'Agresión', otro: 'Incidencia' } as const;
 export const GRAVEDADES = ['leve', 'moderada', 'grave'] as const;
 export const ESTADOS_INCIDENCIA = ['abierta', 'en_seguimiento', 'cerrada'] as const;
 
@@ -150,6 +152,13 @@ export async function createIncidencia(req: AuthRequest, res: Response) {
         limpiar(body.lugar), body.descripcion.trim(), limpiar(body.medida_tomada), body.apoderado_notificado ? 1 : 0]
     );
     await auditar(req, 'crear_incidencia', result.insertId, { alumno_id: alumnoId, tipo: body.tipo, gravedad: body.gravedad });
+    // La familia recibe una notificación (suena y cuenta como pendiente) con enlace a Conducta.
+    await avisarFamilia(pool, alumnoId, {
+      titulo: `Incidencia de conducta: {alumno}`,
+      mensaje: `${TIPO_TEXTO[body.tipo as keyof typeof TIPO_TEXTO] || 'Incidencia'} (${body.gravedad || 'leve'}) registrada el ${body.fecha}. ${body.descripcion.trim()}`,
+      tipo: 'alerta', prioridad: body.gravedad === 'grave' ? 'alta' : 'normal',
+      linkApoderado: `/alumnos/${alumnoId}?vista=incidencias`,
+    }, { apoderados: true });
     return sendSuccess(res, { id: result.insertId }, 'Incidencia registrada', 201);
   } catch {
     return sendError(res, 'Error al registrar la incidencia');

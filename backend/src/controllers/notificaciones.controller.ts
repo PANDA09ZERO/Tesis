@@ -6,6 +6,7 @@ import { getPagination } from '../utils/pagination';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { AuthRequest } from '../types';
 import { positiveId } from '../utils/academicValidation';
+import { seccionesPendientes } from '../utils/avisos';
 
 const TIPOS_NOTIFICACION = ['info', 'warning', 'success', 'error', 'alerta'];
 const PRIORIDADES = ['baja', 'normal', 'alta', 'urgente'];
@@ -69,7 +70,8 @@ export async function getAllNotificaciones(req: Request, res: Response) {
     );
 
     const [notificaciones] = await pool.query<RowDataPacket[]>(
-      `SELECT n.*, u.nombre as usuario_nombre, u.apellido as usuario_apellido
+      `SELECT n.*, u.nombre as usuario_nombre, u.apellido as usuario_apellido,
+              (SELECT COUNT(*) FROM notificacion_respuestas r WHERE r.notificacion_id = n.id) AS respuestas
        FROM notificaciones n
        LEFT JOIN usuarios u ON n.usuario_id = u.id
        ${whereClause}
@@ -110,17 +112,22 @@ export async function createNotificacion(req: Request, res: Response) {
   try {
     const datos = validarContenidoNotificacion(req.body);
     if (typeof datos === 'string') return sendError(res, datos, 400);
-    const usuarioId = req.body.usuario_id === undefined || req.body.usuario_id === null || req.body.usuario_id === '' ? null : req.body.usuario_id;
-    if (usuarioId !== null) {
-      if (!positiveId(usuarioId)) return sendError(res, 'Usuario destinatario inválido', 400);
-      const [destino] = await pool.query<RowDataPacket[]>('SELECT id FROM usuarios WHERE id = ? AND activo = 1', [Number(usuarioId)]);
-      if (!destino.length) return sendError(res, 'Usuario destinatario no encontrado', 404);
-    }
+    // El envío individual exige destinatario: una notificación sin usuario no la recibe nadie
+    // (cada cuenta solo ve las suyas). Para varios usuarios se usa el envío masivo por rol.
+    const usuarioId = req.body.usuario_id;
+    if (usuarioId === undefined || usuarioId === null || usuarioId === '') return sendError(res, 'Elige el destinatario de la notificación', 400);
+    if (!positiveId(usuarioId)) return sendError(res, 'Usuario destinatario inválido', 400);
+    const [destino] = await pool.query<RowDataPacket[]>(
+      `SELECT u.id FROM usuarios u JOIN roles r ON r.id = u.rol_id
+       WHERE u.id = ? AND u.activo = 1 AND r.nombre <> 'superadministrador'`,
+      [Number(usuarioId)]
+    );
+    if (!destino.length) return sendError(res, 'Usuario destinatario no encontrado', 404);
 
     const [result] = await pool.query<ResultSetHeader>(
       `INSERT INTO notificaciones (titulo, mensaje, tipo, usuario_id, link, prioridad, leida)
        VALUES (?, ?, ?, ?, ?, ?, 0)`,
-      [datos.titulo, datos.mensaje, datos.tipo, usuarioId === null ? null : Number(usuarioId), datos.link, datos.prioridad]
+      [datos.titulo, datos.mensaje, datos.tipo, Number(usuarioId), datos.link, datos.prioridad]
     );
 
     return sendSuccess(res, { id: result.insertId }, 'Notificación creada exitosamente', 201);
@@ -192,8 +199,20 @@ export async function getNotificacionesNoLeidas(req: Request, res: Response) {
       [currentUserId]
     );
 
+    // La administración también debe enterarse de las respuestas que aún no abrió.
+    let respuestasPendientes = 0;
+    if (authRequest.user?.rol === 'administrador') {
+      const [pendientes] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS total FROM notificaciones WHERE respuesta_pendiente = 1');
+      respuestasPendientes = Number(pendientes[0].total);
+    }
+
+    // Alertas activas, incidencias abiertas y trámites solicitados que esperan atención.
+    const secciones = await seccionesPendientes(pool, currentUserId, authRequest.user?.rol);
+
     return sendSuccess(res, {
       total: notificaciones[0].total,
+      respuestas_pendientes: respuestasPendientes,
+      secciones,
       recientes
     });
   } catch (error) {
@@ -239,5 +258,73 @@ export async function enviarNotificacionMasiva(req: Request, res: Response) {
   } catch (error) {
     logError('Error al enviar notificación masiva:', error);
     return sendError(res, 'Error al enviar notificación masiva');
+  }
+}
+// ---------------------------------------------------------------------------
+// Respuestas: el destinatario y la administración conversan bajo cada notificación.
+// ---------------------------------------------------------------------------
+const MAX_RESPUESTA = 2000;
+
+async function notificacionAccesible(req: AuthRequest, id: number) {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT n.id, n.usuario_id, n.titulo, n.mensaje, n.tipo, n.prioridad, n.link, n.leida, n.created_at,
+            u.nombre AS usuario_nombre, u.apellido AS usuario_apellido
+     FROM notificaciones n LEFT JOIN usuarios u ON u.id = n.usuario_id WHERE n.id = ?`,
+    [id]
+  );
+  const notificacion = rows[0];
+  if (!notificacion) return null;
+  const esAdmin = req.user?.rol === 'administrador';
+  if (!esAdmin && notificacion.usuario_id !== req.user?.userId) return null;
+  return { notificacion, esAdmin };
+}
+
+export async function getRespuestas(req: AuthRequest, res: Response) {
+  if (!positiveId(req.params.id)) return sendError(res, 'Notificación inválida', 400);
+  try {
+    const acceso = await notificacionAccesible(req, Number(req.params.id));
+    if (!acceso) return sendError(res, 'Notificación no encontrada', 404);
+    const [respuestas] = await pool.query<RowDataPacket[]>(
+      `SELECT r.id, r.mensaje, r.created_at, r.usuario_id, u.nombre, u.apellido, ro.nombre AS rol
+       FROM notificacion_respuestas r
+       JOIN usuarios u ON u.id = r.usuario_id JOIN roles ro ON ro.id = u.rol_id
+       WHERE r.notificacion_id = ? ORDER BY r.created_at, r.id`,
+      [acceso.notificacion.id]
+    );
+    // Abrir la conversación la da por vista: la administración atiende la respuesta;
+    // el destinatario lee la notificación.
+    if (acceso.esAdmin) await pool.query('UPDATE notificaciones SET respuesta_pendiente = 0 WHERE id = ?', [acceso.notificacion.id]);
+    else await pool.query('UPDATE notificaciones SET leida = 1, fecha_leida = COALESCE(fecha_leida, NOW()) WHERE id = ?', [acceso.notificacion.id]);
+    return sendSuccess(res, { notificacion: acceso.notificacion, respuestas });
+  } catch (error) {
+    logError('Error al obtener respuestas:', error);
+    return sendError(res, 'Error al obtener las respuestas');
+  }
+}
+
+export async function createRespuesta(req: AuthRequest, res: Response) {
+  if (!positiveId(req.params.id)) return sendError(res, 'Notificación inválida', 400);
+  const mensaje = typeof req.body?.mensaje === 'string' ? req.body.mensaje.trim() : '';
+  if (!mensaje) return sendError(res, 'Escribe tu respuesta', 400);
+  if (mensaje.length > MAX_RESPUESTA) return sendError(res, `La respuesta admite hasta ${MAX_RESPUESTA} caracteres`, 400);
+  try {
+    const acceso = await notificacionAccesible(req, Number(req.params.id));
+    if (!acceso) return sendError(res, 'Notificación no encontrada', 404);
+    if (acceso.notificacion.usuario_id === null) return sendError(res, 'Esta notificación no tiene destinatario', 409);
+    const [result] = await pool.query<ResultSetHeader>(
+      'INSERT INTO notificacion_respuestas (notificacion_id, usuario_id, mensaje) VALUES (?, ?, ?)',
+      [acceso.notificacion.id, req.user!.userId, mensaje]
+    );
+    // Quien no escribió se entera: si responde el destinatario, queda pendiente para la
+    // administración; si responde la administración, vuelve a "no leída" para el destinatario.
+    if (acceso.esAdmin && acceso.notificacion.usuario_id !== req.user!.userId) {
+      await pool.query('UPDATE notificaciones SET leida = 0, fecha_leida = NULL, respuesta_pendiente = 0 WHERE id = ?', [acceso.notificacion.id]);
+    } else {
+      await pool.query('UPDATE notificaciones SET respuesta_pendiente = 1 WHERE id = ?', [acceso.notificacion.id]);
+    }
+    return sendSuccess(res, { id: result.insertId }, 'Respuesta enviada', 201);
+  } catch (error) {
+    logError('Error al responder notificación:', error);
+    return sendError(res, 'Error al enviar la respuesta');
   }
 }

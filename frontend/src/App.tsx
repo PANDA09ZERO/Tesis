@@ -70,7 +70,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const allowed = ['/', '/dashboard', '/modulos', '/calificaciones', '/asistencias', '/calendario', '/alertas'].includes(location.pathname) || /^\/estudiante\/(perfil|cursos|calificaciones|asistencia|horarios|pagos|notificaciones)$/.test(location.pathname) || /^\/estudiante\/cursos\/\d+$/.test(location.pathname);
     if (!allowed) return <Navigate to="/dashboard" replace />;
   }
-  const isGuardianPage = ['/familia/alumnos','/familia/perfil','/modulos'].includes(location.pathname) || /^\/alumnos\/\d+$/.test(location.pathname);
+  const isGuardianPage = ['/familia/alumnos','/familia/perfil','/familia/notificaciones','/modulos'].includes(location.pathname) || /^\/alumnos\/\d+$/.test(location.pathname);
   if (user?.rol === 'apoderado' && !isGuardianPage) {
     return <Navigate to="/familia/alumnos" replace />;
   }
@@ -122,6 +122,7 @@ function ApplicationRoutes() {
       <Route path="/estudiante/cursos/:matriculaId" element={<ProtectedRoute><RoleRoute allowed={['alumno']}><AppLayout title="Mi curso"><EstudianteCursoPage /></AppLayout></RoleRoute></ProtectedRoute>} />
       <Route path="/estudiante/notificaciones" element={<ProtectedRoute><RoleRoute allowed={['alumno']}><AppLayout title="Mis notificaciones"><NotificacionesPage /></AppLayout></RoleRoute></ProtectedRoute>} />
       <Route path="/familia/perfil" element={<ProtectedRoute><RoleRoute allowed={['apoderado']}><AppLayout title="Mi cuenta"><ProfesorPerfilPage /></AppLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/familia/notificaciones" element={<ProtectedRoute><RoleRoute allowed={['apoderado']}><AppLayout title="Mis notificaciones"><NotificacionesPage /></AppLayout></RoleRoute></ProtectedRoute>} />
       <Route path="/familia/alumnos" element={<ProtectedRoute><RoleRoute allowed={['apoderado']}><AppLayout title="Estudiantes a mi cargo"><FamilyStudentsPage /></AppLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="/alumnos" element={<ProtectedRoute><AppLayout title="Gestión de Alumnos"><AlumnosPage /></AppLayout></ProtectedRoute>} />

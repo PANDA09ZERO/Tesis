@@ -7,7 +7,9 @@ import {
   marcarTodasLeidas,
   deleteNotificacion,
   getNotificacionesNoLeidas,
-  enviarNotificacionMasiva
+  enviarNotificacionMasiva,
+  getRespuestas,
+  createRespuesta
 } from '../controllers/notificaciones.controller';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -18,6 +20,9 @@ router.use(authenticate);
 router.get('/', getAllNotificaciones);
 router.get('/no-leidas', getNotificacionesNoLeidas);
 router.get('/:id', getNotificacionById);
+router.get('/:id/respuestas', getRespuestas);
+// Responden el destinatario y la administración; el controlador verifica el acceso.
+router.post('/:id/respuestas', createRespuesta);
 
 // Rutas protegidas
 router.post('/', authenticate, authorize('administrador'), createNotificacion);

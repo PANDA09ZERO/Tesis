@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { PeriodoProvider } from './context/PeriodoContext';
+import { NotificationsProvider } from './context/NotificationsContext';
 import './index.css';
 import { captureInstallPrompt } from './hooks/useInstallApp';
 
@@ -23,8 +24,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <AuthProvider>
         <PeriodoProvider>
-          <App />
-          <Toaster position="top-right" toastOptions={{ className: 'app-toast' }} />
+          <NotificationsProvider>
+            <App />
+            <Toaster position="top-right" toastOptions={{ className: 'app-toast' }} />
+          </NotificationsProvider>
         </PeriodoProvider>
       </AuthProvider>
     </BrowserRouter>

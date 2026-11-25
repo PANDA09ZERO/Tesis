@@ -7,7 +7,9 @@ test('familia: tarjetas, pestañas y un periodo común para notas y asistencia',
  await login(page);await expect(page.getByRole('main').getByRole('heading',{name:'Estudiantes a mi cargo',exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Usuario 11',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Usuario 12',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Usuario 13',exact:true})).toHaveCount(0);
  await page.getByRole('navigation',{name:'Consultar a Usuario 11',exact:true}).getByRole('link',{name:'Resumen',exact:true}).click();
- await expect(page.getByRole('heading',{name:'Usuario 11',exact:true})).toBeVisible();await expect(page.getByText('Parentesco: Padre',{exact:false})).toBeVisible();
+ // Espera a la ficha del alumno: en la lista también aparecen "A1/A2 · Parentesco: Padre".
+ await expect(page).toHaveURL(/\/alumnos\/1(?:\?|$)/);
+ await expect(page.getByRole('heading',{name:'Usuario 11',exact:true})).toBeVisible();await expect(page.getByText('A1 · Parentesco: Padre',{exact:true})).toBeVisible();
  await expect(page.getByText(/Documentos/)).toHaveCount(0);
  const sections=page.getByRole('navigation',{name:'Secciones del estudiante'});
  await sections.getByRole('button',{name:'Calificaciones',exact:true}).click();await page.getByRole('combobox',{name:'Periodo académico'}).selectOption('2');

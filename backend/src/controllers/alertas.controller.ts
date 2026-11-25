@@ -9,6 +9,14 @@ import { positiveId } from '../utils/academicValidation';
 import { CRITERIOS, evaluarAlertas } from '../utils/alertasReglas';
 
 const ESTADOS_ALERTA = ['activa', 'atendida', 'resuelta', 'expirada'];
+// Cambios de estado manuales: una alerta atendida aún se puede resolver o volver a activa, y una
+// resuelta se puede reabrir. "expirada" (superada) solo la asigna la revisión automática.
+const TRANSICIONES: Record<string, string[]> = {
+  activa: ['atendida', 'resuelta'],
+  atendida: ['resuelta', 'activa'],
+  resuelta: ['activa'],
+  expirada: [],
+};
 const RIESGOS = ['bajo', 'medio', 'alto'];
 
 export async function getAllAlertas(req: AuthRequest, res: Response) {
@@ -67,7 +75,7 @@ export async function updateAlertaEstado(req: AuthRequest, res: Response) {
 
     // Primero obtener el alumno_id de la alerta
     const [alerta] = await pool.query<RowDataPacket[]>(
-      'SELECT alumno_id FROM alertas_academicas WHERE id = ?',
+      'SELECT alumno_id, estado FROM alertas_academicas WHERE id = ?',
       [req.params.id]
     );
 
@@ -80,6 +88,13 @@ export async function updateAlertaEstado(req: AuthRequest, res: Response) {
       if (!tieneAcceso) {
         return sendError(res, 'Alerta no encontrada', 404);
       }
+    }
+
+    const actual = String(alerta[0].estado);
+    if (!(TRANSICIONES[actual] || []).includes(estado)) {
+      return sendError(res, actual === 'expirada'
+        ? 'La alerta fue superada en la revisión automática y no admite cambios'
+        : `Una alerta ${actual} no puede pasar a ${estado}`, 409);
     }
 
     await pool.query(

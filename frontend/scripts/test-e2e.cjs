@@ -9,8 +9,13 @@ async function main(){
   // Impide que un .env del desarrollador dirija las pruebas hacia una API real.
   process.env.VITE_API_BASE_URL='';
   process.env.VITE_API_PROXY_TARGET='http://127.0.0.1:4111';
-  const {createServer}=await import(pathToFileURL(require.resolve('vite')).href);
-  server=await createServer({server:{host:'127.0.0.1',port:5183,strictPort:true}});await server.listen();
+  // Se prueba la versión compilada (la que se despliega), servida con vite preview y el mismo proxy
+  // hacia el fixture. El servidor de desarrollo compilaba las páginas diferidas al vuelo y, al
+  // reorganizar dependencias, cortaba peticiones en curso: la app a veces no llegaba a arrancar.
+  const {build,preview}=await import(pathToFileURL(require.resolve('vite')).href);
+  const outDir='dist-e2e';
+  await build({logLevel:'warn',build:{outDir,emptyOutDir:true}});
+  server=await preview({build:{outDir},preview:{host:'127.0.0.1',port:5183,strictPort:true}});
   const runner=spawn(process.execPath,[require.resolve('@playwright/test/cli'),'test',...process.argv.slice(2)],{stdio:'inherit',env:process.env,windowsHide:true});
   process.exitCode=await new Promise((resolve,reject)=>{runner.once('error',reject);runner.once('exit',code=>resolve(code===0?0:1));});
  }finally{

@@ -2,10 +2,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Layers, Calendar, BarChart3, User, ClipboardCheck, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useAppNavigation } from '../../context/NavigationContext';
+import { useNotifications } from '../../context/NotificationsContext';
+import NotificationBadge from '../ui/NotificationBadge';
 
 export default function BottomNavigation() {
   const navigate = useNavigate(); const {pathname} = useLocation(); const {user} = useAuth();
   const {openModules, openProfile} = useAppNavigation();
+  // En celular, Alertas, Incidencias y Trámites se abren desde Módulos: su contador va en ese botón.
+  const {sections} = useNotifications(); const sectionsPending = sections.alertas + sections.incidencias + sections.tramites;
   const guardian = user?.rol === 'apoderado', student = user?.rol === 'alumno', admin = user?.rol === 'administrador';
   const isSuperAdmin = user?.rolSistema === 'superadministrador';
   const home = guardian ? '/familia/alumnos' : '/dashboard';
@@ -20,6 +24,6 @@ export default function BottomNavigation() {
     {id:'profile',label:'Perfil',icon:User,path:guardian?'/familia/perfil':student?'/estudiante/perfil':user?.rol==='profesor'?'/profesor/perfil':'/perfil',action:openProfile}
   ];
   return <nav aria-label="Navegación inferior" className={`fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/95 pb-[max(0.25rem,env(safe-area-inset-bottom))] backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95 lg:hidden`}>
-    <div className="mx-auto grid h-16 max-w-xl auto-cols-fr grid-flow-col px-1">{items.map(item=>{const Icon=item.icon;const active=Boolean(item.path&&(pathname===item.path||pathname.startsWith(item.path+'/')||(item.id==='home'&&pathname==='/')));return <button type="button" key={item.id} onClick={item.action} aria-current={active?'page':undefined} className={`nav-pencil-bottom relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-xs transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 ${active?'font-bold text-primary-700 dark:text-blue-300':'font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}><Icon className="h-5 w-5" aria-hidden="true"/><span>{item.label}</span></button>;})}</div>
+    <div className="mx-auto grid h-16 max-w-xl auto-cols-fr grid-flow-col px-1">{items.map(item=>{const Icon=item.icon;const active=Boolean(item.path&&(pathname===item.path||pathname.startsWith(item.path+'/')||(item.id==='home'&&pathname==='/')));return <button type="button" key={item.id} onClick={item.action} aria-label={item.label} aria-describedby={item.id==='modules'&&sectionsPending?'modules-pending':undefined} aria-current={active?'page':undefined} className={`nav-pencil-bottom relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-xs transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 ${active?'font-bold text-primary-700 dark:text-blue-300':'font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}><Icon className="h-5 w-5" aria-hidden="true"/><span>{item.label}</span>{item.id==='modules'&&<NotificationBadge count={sectionsPending} describes="modules-pending" className="absolute right-1/2 top-1 translate-x-5" />}</button>;})}</div>
   </nav>;
 }

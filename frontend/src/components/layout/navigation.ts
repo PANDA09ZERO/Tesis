@@ -77,6 +77,7 @@ const alumnoMenu: NavigationLink[] = [
 const apoderadoMenu: NavigationLink[] = [
   { to: '/familia/perfil', icon: Users, label: 'Mi perfil' },
   { to: '/familia/alumnos', icon: Users, label: 'Estudiantes a mi cargo' },
+  { to: '/familia/notificaciones', icon: FileText, label: 'Mis notificaciones' },
 ];
 
 // Sidebar and module catalog share this inventory; server permissions remain authoritative.
