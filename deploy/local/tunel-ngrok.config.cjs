@@ -11,7 +11,8 @@ module.exports = {
   apps: [{
     name: 'gestion-tunel',
     script: ngrok,
-    args: ['http', `--url=${dominio}`, '--log=stdout', '3000'],
+    // 127.0.0.1 y no "3000" (localhost): ngrok probaba primero IPv6 (::1) y el backend solo escucha en IPv4.
+    args: ['http', `--url=${dominio}`, '--log=stdout', 'http://127.0.0.1:3000'],
     interpreter: 'none',
     autorestart: true,
     restart_delay: 5000,
