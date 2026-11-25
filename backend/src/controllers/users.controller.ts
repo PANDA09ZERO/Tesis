@@ -32,6 +32,8 @@ export async function getAllUsers(req: Request, res: Response) {
       whereClause += ' AND r.nombre = ?';
       params.push(rol);
     }
+    // Opcional: solo cuentas activas (p. ej. al elegir el destinatario de una notificación).
+    if (req.query.activo === '1') whereClause += ' AND u.activo = 1';
 
     const [countResult] = await pool.query<RowDataPacket[]>(
       `SELECT COUNT(*) as total FROM usuarios u JOIN roles r ON u.rol_id = r.id ${whereClause}`,

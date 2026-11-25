@@ -12,10 +12,11 @@ export function limitarEstudiante(req:AuthRequest,res:Response,next:NextFunction
     /^\/alumnos\/\d+(?:\/horario)?$/, /^\/calificaciones\/alumno\/\d+$/,
     /^\/asistencias\/alumno\/\d+$/, /^\/horarios\/calendario$/,
     /^\/documentos(?:\/.*)?$/, /^\/alertas(?:\/estadisticas)?$/,
-    /^\/notificaciones(?:\/(no-leidas|\d+))?$/
+    /^\/notificaciones(?:\/(no-leidas|\d+(?:\/respuestas)?))?$/
   ];
   const permittedWrite = req.method === 'PUT' && (path === '/auth/change-password' || /^\/notificaciones\/(\d+\/marcar-leida|marcar-todas-leidas)$/.test(path))
     || req.method === 'DELETE' && /^\/notificaciones\/\d+$/.test(path)
+    || req.method === 'POST' && /^\/notificaciones\/\d+\/respuestas$/.test(path)
     || req.method === 'POST' && /^\/documentos\/formularios\/\d+\/envios$/.test(path);
   if (read && reads.some(pattern=>pattern.test(path)) || permittedWrite) return next();
   return sendError(res,'Tu cuenta de estudiante solo puede consultar sus datos personales y realizar las acciones habilitadas',403);

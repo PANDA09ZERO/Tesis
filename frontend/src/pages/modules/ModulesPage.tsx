@@ -42,6 +42,7 @@ const descriptions: Record<string, string> = {
   '/estudiante/notificaciones': 'Tus notificaciones y avisos.',
   '/familia/perfil': 'Datos de tu cuenta y contraseña.',
   '/familia/alumnos': 'Consulta de los estudiantes vinculados.',
+  '/familia/notificaciones': 'Tus notificaciones y avisos del colegio.',
   '/superadministracion': 'Operaciones de control del sistema.'
 };
 const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();

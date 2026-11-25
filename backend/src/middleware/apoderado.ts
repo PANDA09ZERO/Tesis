@@ -15,13 +15,18 @@ export function limitarApoderado(req:AuthRequest,res:Response,next:NextFunction)
       /^\/calificaciones\/alumno\/\d+$/,
       /^\/asistencias\/alumno\/\d+$/,
       /^\/incidencias\/alumno\/\d+$/,
-      /^\/documentos(?:\/.*)?$/
+      /^\/documentos(?:\/.*)?$/,
+      /^\/notificaciones(?:\/(no-leidas|\d+(?:\/respuestas)?))?$/
     ];
 
     const allowedFormSubmission = req.method === 'POST'
       && /^\/documentos\/formularios\/\d+\/envios$/.test(apiPath);
+    // Sus propias notificaciones: marcar como leídas o borrarlas (el controlador filtra por usuario).
+    const allowedNotificationWrite = req.method === 'PUT' && /^\/notificaciones\/(\d+\/marcar-leida|marcar-todas-leidas)$/.test(apiPath)
+      || req.method === 'DELETE' && /^\/notificaciones\/\d+$/.test(apiPath)
+      || req.method === 'POST' && /^\/notificaciones\/\d+\/respuestas$/.test(apiPath);
 
-    if ((isRead && allowedGuardianReads.some(pattern => pattern.test(apiPath))) || allowedFormSubmission || (req.method === 'PUT' && apiPath === '/auth/change-password')) {
+    if ((isRead && allowedGuardianReads.some(pattern => pattern.test(apiPath))) || allowedFormSubmission || allowedNotificationWrite || (req.method === 'PUT' && apiPath === '/auth/change-password')) {
       return next();
     }
 

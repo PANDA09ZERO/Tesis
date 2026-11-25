@@ -20,6 +20,7 @@ test('perspectiva de profesores: HTTP con esquema MySQL real aislado',async t=>{
   for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','horarios','calificaciones','asistencias','apoderados','apoderado_alumno','alertas_academicas','documentos','documentos_historial','documento_categorias','notificaciones','registro_actividades','pagos_matricula','eventos_calendario']) {
    await db.query('CREATE TABLE `'+table+'` LIKE `'+sourceName+'`.`'+table+'`');
   }
+  await require('../scripts/migrate-respuestas.cjs').migrateRespuestas(db,{recordVersion:false});
   for(const sql of [
    "INSERT INTO roles(id,nombre) VALUES(1,'administrador'),(2,'profesor'),(3,'alumno'),(4,'apoderado')",
    "INSERT INTO usuarios(id,email,password_hash,nombre,apellido,rol_id) VALUES(1,'admin@test.local','hash','Admin','Prueba',1),(2,'p1@test.local','hash','Profesor','Uno',2),(3,'p2@test.local','hash','Profesor','Dos',2),(4,'p3@test.local','hash','Profesor','Sin asignación',2),(21,'apo1@test.local','hash','Apoderado','Uno',4),(22,'apo2@test.local','hash','Apoderado','Dos',4)",

@@ -15,6 +15,8 @@ export default defineConfig(({ mode }) => {
     // desarrollo descubra dependencias tarde y recargue la página en mitad del uso (o de las pruebas).
     optimizeDeps: { entries: ['index.html', 'src/**/*.{ts,tsx}'] },
     server: {
+      // Precompila las páginas diferidas al arrancar: la primera visita no espera a compilarlas.
+      warmup: { clientFiles: ['./src/main.tsx', './src/pages/**/*.tsx'] },
       host: '0.0.0.0',
       port: 5173,
       proxy: {

@@ -12,6 +12,7 @@ const fs=require('node:fs/promises'),os=require('node:os'),path=require('node:pa
   await admin.query('CREATE DATABASE `'+name+'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');db=mysql.createPool({...settings,database:name,connectionLimit:6});
   for(const table of ['roles','usuarios','profesores','grados','periodos_academicos','cursos','periodo_grados','periodo_grado_cursos','periodo_grado_curso_profesores','alumnos','matriculas','evaluaciones','calificaciones','asistencias','horarios','pagos_matricula','mensualidades','sueldos','alertas_academicas','notificaciones','documentos','documentos_historial','documento_categorias','formularios_documentales','formularios_documentales_envios','registro_actividades','apoderados','apoderado_alumno','eventos_calendario','incidencias','tramites_documentales'])await db.query('CREATE TABLE `'+table+'` LIKE `'+source[0].name+'`.`'+table+'`');
   await require('./migrate-report-rules.cjs').migrateReportRules(db);
+  await require('./migrate-respuestas.cjs').migrateRespuestas(db,{recordVersion:false});
   const [passwordChangeColumn]=await db.query("SHOW COLUMNS FROM usuarios LIKE 'debe_cambiar_password'");
   if(!passwordChangeColumn.length)await db.query('ALTER TABLE usuarios ADD COLUMN debe_cambiar_password TINYINT(1) NOT NULL DEFAULT 0');
   const {encryptPassword}=require('../dist/utils/encrypt');const passwordHash=encryptPassword('originalTest');

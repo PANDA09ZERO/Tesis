@@ -25,3 +25,9 @@ Para una base existente: respaldar (Workbench: Server > Data Export) y ejecutar 
 `schema.sql` pasa a la versión `20261111_historicos`: la tabla `alumnos` admite el estado `trasladado` y suma `es_historico`, `anio_ingreso`, `anio_ultimo_estudio`, `ultimo_grado_cursado` y `observaciones_historicas` para los alumnos anteriores al sistema (solo datos, sin matrícula ni cuenta activa). Se agrega `tramites_documentales` para traslados, certificados y constancias.
 
 Para una base existente: respaldar y ejecutar completo `20261111_alumnos_historicos_tramites.sql` en Workbench, o `npm run migrate:historicos` desde backend. Ambos se pueden repetir, no cambian datos y registran la versión con su checksum.
+
+## Respuestas a notificaciones (20261124)
+
+`schema.sql` pasa a la versión `20261124_respuestas`: `notificaciones` suma `respuesta_pendiente` (el destinatario respondió y la administración aún no abrió la conversación) y se crea `notificacion_respuestas` con los mensajes del destinatario y de la administración bajo cada notificación. El envío individual exige ahora un destinatario activo.
+
+Para una base existente: respaldar y ejecutar completo `20261124_notificaciones_respuestas.sql` en Workbench, o `npm run migrate:respuestas` desde backend. Ambos se pueden repetir, no cambian datos y registran la versión con su checksum. Aplicar antes de desplegar la API: sin la tabla nueva, el listado de notificaciones falla.

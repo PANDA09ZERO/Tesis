@@ -11,6 +11,10 @@ async function main(){
   process.env.VITE_API_PROXY_TARGET='http://127.0.0.1:4111';
   const {createServer}=await import(pathToFileURL(require.resolve('vite')).href);
   server=await createServer({server:{host:'127.0.0.1',port:5183,strictPort:true}});await server.listen();
+  // Las páginas se cargan de forma diferida: se precompilan y se espera a que terminen antes de
+  // lanzar Playwright, para que las primeras pruebas no compitan con la compilación en frío.
+  const pages=require('node:fs').readdirSync(path.resolve('src/pages'),{recursive:true}).filter(file=>/\.tsx$/.test(file)).map(file=>'/src/pages/'+file.split(path.sep).join('/'));
+  await Promise.all(['/src/main.tsx',...pages].map(url=>server.warmupRequest(url).catch(()=>{})));
   const runner=spawn(process.execPath,[require.resolve('@playwright/test/cli'),'test',...process.argv.slice(2)],{stdio:'inherit',env:process.env,windowsHide:true});
   process.exitCode=await new Promise((resolve,reject)=>{runner.once('error',reject);runner.once('exit',code=>resolve(code===0?0:1));});
  }finally{

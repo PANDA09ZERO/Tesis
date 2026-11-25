@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Bell, Check, Trash2, Plus, Filter, Send } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Bell, Check, Trash2, Plus, Filter, Send, MessageSquare, Volume2, VolumeX } from 'lucide-react';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
@@ -10,9 +10,14 @@ import { usePagination } from '../../hooks/usePagination';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import RecipientPicker, { type Recipient } from './RecipientPicker';
+import NotificationThread from './NotificationThread';
+import { useNotifications } from '../../context/NotificationsContext';
 
 export default function NotificacionesPage() {
   const { user } = useAuth();
+  const { refresh, soundEnabled, setSoundEnabled } = useNotifications();
+  const [thread, setThread] = useState<{ id: number; titulo: string } | null>(null);
   const [notificaciones, setNotificaciones] = useState<any[]>([]);
   const [loadError,setLoadError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -27,14 +32,19 @@ export default function NotificacionesPage() {
   const [formData, setFormData] = useState({
     titulo: '', mensaje: '', tipo: 'info', link: '', prioridad: 'normal'
   });
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
+  const [recipientError, setRecipientError] = useState('');
   const [massiveData, setMassiveData] = useState({
     titulo: '', mensaje: '', tipo: 'info', link: '', prioridad: 'normal', rol_ids: [] as number[]
   });
 
   useEffect(() => { loadData(); }, [page, debouncedSearch, filtroTipo, filtroLeida]);
+  // Al abrir o responder una conversación se actualizan la lista y el contador del menú.
+  const reloadRef = useRef<() => void>(() => {});
+  const onThreadChanged = useCallback(() => { void refresh(); reloadRef.current(); }, [refresh]);
 
-  const loadData = async () => {
-    setLoading(true); setLoadError('');
+  const loadData = async (quiet = false) => {
+    if (!quiet) setLoading(true); setLoadError('');
     try {
       const params: any = { page, limit: 20, search: debouncedSearch };
       if (filtroTipo) params.tipo = filtroTipo;
@@ -42,6 +52,7 @@ export default function NotificacionesPage() {
       const res = await notificacionesApi.getAll(params);
       setNotificaciones(res.data.data || []);
       updateFromResponse(res.data.total || 0, res.data.totalPages || 1);
+      void refresh();
     } catch (error: any) {
       setLoadError(error.response?.data?.message || 'No se pudieron cargar las notificaciones');
     } finally {
@@ -49,11 +60,14 @@ export default function NotificacionesPage() {
     }
   };
 
+  reloadRef.current = () => { void loadData(true); };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!recipient) { setRecipientError('Elige a la persona que recibirá la notificación.'); return; }
     try {
-      await notificacionesApi.create(formData);
-      toast.success('Notificación creada');
+      await notificacionesApi.create({ ...formData, usuario_id: recipient.id });
+      toast.success(`Notificación enviada a ${recipient.nombre} ${recipient.apellido}`);
       setShowModal(false);
       resetForm();
       loadData();
@@ -109,6 +123,7 @@ export default function NotificacionesPage() {
 
   const resetForm = () => {
     setFormData({ titulo: '', mensaje: '', tipo: 'info', link: '', prioridad: 'normal' });
+    setRecipient(null); setRecipientError('');
   };
 
   const resetMassiveForm = () => {
@@ -145,10 +160,19 @@ export default function NotificacionesPage() {
     { key: 'mensaje', label: 'Mensaje', render: (n: any) => <span className="text-sm text-gray-600 truncate max-w-xs">{n.mensaje}</span> },
     { key: 'tipo', label: 'Tipo', render: (n: any) => <Badge variant={getTipoBadge(n.tipo) as any}>{n.tipo}</Badge> },
     { key: 'prioridad', label: 'Prioridad', render: (n: any) => <Badge variant={getPrioridadBadge(n.prioridad) as any}>{n.prioridad}</Badge> },
-    { key: 'usuario_nombre', label: 'Destinatario', render: (n: any) => n.usuario_nombre ? `${n.usuario_nombre} ${n.usuario_apellido}` : 'Todos' },
+    { key: 'usuario_nombre', label: 'Destinatario', render: (n: any) => n.usuario_nombre ? `${n.usuario_nombre} ${n.usuario_apellido}` : 'Sin destinatario' },
+    { key: 'respuestas', label: 'Respuestas', summary: true, render: (n: any) => (
+      <span className="inline-flex flex-wrap items-center gap-2">
+        {Number(n.respuestas) ? `${n.respuestas} ${Number(n.respuestas) === 1 ? 'respuesta' : 'respuestas'}` : 'Sin respuestas'}
+        {user?.rol === 'administrador' && Number(n.respuesta_pendiente) === 1 && <Badge variant="warning">Respuesta nueva</Badge>}
+      </span>
+    )},
     { key: 'created_at', label: 'Fecha', render: (n: any) => new Date(n.created_at).toLocaleString() },
     { key: 'acciones', label: '', render: (n: any) => (
-      <div className="flex gap-1">
+      <div className="flex flex-wrap gap-1">
+        <button onClick={() => setThread({ id: n.id, titulo: n.titulo })} className="btn-secondary flex min-h-11 items-center gap-2 text-sm" aria-label={`Ver y responder: ${n.titulo}`}>
+          <MessageSquare className="h-4 w-4" aria-hidden="true" /> Ver y responder
+        </button>
         {!n.leida && (
           <button onClick={() => handleMarkAsRead(n.id)} className="p-1 text-green-600 hover:bg-green-50 rounded" title="Marcar como leída">
             <Check className="w-4 h-4" />
@@ -161,7 +185,7 @@ export default function NotificacionesPage() {
     )}
   ];
 
-  if (loadError) return <div className="card text-red-600" role="alert">{loadError}<button className="btn-secondary ml-3" onClick={loadData}>Reintentar</button></div>;
+  if (loadError) return <div className="card text-red-600" role="alert">{loadError}<button className="btn-secondary ml-3" onClick={() => void loadData()}>Reintentar</button></div>;
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -180,6 +204,9 @@ export default function NotificacionesPage() {
               </button>
             </>
           )}
+          <button type="button" onClick={() => setSoundEnabled(!soundEnabled)} aria-pressed={soundEnabled} className="btn-secondary flex items-center gap-2" title="Suena un aviso al llegar notificaciones o respuestas nuevas">
+            {soundEnabled ? <Volume2 className="w-4 h-4" aria-hidden="true" /> : <VolumeX className="w-4 h-4" aria-hidden="true" />} {soundEnabled ? 'Sonido activado' : 'Sonido desactivado'}
+          </button>
           <button onClick={handleMarkAllAsRead} className="btn-secondary flex items-center gap-2">
             <Check className="w-4 h-4" /> Marcar todas como leídas
           </button>
@@ -219,6 +246,12 @@ export default function NotificacionesPage() {
       {/* Modal Nueva Notificación */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Nueva Notificación" size="md">
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div role="group" aria-labelledby="recipient-label">
+            <p className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" id="recipient-label">Destinatario *</p>
+            <RecipientPicker value={recipient} onChange={r => { setRecipient(r); setRecipientError(''); }} />
+            {recipientError && <p className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{recipientError}</p>}
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Para avisar a todo un grupo usa “Enviar Masiva”.</p>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
             <input type="text" value={formData.titulo} onChange={e => setFormData({...formData, titulo: e.target.value})} className="input-field" required />
@@ -254,7 +287,7 @@ export default function NotificacionesPage() {
           </div>
           <div className="form-actions">
             <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
-            <button type="submit" className="btn-primary">Crear</button>
+            <button type="submit" className="btn-primary">Enviar notificación</button>
           </div>
         </form>
       </Modal>
@@ -324,6 +357,10 @@ export default function NotificacionesPage() {
             <button type="submit" className="btn-primary">Enviar Masivamente</button>
           </div>
         </form>
+      </Modal>
+
+      <Modal isOpen={thread !== null} onClose={() => setThread(null)} title={thread?.titulo || 'Conversación'} size="md">
+        {thread && <NotificationThread id={thread.id} currentUserId={user?.id} onChanged={onThreadChanged} />}
       </Modal>
 
       <ConfirmDialog isOpen={deleteId !== null} onClose={() => setDeleteId(null)} onConfirm={handleDelete}
