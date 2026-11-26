@@ -3,7 +3,9 @@ async function login(page:any,id=21){await page.goto('/login');await page.locato
 test('familia: tarjetas, pestañas y un periodo común para notas y asistencia',async({page},info)=>{
  // Los registros se muestran como tarjetas desplegables; la fecha queda dentro de cada una.
  const records=page.getByRole('main');
- const openAll=async()=>{await expect(records.locator('details.mobile-bento-card').first()).toBeVisible();for(const card of await records.locator('details.mobile-bento-card:not([open]) > summary').all())await card.click();};
+ // Tras cambiar de periodo o de sección los registros llegan con retraso y la lista se redibuja:
+ // espera a las tarjetas, ábrelas y reintenta hasta ver el dato.
+ const seeInCards=(text:string)=>expect(async()=>{await expect(records.locator('details.mobile-bento-card').first()).toBeVisible({timeout:2000});for(const card of await records.locator('details.mobile-bento-card:not([open]) > summary').all())await card.click();await expect(records.getByText(text,{exact:true}).filter({visible:true}).first()).toBeVisible({timeout:1000});}).toPass({timeout:20000});
  await login(page);await expect(page.getByRole('main').getByRole('heading',{name:'Estudiantes a mi cargo',exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Usuario 11',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Usuario 12',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Usuario 13',exact:true})).toHaveCount(0);
  await page.getByRole('navigation',{name:'Consultar a Usuario 11',exact:true}).getByRole('link',{name:'Resumen',exact:true}).click();
@@ -13,8 +15,8 @@ test('familia: tarjetas, pestañas y un periodo común para notas y asistencia',
  await expect(page.getByText(/Documentos/)).toHaveCount(0);
  const sections=page.getByRole('navigation',{name:'Secciones del estudiante'});
  await sections.getByRole('button',{name:'Calificaciones',exact:true}).click();await page.getByRole('combobox',{name:'Periodo académico'}).selectOption('2');
- await openAll();await expect(records.getByText('14/10/2025',{exact:true})).toBeVisible();await expect(records.getByText('14/10/2026',{exact:true})).toHaveCount(0);
- await sections.getByRole('button',{name:'Asistencia',exact:true}).click();await openAll();await expect(records.getByText('14/10/2025',{exact:true})).toBeVisible();
+ await seeInCards('14/10/2025');await expect(records.getByText('14/10/2026',{exact:true})).toHaveCount(0);
+ await sections.getByRole('button',{name:'Asistencia',exact:true}).click();await seeInCards('14/10/2025');
  await page.reload();await expect(page.getByRole('combobox',{name:'Periodo académico'})).toHaveValue('2');await expect(page.getByRole('heading',{name:'Asistencia del periodo'})).toBeVisible();
  await page.screenshot({path:info.outputPath('familia-asistencia.png'),fullPage:true});
  await page.goto('/alumnos/1?vista=documentos');await expect(page.getByRole('heading',{name:/Resumen de/})).toBeVisible();await expect(page.getByRole('button',{name:'Documentos',exact:true})).toHaveCount(0);

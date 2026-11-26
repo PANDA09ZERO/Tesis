@@ -12,8 +12,22 @@ import { captureInstallPrompt } from './hooks/useInstallApp';
 captureInstallPrompt();
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  // Si ya había una versión controlando la página y llega otra, se recarga una vez para usar el
+  // código nuevo. Sin esto, una app abierta (sobre todo en el celular) seguía con la versión vieja.
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return;
+    reloading = true;
+    window.location.reload();
+  });
   window.addEventListener('load', () => {
-    void navigator.serviceWorker.register('/sw.js').catch((error: unknown) => {
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      // Al volver a la app (pestaña o app instalada), comprueba si hay una versión nueva.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') void registration.update().catch(() => {});
+      });
+    }).catch((error: unknown) => {
       console.error('No se pudo registrar el service worker de la aplicación.', error);
     });
   });
