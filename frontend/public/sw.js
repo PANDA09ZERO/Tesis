@@ -3,7 +3,8 @@
 //   sin conexión se muestra la última versión guardada.
 // - Scripts, estilos, imágenes y fuentes con nombre versionado: primero la caché.
 // - La API (/api) y los archivos subidos (/uploads) nunca se guardan.
-const CACHE_NAME = 'ciencias-ingenieria-v2';
+// v3 (25/11/2026): la app pasó a llamar a /api en su propio dominio; se descarta lo guardado antes.
+const CACHE_NAME = 'ciencias-ingenieria-v3';
 const APP_SHELL = ['/manifest.json', '/assets/pwa-192.png', '/assets/pwa-512.png', '/assets/pwa-maskable-192.png', '/assets/pwa-maskable-512.png', '/assets/apple-touch-icon.png', '/assets/logo.png'];
 const CACHEABLE_DESTINATIONS = new Set(['script', 'style', 'image', 'font']);
 
