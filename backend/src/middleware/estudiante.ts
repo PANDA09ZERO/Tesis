@@ -16,7 +16,7 @@ export function limitarEstudiante(req:AuthRequest,res:Response,next:NextFunction
   ];
   const permittedWrite = req.method === 'PUT' && (path === '/auth/change-password' || /^\/notificaciones\/(\d+\/marcar-leida|marcar-todas-leidas)$/.test(path))
     || req.method === 'DELETE' && /^\/notificaciones\/\d+$/.test(path)
-    || req.method === 'POST' && /^\/notificaciones\/\d+\/respuestas$/.test(path)
+    || req.method === 'POST' && /^\/notificaciones\/(\d+\/respuestas|eliminar)$/.test(path)
     || req.method === 'POST' && /^\/documentos\/formularios\/\d+\/envios$/.test(path);
   if (read && reads.some(pattern=>pattern.test(path)) || permittedWrite) return next();
   return sendError(res,'Tu cuenta de estudiante solo puede consultar sus datos personales y realizar las acciones habilitadas',403);

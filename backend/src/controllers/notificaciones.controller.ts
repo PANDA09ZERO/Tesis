@@ -179,6 +179,29 @@ export async function deleteNotificacion(req: AuthRequest, res: Response) {
   }
 }
 
+const MAX_ELIMINAR = 200;
+
+/** Elimina varias notificaciones. Cada cuenta solo borra las suyas; la administración, cualquiera. */
+export async function deleteNotificaciones(req: AuthRequest, res: Response) {
+  const ids = req.body?.ids;
+  if (!Array.isArray(ids) || ids.length === 0) return sendError(res, 'Elige al menos una notificación', 400);
+  if (ids.length > MAX_ELIMINAR) return sendError(res, `Se pueden eliminar hasta ${MAX_ELIMINAR} a la vez`, 400);
+  if (ids.some((id: unknown) => !positiveId(id))) return sendError(res, 'Notificación inválida', 400);
+  const unicos = [...new Set(ids.map(Number))];
+  try {
+    const propias = req.user && req.user.rol !== 'administrador';
+    const [result] = await pool.query<ResultSetHeader>(
+      `DELETE FROM notificaciones WHERE id IN (?) ${propias ? 'AND usuario_id = ?' : ''}`,
+      [unicos, ...(propias ? [req.user!.userId] : [])]
+    );
+    if (!result.affectedRows) return sendError(res, 'No se encontraron las notificaciones', 404);
+    return sendSuccess(res, { eliminadas: result.affectedRows }, result.affectedRows === 1 ? 'Notificación eliminada' : `${result.affectedRows} notificaciones eliminadas`);
+  } catch (error) {
+    logError('Error al eliminar notificaciones:', error);
+    return sendError(res, 'Error al eliminar notificaciones');
+  }
+}
+
 export async function getNotificacionesNoLeidas(req: Request, res: Response) {
   try {
     const authRequest = req as any;

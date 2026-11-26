@@ -126,3 +126,38 @@ test('avisos: una incidencia nueva suma al contador de la sección y avisa al ap
     }
   }
 });
+
+test('notificaciones: se pueden marcar varias y eliminarlas a la vez', async ({ page }, info) => {
+  test.setTimeout(60_000);
+  const tag = `${info.project.name} ${Date.now()}`;
+  const titles = [`Borrar A ${tag}`, `Borrar B ${tag}`, `Conservar ${tag}`];
+  await login(page, 1);
+  const admin = { Authorization: 'Bearer ' + await page.evaluate(() => localStorage.getItem('token')) };
+  const ids: number[] = [];
+  for (const titulo of titles) {
+    const r = await page.request.post('/api/notificaciones', { headers: admin, data: { titulo, mensaje: 'Prueba de borrado múltiple', usuario_id: 21 } });
+    expect(r.status()).toBe(201); ids.push((await r.json()).data.id);
+  }
+  try {
+    await login(page, 21);
+    await page.goto('/familia/notificaciones');
+    await page.getByPlaceholder('Buscar notificación...').fill(tag);
+    for (const t of titles) await expect(page.getByText(t, { exact: true }).first()).toBeVisible();
+    const borrar = page.getByRole('button', { name: /^Eliminar seleccionadas/ });
+    await expect(borrar).toBeDisabled();
+    await page.getByRole('checkbox', { name: `Seleccionar: ${titles[0]}`, exact: true }).check();
+    await page.getByRole('checkbox', { name: `Seleccionar: ${titles[1]}`, exact: true }).check();
+    await expect(borrar).toHaveText(/Eliminar seleccionadas \(2\)/);
+    await page.screenshot({ path: info.outputPath('notificaciones-seleccion.png'), fullPage: true, animations: 'disabled' });
+    const removed = page.waitForResponse(r => r.url().endsWith('/api/notificaciones/eliminar') && r.request().method() === 'POST');
+    await borrar.click();
+    await page.getByRole('button', { name: 'Eliminar', exact: true }).click();
+    expect((await removed).status()).toBe(200);
+    await expect(page.getByText(titles[0], { exact: true })).toHaveCount(0);
+    await expect(page.getByText(titles[1], { exact: true })).toHaveCount(0);
+    await expect(page.getByText(titles[2], { exact: true }).first()).toBeVisible();
+    await expect(borrar).toBeDisabled();
+  } finally {
+    await page.request.post('/api/notificaciones/eliminar', { headers: admin, data: { ids } });
+  }
+});

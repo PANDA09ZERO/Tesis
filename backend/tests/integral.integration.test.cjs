@@ -180,6 +180,20 @@ test('corrección integral: HTTP y MySQL temporal con esquema real',async t=>{
     await db.query('UPDATE usuarios SET password_hash=?,fecha_nacimiento=?,dni=?,telefono=?,genero=?,debe_cambiar_password=0 WHERE id=12',[before.password_hash,before.fecha_nacimiento,before.dni,before.telefono,before.genero]);
    }
   });
+  await t.test('eliminar varias notificaciones: cada cuenta solo las suyas, la administración cualquiera',async()=>{
+   const crear=async(usuario_id,titulo)=>(await call('/notificaciones','POST',{titulo,mensaje:'Prueba de borrado',usuario_id})).data.id;
+   const g1a=await crear(21,'Borrar 1'),g1b=await crear(21,'Borrar 2'),g2=await crear(22,'Ajena'),g1c=await crear(21,'Borrar 3');
+   try{
+    assert.equal((await call('/notificaciones/eliminar','POST',{ids:[]},'g1')).status,400);
+    assert.equal((await call('/notificaciones/eliminar','POST',{ids:['x']},'g1')).status,400);
+    assert.equal((await call('/notificaciones/eliminar','POST',{ids:Array.from({length:201},(_,i)=>i+1)},'g1')).status,400);
+    // El apoderado manda también una ajena: solo se borran las suyas.
+    const mine=await call('/notificaciones/eliminar','POST',{ids:[g1a,g1b,g2,g1a]},'g1');assert.equal(mine.status,200);assert.equal(mine.data.eliminadas,2);
+    const [left]=await db.query('SELECT id FROM notificaciones WHERE id IN (?) ORDER BY id',[[g1a,g1b,g2,g1c]]);assert.deepEqual(left.map(r=>r.id),[g2,g1c].sort((x,y)=>x-y));
+    assert.equal((await call('/notificaciones/eliminar','POST',{ids:[g2]},'g1')).status,404);
+    const admin=await call('/notificaciones/eliminar','POST',{ids:[g2,g1c]});assert.equal(admin.status,200);assert.equal(admin.data.eliminadas,2);
+   }finally{await db.query('DELETE FROM notificaciones WHERE id IN (?)',[[g1a,g1b,g2,g1c]]);}
+  });
   await t.test('contraseña propia cierra todas las sesiones, exige reautenticación y no modifica otro usuario',async()=>{const another=sign(21,'apoderado');assert.equal((await call('/auth/change-password','PUT',{currentPassword:'originalTest',newPassword:'nuevaTest',userId:22},'g1')).status,200);assert.equal((await call('/auth/profile','GET',undefined,'g1')).status,401);assert.equal((await call('/auth/profile','GET',undefined,another)).status,401);assert.equal((await call('/auth/profile','GET',undefined,'g2')).status,200);assert.equal((await call('/auth/login','POST',{email:'user21@test.local',password:'originalTest'},null)).status,401);const r=await call('/auth/login','POST',{email:'user21@test.local',password:'nuevaTest'},null);assert.equal(r.status,200);assert.equal((await call('/auth/profile','GET',undefined,r.data.token)).status,200);});
  }finally{if(server)await new Promise(resolve=>server.close(resolve));if(db)await db.end();await admin.query('DROP DATABASE IF EXISTS `'+name+'`');await admin.end();await original.end();}
 });

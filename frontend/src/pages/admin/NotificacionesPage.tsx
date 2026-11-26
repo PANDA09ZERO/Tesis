@@ -29,6 +29,10 @@ export default function NotificacionesPage() {
   const [showModal, setShowModal] = useState(false);
   const [showMassiveModal, setShowMassiveModal] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  // Selección para eliminar varias a la vez (solo de la página que se está viendo).
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [confirmBulk, setConfirmBulk] = useState(false);
+  const [deletingBulk, setDeletingBulk] = useState(false);
   const [formData, setFormData] = useState({
     titulo: '', mensaje: '', tipo: 'info', link: '', prioridad: 'normal'
   });
@@ -50,7 +54,10 @@ export default function NotificacionesPage() {
       if (filtroTipo) params.tipo = filtroTipo;
       if (filtroLeida) params.leida = filtroLeida;
       const res = await notificacionesApi.getAll(params);
-      setNotificaciones(res.data.data || []);
+      const rows = res.data.data || [];
+      setNotificaciones(rows);
+      // Conserva solo la selección de las que siguen en pantalla.
+      setSelected(prev => new Set(rows.map((n: any) => Number(n.id)).filter((id: number) => prev.has(id))));
       updateFromResponse(res.data.total || 0, res.data.totalPages || 1);
       void refresh();
     } catch (error: any) {
@@ -109,6 +116,24 @@ export default function NotificacionesPage() {
     }
   };
 
+  const toggleSelected = (id: number) => setSelected(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  const allSelected = notificaciones.length > 0 && notificaciones.every(n => selected.has(Number(n.id)));
+  const toggleAll = () => setSelected(allSelected ? new Set() : new Set(notificaciones.map(n => Number(n.id))));
+
+  const handleBulkDelete = async () => {
+    if (!selected.size || deletingBulk) return;
+    setDeletingBulk(true);
+    try {
+      const res = await notificacionesApi.eliminarVarias([...selected]);
+      toast.success(res.data.message || 'Notificaciones eliminadas');
+      setSelected(new Set()); setConfirmBulk(false);
+      if (notificaciones.length === selected.size && page > 1) setPage(page - 1); else void loadData();
+      void refresh();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'No se pudieron eliminar las notificaciones');
+    } finally { setDeletingBulk(false); }
+  };
+
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
@@ -153,6 +178,7 @@ export default function NotificacionesPage() {
   const columns = [
     { key: 'titulo', label: 'Título', render: (n: any) => (
       <div className="flex items-center gap-2">
+        <input type="checkbox" className="h-5 w-5 shrink-0 rounded" checked={selected.has(Number(n.id))} onChange={() => toggleSelected(Number(n.id))} onClick={e => e.stopPropagation()} aria-label={`Seleccionar: ${n.titulo}`} />
         {!n.leida && <span className="w-2 h-2 bg-blue-500 rounded-full" />}
         <span className={n.leida ? 'text-gray-500' : 'font-medium'}>{n.titulo}</span>
       </div>
@@ -231,6 +257,18 @@ export default function NotificacionesPage() {
           </select>
         </div>
       </div>
+
+      {notificaciones.length > 0 && (
+        <div className="flex flex-wrap items-center gap-3" role="group" aria-label="Selección de notificaciones">
+          <label className="flex min-h-11 items-center gap-2 text-sm">
+            <input type="checkbox" className="h-5 w-5 rounded" checked={allSelected} onChange={toggleAll} />
+            Seleccionar todas{notificaciones.length < total ? ' (de esta página)' : ''}
+          </label>
+          <button type="button" className="btn-danger flex min-h-11 items-center gap-2" disabled={!selected.size || deletingBulk} onClick={() => setConfirmBulk(true)}>
+            <Trash2 className="h-4 w-4" aria-hidden="true" /> Eliminar seleccionadas{selected.size ? ` (${selected.size})` : ''}
+          </button>
+        </div>
+      )}
 
       <DataTable
         columns={columns}
@@ -362,6 +400,9 @@ export default function NotificacionesPage() {
       <Modal isOpen={thread !== null} onClose={() => setThread(null)} title={thread?.titulo || 'Conversación'} size="md">
         {thread && <NotificationThread id={thread.id} currentUserId={user?.id} onChanged={onThreadChanged} />}
       </Modal>
+
+      <ConfirmDialog isOpen={confirmBulk} onClose={() => { if (!deletingBulk) setConfirmBulk(false); }} onConfirm={handleBulkDelete} isLoading={deletingBulk}
+        title="Eliminar notificaciones" message={`Se eliminarán ${selected.size} ${selected.size === 1 ? 'notificación' : 'notificaciones'} con sus respuestas. Esta acción no se puede deshacer.`} />
 
       <ConfirmDialog isOpen={deleteId !== null} onClose={() => setDeleteId(null)} onConfirm={handleDelete}
         title="Eliminar Notificación" message="¿Está seguro de eliminar esta notificación?" />

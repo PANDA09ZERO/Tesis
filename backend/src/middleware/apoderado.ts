@@ -24,7 +24,7 @@ export function limitarApoderado(req:AuthRequest,res:Response,next:NextFunction)
     // Sus propias notificaciones: marcar como leídas o borrarlas (el controlador filtra por usuario).
     const allowedNotificationWrite = req.method === 'PUT' && /^\/notificaciones\/(\d+\/marcar-leida|marcar-todas-leidas)$/.test(apiPath)
       || req.method === 'DELETE' && /^\/notificaciones\/\d+$/.test(apiPath)
-      || req.method === 'POST' && /^\/notificaciones\/\d+\/respuestas$/.test(apiPath);
+      || req.method === 'POST' && /^\/notificaciones\/(\d+\/respuestas|eliminar)$/.test(apiPath);
 
     if ((isRead && allowedGuardianReads.some(pattern => pattern.test(apiPath))) || allowedFormSubmission || allowedNotificationWrite || (req.method === 'PUT' && apiPath === '/auth/change-password')) {
       return next();

@@ -9,7 +9,8 @@ import {
   getNotificacionesNoLeidas,
   enviarNotificacionMasiva,
   getRespuestas,
-  createRespuesta
+  createRespuesta,
+  deleteNotificaciones
 } from '../controllers/notificaciones.controller';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -29,6 +30,8 @@ router.post('/', authenticate, authorize('administrador'), createNotificacion);
 router.post('/masiva', authenticate, authorize('administrador'), enviarNotificacionMasiva);
 router.put('/:id/marcar-leida', marcarLeida);
 router.put('/marcar-todas-leidas', marcarTodasLeidas);
+// Varias a la vez (POST: algunos proxies descartan el cuerpo de un DELETE).
+router.post('/eliminar', deleteNotificaciones);
 router.delete('/:id', deleteNotificacion);
 
 export default router;

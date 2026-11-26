@@ -149,6 +149,7 @@ export const notificacionesApi = {
   marcarLeida: (id: number) => client.put<ApiResponse>(`/notificaciones/${id}/marcar-leida`),
   marcarTodasLeidas: () => client.put<ApiResponse>('/notificaciones/marcar-todas-leidas'),
   delete: (id: number) => client.delete<ApiResponse>(`/notificaciones/${id}`),
+  eliminarVarias: (ids: number[]) => client.post<ApiResponse<{ eliminadas: number }>>('/notificaciones/eliminar', { ids }),
   getRespuestas: (id: number) => client.get<ApiResponse<any>>(`/notificaciones/${id}/respuestas`),
   responder: (id: number, mensaje: string) => client.post<ApiResponse>(`/notificaciones/${id}/respuestas`, { mensaje })
 };
